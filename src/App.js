@@ -1,49 +1,32 @@
 import React, { useState } from 'react';
+import Map from './Map';
+import { MAP_WIDTH, MAP_HEIGHT } from './constants';
 import './App.css';
 
-const CELL_SIZE = 30;
+let _id = 0;
+const makeId = ()=> _id++;
 
-const emptyRoom = [
-  ['#','#','#','#','#','#','#','#'],
-  ['#','.','.','.','.','.','.','#'],
-  ['#','.','.','.','.','.','.','#'],
-  ['#','.','.','.','.','.','.','#'],
-  ['#','.','.','.','.','.','.','#'],
-  ['#','.','.','.','.','.','.','#'],
-  ['#','.','.','.','.','.','.','#'],
-  ['#','#','#','#','#','#','#','#'],
-];
+const isAdjacentEdge = (x, y) =>
+  x === 0 || x === MAP_WIDTH - 1 || y === 0 || y === MAP_HEIGHT - 1;
 
-const cellStyle = (x, y, char) => {
-  return {
-    position: 'relative',
-    left: x * CELL_SIZE,
-    top: y * CELL_SIZE,
-    width: 0,
-    height: 0,
+const makeRoom = () => {
+  const tiles = {};
+  for (let x = 0; x < MAP_WIDTH; x += 1) {
+    for (let y = 0; y < MAP_HEIGHT; y += 1) {
+      const char = isAdjacentEdge(x, y) ? '#' : '.';
+      const id = makeId();
+      const tile = {
+        id,
+        char,
+        position: {x, y},
+      }
+
+      tiles[id] = tile;
+    }  
   }
-};
 
-const cellInnerStyle = (x, y, char) => {
-  const charColourMap = {
-    ['#']: '#AAA',
-    ['.']: '#333'
-  };
-
-  return {
-  width: CELL_SIZE,
-  height: CELL_SIZE,
-  color: charColourMap[char] || '#AAA',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  
-}};
-
-const mapStyle = (map) => ({
-  width: map.length * CELL_SIZE,
-  height: map[0].length * CELL_SIZE
-});
+  return tiles;
+}
 
 function App() {
   const move = ({x, y}) => {
@@ -62,32 +45,12 @@ function App() {
       move(directionMappings[key]);
     }
   }
-
-  const addPlayer = (map) => {
-    map[1][1] = '@';
-    return map;
-  }
   
   const [player, setPlayer] = useState({position: {x: 1, y: 1}})
-  const [map, setMap] = useState(addPlayer(emptyRoom))
+  const [tiles, setTiles] = useState(makeRoom())
   return (
-    <div className="app">
-      <div
-        className="map"
-        style={mapStyle(map)}
-        onKeyDown={handleKeyDown}
-        tabIndex={0}
-      >
-        {map.map((row, y) =>
-          row.map((char, x) =>
-            <div className="cell" style={cellStyle(x, y, char)}>
-              <div style={cellInnerStyle(x, y, char)}>
-                <p>{char}</p>
-              </div>
-            </div>
-          )
-        )}
-      </div>
+    <div className="app" tabIndex={0} onKeyDown={handleKeyDown}>
+      <Map tiles={tiles} />
     </div>
   );
 }
