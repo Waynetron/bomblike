@@ -9,28 +9,54 @@ const makeId = ()=> _id++;
 const isAdjacentEdge = (x, y) =>
   x === 0 || x === MAP_WIDTH - 1 || y === 0 || y === MAP_HEIGHT - 1;
 
+const makeTile = (position, char = '.') => {
+  return {
+    id: makeId(),
+    char,
+    position,
+  }
+} 
+
 const makeRoom = () => {
   const tiles = {};
   for (let x = 0; x < MAP_WIDTH; x += 1) {
     for (let y = 0; y < MAP_HEIGHT; y += 1) {
       const char = isAdjacentEdge(x, y) ? '#' : '.';
-      const id = makeId();
-      const tile = {
-        id,
-        char,
-        position: {x, y},
-      }
+      const tile = makeTile({x, y}, char)
 
-      tiles[id] = tile;
+      tiles[tile.id] = tile;
     }  
   }
 
   return tiles;
 }
 
+const getKey = (position) => `${position.x},${position.y}`;
+
+const addTile = (tile, tiles) => {
+  const newTiles = {...tiles};
+  newTiles[getKey(tile)] = tile;
+  return newTiles;
+}
+
+const initialPlayer = makeTile({x: 1, y: 1}, '@');
+const playerId = initialPlayer.id;
+
 function App() {
-  const move = ({x, y}) => {
-    console.log(x, y);
+  const [tiles, setTiles] = useState({
+    ...makeRoom(),
+    [initialPlayer.id]: initialPlayer
+  });
+
+  const move = (tile, direction) => {
+    const newTile = {...tile};
+    newTile.position = {
+      x: tile.position.x + direction.x,
+      y: tile.position.y + direction.y
+    }
+
+    tiles[tile.id] = newTile;
+    setTiles({...tiles});
   }
   
   const handleKeyDown = ({key}) => {
@@ -42,12 +68,10 @@ function App() {
     }
   
     if (directionMappings[key]) {
-      move(directionMappings[key]);
+      move(tiles[playerId], directionMappings[key]);
     }
   }
   
-  const [player, setPlayer] = useState({position: {x: 1, y: 1}})
-  const [tiles, setTiles] = useState(makeRoom())
   return (
     <div className="app" tabIndex={0} onKeyDown={handleKeyDown}>
       <Map tiles={tiles} />
