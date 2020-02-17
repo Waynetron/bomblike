@@ -15,6 +15,9 @@ const makeTile = (position, char = '.', props) => {
     id: makeId(),
     char,
     position,
+    facing: 'right',
+    alive: true,
+    actions: [],
     ...props,
   }
 } 
@@ -44,23 +47,25 @@ const makeRoom = () => {
 
 const getKey = (position) => `${position.x},${position.y}`;
 
-const addTile = (tile, tiles) => {
-  const newTiles = {...tiles};
-  newTiles[getKey(tile)] = tile;
-  return newTiles;
-}
-
 const getTilesAt = (position, tiles) =>
   Object.values(tiles).filter(tile => isEqual(tile.position, position));
 
 const initialPlayer = makeTile({x: 1, y: 1}, '@', {solid: true});
 const playerId = initialPlayer.id;
 
+const generateLevel = (player) => {
+  const emptyRoom = makeRoom();
+  const enemy = makeTile({x: 9, y: 9}, 'G', {solid: true, facing: 'up'});
+
+  return {
+      ...emptyRoom,
+      [initialPlayer.id]: initialPlayer,
+      [enemy.id]: enemy
+  };
+}
+
 function App() {
-  const [tiles, setTiles] = useState({
-    ...makeRoom(),
-    [initialPlayer.id]: initialPlayer
-  });
+  const [tiles, setTiles] = useState(generateLevel(initialPlayer));
 
   const move = (tile, direction) => {
     const newPosition = {
@@ -81,18 +86,37 @@ function App() {
     tiles[tile.id] = newTile;
     setTiles({...tiles});
   }
+
+  const keyToDirection = (key) => {
+    const mapping = {
+      ArrowUp: 'up',
+      ArrowDown: 'down',
+      ArrowLeft: 'left',
+      ArrowRight: 'right'
+    }
+
+    return mapping[key];
+  };
+
+  const directionToVector = (direction) => {
+    const mapping = {
+      up: {x: 0, y: -1},
+      down: {x: 0, y: 1},
+      left: {x: -1, y: 0},
+      right: {x: 1, y: 0}
+    }
+
+    return mapping[direction];
+  }
   
   const handleKeyDown = ({key}) => {
-    const directionMappings = {
-      ArrowUp: {x: 0, y: -1},
-      ArrowDown: {x: 0, y: 1},
-      ArrowLeft: {x: -1, y: 0},
-      ArrowRight: {x: 1, y: 0}
+    const direction = keyToDirection(key);
+    if (!direction) {
+      return;
     }
-  
-    if (directionMappings[key]) {
-      move(tiles[playerId], directionMappings[key]);
-    }
+
+    const vector = directionToVector(direction);
+    move(tiles[playerId], vector);
   }
   
   return (
