@@ -84,39 +84,55 @@ function App() {
     newTile.position = newPosition
 
     tiles[tile.id] = newTile;
-    setTiles({...tiles});
   }
 
   const keyToDirection = (key) => {
     const mapping = {
-      ArrowUp: 'up',
-      ArrowDown: 'down',
-      ArrowLeft: 'left',
-      ArrowRight: 'right'
+      ArrowUp: {x: 0, y: -1},
+      ArrowDown: {x: 0, y: 1},
+      ArrowLeft: {x: -1, y: 0},
+      ArrowRight: {x: 1, y: 0}
     }
 
     return mapping[key];
-  };
+  }
 
-  const directionToVector = (direction) => {
-    const mapping = {
-      up: {x: 0, y: -1},
-      down: {x: 0, y: 1},
-      left: {x: -1, y: 0},
-      right: {x: 1, y: 0}
+  const performTurn = () => {
+    // Add enemy actions
+    for (const tile of Object.values(tiles)) {
+      if (tile.char === 'G') {
+        const action = {type: 'move', direction: {x: 0, y: -1}};
+        tile.actions.push(action);
+      }
     }
 
-    return mapping[direction];
+    // Perform actions
+    for (const tile of Object.values(tiles)) {
+      for (const action of tile.actions) {
+        console.log(action);
+        if (action.type === 'move') {
+          move(tile, action.direction);
+        }
+      }
+    }
+
+    // Clear actions
+    Object.values(tiles).map(tile => tile.actions = []);
+
+    setTiles({...tiles});
   }
   
   const handleKeyDown = ({key}) => {
     const direction = keyToDirection(key);
-    if (!direction) {
-      return;
+    const wait = key === 'Space';
+
+    if (direction) {
+      tiles[playerId].actions.push({type: 'move', direction})
     }
 
-    const vector = directionToVector(direction);
-    move(tiles[playerId], vector);
+    if (direction || wait) {
+      performTurn();
+    }
   }
   
   return (
