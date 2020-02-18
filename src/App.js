@@ -1,66 +1,23 @@
 import React, { useState } from 'react';
 import Map from './Map';
-import { MAP_WIDTH, MAP_HEIGHT } from './constants';
-import { isEqual } from 'lodash';
+import { getTilesAt } from './map/map-util';
+import { makeEmptyRoom } from './map/map-generation';
+import { walkInALine, faceAwayFromSolid } from './behaviours';
+import { makeTile } from './entities';
 import './App.css';
-
-let _id = 0;
-const makeId = ()=> _id++;
-
-const isAdjacentEdge = (x, y) =>
-  x === 0 || x === MAP_WIDTH - 1 || y === 0 || y === MAP_HEIGHT - 1;
-
-const makeTile = (position, char = '.', props) => {
-  return {
-    id: makeId(),
-    char,
-    position,
-    facing: 'right',
-    alive: true,
-    actions: [],
-    ...props,
-  }
-} 
-
-const makeRoom = () => {
-  const tiles = {};
-  for (let x = 0; x < MAP_WIDTH; x += 1) {
-    for (let y = 0; y < MAP_HEIGHT; y += 1) {
-      let char, solid;
-      if (isAdjacentEdge(x, y)) {
-        char = '#';
-        solid = true;
-      }
-      else {
-        char = '.';
-        solid = false;
-      }
-
-      const tile = makeTile({x, y}, char, {solid})
-
-      tiles[tile.id] = tile;
-    }  
-  }
-
-  return tiles;
-}
-
-const getKey = (position) => `${position.x},${position.y}`;
-
-const getTilesAt = (position, tiles) =>
-  Object.values(tiles).filter(tile => isEqual(tile.position, position));
 
 const initialPlayer = makeTile({x: 1, y: 1}, '@', {solid: true});
 const playerId = initialPlayer.id;
 
 const generateLevel = (player) => {
-  const emptyRoom = makeRoom();
+  const emptyRoom = makeEmptyRoom();
   const enemy = makeTile(
     {x: 9, y: 9},
     'G',
     {
       solid: true,
-      facing: 'up',
+      facing: {x: 0, y: -1},
+      behaviours: [walkInALine, faceAwayFromSolid],
       actions: [{type: 'move', direction: {x: 0, y: -1}, lifespan: 3}]
     }
   );
@@ -76,7 +33,6 @@ function App() {
   const [tiles, setTiles] = useState(generateLevel(initialPlayer));
 
   const move = (tile, direction) => {
-    console.log(tile.char, direction);
     const newPosition = {
       x: tile.position.x + direction.x,
       y: tile.position.y + direction.y
