@@ -55,7 +55,15 @@ const playerId = initialPlayer.id;
 
 const generateLevel = (player) => {
   const emptyRoom = makeRoom();
-  const enemy = makeTile({x: 9, y: 9}, 'G', {solid: true, facing: 'up'});
+  const enemy = makeTile(
+    {x: 9, y: 9},
+    'G',
+    {
+      solid: true,
+      facing: 'up',
+      actions: [{type: 'move', direction: {x: 0, y: -1}, lifespan: 3}]
+    }
+  );
 
   return {
       ...emptyRoom,
@@ -68,6 +76,7 @@ function App() {
   const [tiles, setTiles] = useState(generateLevel(initialPlayer));
 
   const move = (tile, direction) => {
+    console.log(tile.char, direction);
     const newPosition = {
       x: tile.position.x + direction.x,
       y: tile.position.y + direction.y
@@ -98,18 +107,9 @@ function App() {
   }
 
   const performTurn = () => {
-    // Add enemy actions
-    for (const tile of Object.values(tiles)) {
-      if (tile.char === 'G') {
-        const action = {type: 'move', direction: {x: 0, y: -1}};
-        tile.actions.push(action);
-      }
-    }
-
     // Perform actions
     for (const tile of Object.values(tiles)) {
       for (const action of tile.actions) {
-        console.log(action);
         if (action.type === 'move') {
           move(tile, action.direction);
         }
@@ -117,7 +117,18 @@ function App() {
     }
 
     // Clear actions
-    Object.values(tiles).map(tile => tile.actions = []);
+    for (const tile of Object.values(tiles)) {
+      // Reduce action lifespan
+      tile.actions.map(action => {
+        if (action.lifespan > 0) {
+          action.lifespan -= 1
+        };
+        return action;
+      })
+
+      // Remove actions that have exactly 0 lifespan (-1 will live forever)
+      tile.actions = tile.actions.filter(action => action.lifespan !== 0);
+    }
 
     setTiles({...tiles});
   }
@@ -127,7 +138,7 @@ function App() {
     const wait = key === 'Space';
 
     if (direction) {
-      tiles[playerId].actions.push({type: 'move', direction})
+      tiles[playerId].actions.push({type: 'move', direction, lifespan: 1})
     }
 
     if (direction || wait) {
