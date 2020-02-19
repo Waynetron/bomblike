@@ -1,9 +1,9 @@
 import { MAP_WIDTH, MAP_HEIGHT } from '../constants';
-import { makeTile } from '../entities';
+import { makeEntity } from '../entities';
 import { isAdjacentEdge } from '../map/map-util';
 
 export const makeEmptyRoom = () => {
-  const tiles = {};
+  const entities = {};
   for (let x = 0; x < MAP_WIDTH; x += 1) {
     for (let y = 0; y < MAP_HEIGHT; y += 1) {
       let char, solid;
@@ -16,11 +16,11 @@ export const makeEmptyRoom = () => {
         solid = false;
       }
 
-      const tile = makeTile({x, y}, char, {solid})
+      const entity = makeEntity({x, y}, char, {solid})
 
-      tiles[tile.id] = tile;
+      entities[entity.id] = entity;
     }  
   }
 
-  return tiles;
+  return entities;
 }

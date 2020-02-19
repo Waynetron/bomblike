@@ -1,7 +1,7 @@
 let _id = 0;
 const makeId = ()=> _id++;
 
-export const makeTile = (position, char = '.', props) => {
+export const makeEntity = (position, char = '.', props) => {
   return {
     id: makeId(),
     char,

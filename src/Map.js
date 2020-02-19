@@ -34,13 +34,13 @@ const mapStyle = {
   height: MAP_HEIGHT * CELL_SIZE,
 };
 
-const Map = ({tiles}) => {
+const Map = ({entities}) => {
   return (
     <div
       className="map"
       style={mapStyle}
     >
-      {Object.values(tiles).map(({id, char, position: {x, y}}) =>
+      {Object.values(entities).map(({id, char, position: {x, y}}) =>
         <div className="cell" style={cellStyle(x, y, char)}>
           <div style={cellInnerStyle(x, y, char)}>
             <p>{char}</p>

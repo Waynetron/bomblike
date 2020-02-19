@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import Map from './Map';
-import { getTilesAt } from './map/map-util';
+import { getEntitiesAt } from './map/map-util';
 import { makeEmptyRoom } from './map/map-generation';
 import { walkInALine, faceAwayFromSolid } from './behaviours';
-import { makeTile } from './entities';
+import { makeEntity } from './entities';
 import './App.css';
 
-const initialPlayer = makeTile({x: 1, y: 1}, '@', {solid: true});
+const initialPlayer = makeEntity({x: 1, y: 1}, '@', {solid: true});
 const playerId = initialPlayer.id;
 
 const generateLevel = (player) => {
   const emptyRoom = makeEmptyRoom();
-  const enemy = makeTile(
+  const enemy = makeEntity(
     {x: 9, y: 9},
     'G',
     {
@@ -30,25 +30,25 @@ const generateLevel = (player) => {
 }
 
 function App() {
-  const [tiles, setTiles] = useState(generateLevel(initialPlayer));
+  const [entities, setEntities] = useState(generateLevel(initialPlayer));
 
-  const move = (tile, direction) => {
+  const move = (entity, direction) => {
     const newPosition = {
-      x: tile.position.x + direction.x,
-      y: tile.position.y + direction.y
+      x: entity.position.x + direction.x,
+      y: entity.position.y + direction.y
     }
 
     // Check if anything is in the way
-    const upcomingTiles = getTilesAt(newPosition, tiles);
-    if (Object.values(upcomingTiles).filter(upcoming => upcoming.solid).length > 0) {
+    const upcomingEntities = getEntitiesAt(newPosition, entities);
+    if (Object.values(upcomingEntities).filter(upcoming => upcoming.solid).length > 0) {
       return;
     }
 
 
-    const newTile = {...tile};
-    newTile.position = newPosition
+    const newEntity = {...entity};
+    newEntity.position = newPosition
 
-    tiles[tile.id] = newTile;
+    entities[entity.id] = newEntity;
   }
 
   const keyToDirection = (key) => {
@@ -64,18 +64,18 @@ function App() {
 
   const performTurn = () => {
     // Perform actions
-    for (const tile of Object.values(tiles)) {
-      for (const action of tile.actions) {
+    for (const entity of Object.values(entities)) {
+      for (const action of entity.actions) {
         if (action.type === 'move') {
-          move(tile, action.direction);
+          move(entity, action.direction);
         }
       }
     }
 
     // Clear actions
-    for (const tile of Object.values(tiles)) {
+    for (const entity of Object.values(entities)) {
       // Reduce action lifespan
-      tile.actions.map(action => {
+      entity.actions.map(action => {
         if (action.lifespan > 0) {
           action.lifespan -= 1
         };
@@ -83,10 +83,10 @@ function App() {
       })
 
       // Remove actions that have exactly 0 lifespan (-1 will live forever)
-      tile.actions = tile.actions.filter(action => action.lifespan !== 0);
+      entity.actions = entity.actions.filter(action => action.lifespan !== 0);
     }
 
-    setTiles({...tiles});
+    setEntities({...entities});
   }
   
   const handleKeyDown = ({key}) => {
@@ -94,7 +94,7 @@ function App() {
     const wait = key === 'Space';
 
     if (direction) {
-      tiles[playerId].actions.push({type: 'move', direction, lifespan: 1})
+      entities[playerId].actions.push({type: 'move', direction, lifespan: 1})
     }
 
     if (direction || wait) {
@@ -104,7 +104,7 @@ function App() {
   
   return (
     <div className="app" tabIndex={0} onKeyDown={handleKeyDown}>
-      <Map tiles={tiles} />
+      <Map entities={entities} />
     </div>
   );
 }
