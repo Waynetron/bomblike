@@ -1,11 +1,10 @@
 let _id = 0;
 const makeId = ()=> _id++;
 
-export const makeEntity = (position, char = '.', props) => {
+export const makeEntity = (props) => {
   return {
     id: makeId(),
-    char,
-    position,
+    char: '?',
     facing: {x: 1, y: 0},
     alive: true,
     actions: [],

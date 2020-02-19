@@ -6,21 +6,23 @@ import { walkInALine, faceAwayFromSolid } from './behaviours';
 import { makeEntity } from './entities';
 import './App.css';
 
-const initialPlayer = makeEntity({x: 1, y: 1}, '@', {solid: true});
+const initialPlayer = makeEntity({
+  char: '@',
+  position: {x: 1, y: 1},
+  solid: true,
+});
 const playerId = initialPlayer.id;
 
 const generateLevel = (player) => {
   const emptyRoom = makeEmptyRoom();
-  const enemy = makeEntity(
-    {x: 9, y: 9},
-    'G',
-    {
-      solid: true,
-      facing: {x: 0, y: -1},
-      behaviours: [walkInALine, faceAwayFromSolid],
-      actions: [{type: 'move', direction: {x: 0, y: -1}, lifespan: 3}]
-    }
-  );
+  const enemy = makeEntity({
+    char: 'G',
+    position: {x: 9, y: 9},
+    solid: true,
+    facing: {x: 0, y: -1},
+    behaviours: [walkInALine, faceAwayFromSolid],
+    actions: [{type: 'move', direction: {x: 0, y: -1}, lifespan: 3}]
+  });
 
   return {
       ...emptyRoom,

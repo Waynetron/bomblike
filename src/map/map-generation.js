@@ -16,7 +16,11 @@ export const makeEmptyRoom = () => {
         solid = false;
       }
 
-      const entity = makeEntity({x, y}, char, {solid})
+      const entity = makeEntity({
+        char,
+        position: {x, y}, 
+        solid
+      });
 
       entities[entity.id] = entity;
     }  
