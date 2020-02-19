@@ -2,11 +2,11 @@
 
 export const walkInALine = (entity, entities) => {
   const { facing } = entity;
-  return {type: 'move', direction: facing}
+  return [{type: 'move', direction: facing}]
 }
 
 export const faceAwayFromSolid = (entity, entities) => {
   const { facing } = entity;
 
-  return {};
+  return [{}];
 }

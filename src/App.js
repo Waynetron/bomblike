@@ -21,7 +21,7 @@ const generateLevel = (player) => {
     solid: true,
     facing: {x: 0, y: -1},
     behaviours: [walkInALine, faceAwayFromSolid],
-    actions: [{type: 'move', direction: {x: 0, y: -1}, lifespan: 3}]
+    actions: [{type: 'move', direction: {x: 0, y: -1}}]
   });
 
   return {
@@ -65,6 +65,14 @@ function App() {
   }
 
   const performTurn = () => {
+    // Add any actions generated from behaviours
+    for (const entity of Object.values(entities)) {
+      for (const behaviour of entity.behaviours) {
+        const actions = behaviour(entity, entities);
+        entity.actions.push(...actions);
+      }
+    }
+
     // Perform actions
     for (const entity of Object.values(entities)) {
       for (const action of entity.actions) {
@@ -76,16 +84,7 @@ function App() {
 
     // Clear actions
     for (const entity of Object.values(entities)) {
-      // Reduce action lifespan
-      entity.actions.map(action => {
-        if (action.lifespan > 0) {
-          action.lifespan -= 1
-        };
-        return action;
-      })
-
-      // Remove actions that have exactly 0 lifespan (-1 will live forever)
-      entity.actions = entity.actions.filter(action => action.lifespan !== 0);
+      entity.actions = [];
     }
 
     setEntities({...entities});
@@ -96,7 +95,7 @@ function App() {
     const wait = key === 'Space';
 
     if (direction) {
-      entities[playerId].actions.push({type: 'move', direction, lifespan: 1})
+      entities[playerId].actions.push({type: 'move', direction})
     }
 
     if (direction || wait) {
