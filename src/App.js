@@ -35,7 +35,7 @@ function App() {
   const [entities, setEntities] = useState(generateLevel(initialPlayer));
 
   const nextLevel = (player) => {
-    
+
   }
 
   const move = (entity, direction) => {
@@ -86,6 +86,7 @@ function App() {
         if (action.type === 'attack') {
           const { value, target } = action;
           target.health -= value;
+          window.location.reload();
         }
       }
     }
@@ -121,7 +122,7 @@ function App() {
   }
   
   return (
-    <div className="app" tabIndex={0} onKeyDown={handleKeyDown}>
+    <div className="app" tabIndex={0} onKeyDown={handleKeyDown} autofocus="true">
       <Map entities={entities} />
     </div>
   );
