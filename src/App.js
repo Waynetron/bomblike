@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Map from './Map';
 import { getEntitiesAt } from './map/map-util';
 import { makeEmptyRoom } from './map/map-generation';
-import { walkInALine, faceWalkable } from './behaviours';
+import { walkInALine, faceWalkable, attackAdjacentPlayer } from './behaviours';
 import { makeEntity } from './entities';
 import './App.css';
 
@@ -20,7 +20,7 @@ const generateLevel = (player) => {
     position: {x: 9, y: 9},
     solid: true,
     facing: {x: 0, y: -1},
-    behaviours: [walkInALine, faceWalkable],
+    behaviours: [walkInALine, faceWalkable, attackAdjacentPlayer],
     actions: [{type: 'move', direction: {x: 0, y: -1}}]
   });
 
@@ -34,6 +34,10 @@ const generateLevel = (player) => {
 function App() {
   const [entities, setEntities] = useState(generateLevel(initialPlayer));
 
+  const nextLevel = (player) => {
+    
+  }
+
   const move = (entity, direction) => {
     const newPosition = {
       x: entity.position.x + direction.x,
@@ -46,11 +50,7 @@ function App() {
       return;
     }
 
-
-    const newEntity = {...entity};
-    newEntity.position = newPosition
-
-    entities[entity.id] = newEntity;
+    entity.position = newPosition
   }
 
   const keyToDirection = (key) => {
@@ -77,20 +77,34 @@ function App() {
     for (const entity of Object.values(entities)) {
       for (const action of entity.actions) {
         if (action.type === 'move') {
+          console.log('move');
           move(entity, action.direction);
         }
         if (action.type === 'face') {
           entity.facing = action.direction;
         }
+        if (action.type === 'attack') {
+          const { value, target } = action;
+          target.health -= value;
+        }
       }
     }
 
-    // Clear actions
+
+    // Kill any entities with no health
     for (const entity of Object.values(entities)) {
+      if (entity.health <= 0) {
+        entity.alive = false;
+      }
+    }
+    const remainingEntities = Object.values(entities).filter(entity => entity.alive);
+
+    // Clear actions
+    for (const entity of Object.values(remainingEntities)) {
       entity.actions = [];
     }
 
-    setEntities({...entities});
+    setEntities({...remainingEntities});
   }
   
   const handleKeyDown = ({key}) => {

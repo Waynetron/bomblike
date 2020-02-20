@@ -1,28 +1,33 @@
 import React from 'react';
+import { motion } from "framer-motion"
 import { CELL_SIZE, MAP_WIDTH, MAP_HEIGHT } from './constants';
 import './App.css';
 
 
-const cellStyle = (x, y, char) => {
+const cellStyle = (x, y, solid) => {
   return {
     position: 'relative',
     left: x * CELL_SIZE,
     top: y * CELL_SIZE,
     width: 0,
     height: 0,
+    zIndex: solid ? 2 : 1,
   }
 };
 
 const cellInnerStyle = (x, y, char) => {
   const charColourMap = {
-    ['#']: '#AAA',
-    ['.']: '#333'
+    '@': '#FFE4C4',
+    'G': '#FFE4C4',
+    '#': '#FFE4C4',
+    '·': '#FFE4C433'
   };
 
   return {
   width: CELL_SIZE,
   height: CELL_SIZE,
-  color: charColourMap[char] || '#AAA',
+  color: charColourMap[char] || '#FFE4C4',
+  backgroundColor: 'indianred',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
@@ -40,12 +45,24 @@ const Map = ({entities}) => {
       className="map"
       style={mapStyle}
     >
-      {Object.values(entities).map(({id, char, position: {x, y}}) =>
-        <div className="cell" style={cellStyle(x, y, char)}>
+      {Object.values(entities).map(({id, char, position: {x, y}, solid}) =>
+        <motion.div
+          className="cell"
+          animate={{
+            left: x * CELL_SIZE,
+            top: y * CELL_SIZE,
+            zIndex: solid ? 2: 1,
+          }}
+          transition={{
+            type: "spring",
+            stiffness: 600,
+            damping: 30
+          }}
+        >
           <div style={cellInnerStyle(x, y, char)}>
             <p>{char}</p>
           </div>
-        </div>
+        </motion.div>
       )}
     </div>
   )

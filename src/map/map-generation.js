@@ -7,12 +7,12 @@ export const makeEmptyRoom = () => {
   for (let x = 0; x < MAP_WIDTH; x += 1) {
     for (let y = 0; y < MAP_HEIGHT; y += 1) {
       let char, solid;
-      if (isAdjacentEdge(x, y)) {
+      if (isAdjacentEdge(x, y) || Math.random() > 0.8) {
         char = '#';
         solid = true;
       }
       else {
-        char = '.';
+        char = '·';
         solid = false;
       }
 

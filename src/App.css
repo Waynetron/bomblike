@@ -1,17 +1,19 @@
 html, body, #root, #root>div {
   height: 100%;
   margin: 0;
-  background-color: black;
-}
-
-.map {
-  border: solid 1px #ccc;
+  background-color: indianred;
 }
 
 .app {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.cell {
+  position: relative;
+  width: 0;
+  height: 0;
 }
 
 .cell p {

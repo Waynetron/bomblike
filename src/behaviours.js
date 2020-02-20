@@ -2,7 +2,7 @@
 Behaviours are used at the start of a turn to generate a set of actions
 */
 
-import { getEntitiesAt } from './map/map-util';
+import { getEntitiesAt, getEntitiesAtPositions } from './map/map-util';
 
 const [UP, DOWN, LEFT, RIGHT] = [{x: 0, y: -1}, {x: 0, y: 1}, {x: -1, y: 0}, {x: 1, y: 0}]
 const add = (a, b) => ({x: a.x + b.x, y: a.y + b.y});
@@ -10,6 +10,15 @@ const subtract = (a, b) => ({x: a.x - b.x, y: a.y - b.y});
 const getAdjacentPositions = (position) => [
   add(UP, position), add(DOWN, position), add(LEFT, position), add(RIGHT, position)
 ];
+
+const shuffle = (original) => {
+  const shuffled = [...original];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
 
 const isWalkable = (position, entities) => {
   const entitiesAtPostion = getEntitiesAt(position, entities);
@@ -49,8 +58,19 @@ export const faceWalkable = (entity, entities) => {
     return [];
   }
 
-  const [firstAvailable] = available;
-  const newDirection = subtract(firstAvailable, entity.position);
+  const [randomAvailableDirection] = shuffle(available);
+  const newDirection = subtract(randomAvailableDirection, entity.position);
 
   return [{type: 'face', direction: newDirection}];
+}
+
+export const attackAdjacentPlayer = (entity, entities) => {
+  const adjacent = getAdjacentPositions(entity.position);
+  const adjacentEntities = getEntitiesAtPositions(adjacent, entities);
+  if (adjacentEntities.some(entity => entity.char === '@')) {
+    console.log('@');
+    return [{type: 'attack', value: 1, target: entity}];
+  }
+
+  return [];
 }
