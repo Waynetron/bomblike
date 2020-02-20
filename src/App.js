@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Map from './Map';
 import { getEntitiesAt } from './map/map-util';
 import { makeEmptyRoom } from './map/map-generation';
-import { walkInALine, faceAwayFromSolid } from './behaviours';
+import { walkInALine, faceWalkable } from './behaviours';
 import { makeEntity } from './entities';
 import './App.css';
 
@@ -20,7 +20,7 @@ const generateLevel = (player) => {
     position: {x: 9, y: 9},
     solid: true,
     facing: {x: 0, y: -1},
-    behaviours: [walkInALine, faceAwayFromSolid],
+    behaviours: [walkInALine, faceWalkable],
     actions: [{type: 'move', direction: {x: 0, y: -1}}]
   });
 
@@ -78,6 +78,9 @@ function App() {
       for (const action of entity.actions) {
         if (action.type === 'move') {
           move(entity, action.direction);
+        }
+        if (action.type === 'face') {
+          entity.facing = action.direction;
         }
       }
     }

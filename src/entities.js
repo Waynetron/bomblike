@@ -9,6 +9,7 @@ export const makeEntity = (props) => {
     char: '?',
     facing: {x: 1, y: 0},
     alive: true,
+    solid: false,
     actions: [],
     behaviours: [],
     ...props,
