@@ -9,15 +9,3 @@ html, body, #root, #root>div {
   justify-content: center;
   align-items: center;
 }
-
-.cell {
-  position: relative;
-  width: 0;
-  height: 0;
-}
-
-.cell p {
-  display: inline;
-  font-size: 1.6rem;
-  font-weight: 600;
-}

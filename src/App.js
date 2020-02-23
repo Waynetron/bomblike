@@ -64,7 +64,46 @@ function App() {
     return mapping[key];
   }
 
+  const performActions = (entity) => {
+    let remainingActions = entity.actionsPerTurn;
+    entity.actions.reverse();
+      while(remainingActions > 0 && entity.actions.length > 0) {
+        const action = entity.actions.pop();
+
+        if (action.type === 'wait') {
+          remainingActions -= 1;
+          entity.status['waiting'] = true;
+        }
+        if (action.type === 'move') {
+          if (move(entity, action.direction)) {
+            remainingActions -= 1;
+            entity.status['moving'] = true;
+          };
+        }
+        if (action.type === 'face') {
+          entity.facing = action.direction;
+          // no action cost
+        }
+        if (action.type === 'attack') {
+          const { value, target } = action;
+          target.health -= value;
+          remainingActions -= 1;
+          entity.status['attacking'] = true;
+          target.status['attacked'] = true;
+          // window.location.reload();
+        }
+        else {
+          entity.attacking = false;
+        }
+      }
+  }
+
   const performTurn = () => {
+    // Reset statuses
+    for (const entity of Object.values(entities)) {
+      entity.status = {}; // reset status for this turn
+    }
+
     // Add any actions generated from behaviours
     for (const entity of Object.values(entities)) {
       for (const behaviour of entity.behaviours) {
@@ -75,20 +114,7 @@ function App() {
 
     // Perform actions
     for (const entity of Object.values(entities)) {
-      for (const action of entity.actions) {
-        if (action.type === 'move') {
-          console.log('move');
-          move(entity, action.direction);
-        }
-        if (action.type === 'face') {
-          entity.facing = action.direction;
-        }
-        if (action.type === 'attack') {
-          const { value, target } = action;
-          target.health -= value;
-          window.location.reload();
-        }
-      }
+      performActions(entity);
     }
 
 
@@ -110,7 +136,8 @@ function App() {
   
   const handleKeyDown = ({key}) => {
     const direction = keyToDirection(key);
-    const wait = key === 'Space';
+    const wait = key === ' ';
+    const restart = key === 'r'
 
     if (direction) {
       entities[playerId].actions.push({type: 'move', direction})
@@ -118,6 +145,10 @@ function App() {
 
     if (direction || wait) {
       performTurn();
+    }
+
+    if (restart) {
+      window.location.reload();
     }
   }
   

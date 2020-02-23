@@ -67,9 +67,10 @@ export const faceWalkable = (entity, entities) => {
 export const attackAdjacentPlayer = (entity, entities) => {
   const adjacent = getAdjacentPositions(entity.position);
   const adjacentEntities = getEntitiesAtPositions(adjacent, entities);
-  if (adjacentEntities.some(entity => entity.char === '@')) {
+  const player = adjacentEntities.find(entity => entity.char === '@');
+  if (player) {
     console.log('@');
-    return [{type: 'attack', value: 1, target: entity}];
+    return [{type: 'attack', value: 1, target: player}];
   }
 
   return [];
