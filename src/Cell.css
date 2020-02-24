@@ -1,0 +1,75 @@
+@keyframes bump-left {
+  0% {
+    transform: translate(0px, 0px);
+  }
+  10% {
+    transform: translate(-5px, 0px);
+  }
+  100% {
+    transform: translate(0px, 0px);
+  }
+}
+
+@keyframes bump-right {
+  0% {
+    transform: translate(0px, 0px);
+  }
+  10% {
+    transform: translate(5px, 0px);
+  }
+  100% {
+    transform: translate(0px, 0px);
+  }
+}
+
+@keyframes bump-up {
+  0% {
+    transform: translate(0px, 0px);
+  }
+  10% {
+    transform: translate(0px, -5px);
+  }
+  100% {
+    transform: translate(0px, 0px);
+  }
+}
+
+@keyframes bump-down {
+  0% {
+    transform: translate(0px, 0px);
+  }
+  10% {
+    transform: translate(0px, 5px);
+  }
+  100% {
+    transform: translate(0px, 0px);
+  }
+}
+
+.bump-left {
+  animation-name: bump-left;
+  animation-duration: 0.4s;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-out;
+}
+
+.bump-right {
+  animation-name: bump-right;
+  animation-duration: 0.4s;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-out;
+}
+
+.bump-up {
+  animation-name: bump-up;
+  animation-duration: 0.4s;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-out;
+}
+
+.bump-down {
+  animation-name: bump-down;
+  animation-duration: 0.4s;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-out;
+}

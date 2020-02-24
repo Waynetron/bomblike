@@ -67,7 +67,6 @@ export const attackAdjacentPlayer = (entity, entities) => {
   const adjacentEntities = getEntitiesAtPositions(adjacent, entities);
   const player = adjacentEntities.find(entity => entity.char === '@');
   if (player) {
-    console.log('@');
     return [{type: 'attack', value: 1, target: player}];
   }
 
