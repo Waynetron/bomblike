@@ -12,12 +12,13 @@ const mapStyle = {
 const Map = ({entities}) => {
   return (
     <div style={mapStyle}>
-      {Object.values(entities).map(({id, char, position, solid, status}) =>
+      {Object.values(entities).map(({id, char, position, solid, facing, status}) =>
         <Cell
           key={id}
           char={char}
           position={position}
           solid={solid}
+          facing={facing}
           status={status}
         />
       )}

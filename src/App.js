@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Map from './Map';
 import { getEntitiesAt } from './map/map-util';
 import { makeEmptyRoom } from './map/map-generation';
+import { subtract } from './math';
 import { walkInALine, faceWalkable, attackAdjacentPlayer } from './behaviours';
 import { makeEntity } from './entities';
 import './App.css';
@@ -19,7 +20,6 @@ const generateLevel = (player) => {
     char: 'G',
     position: {x: 9, y: 9},
     solid: true,
-    facing: {x: 0, y: -1},
     behaviours: [walkInALine, faceWalkable, attackAdjacentPlayer],
     actions: [{type: 'move', direction: {x: 0, y: -1}}]
   });
@@ -88,12 +88,11 @@ function App() {
           const { value, target } = action;
           target.health -= value;
           remainingActions -= 1;
-          entity.status['attacking'] = true;
+          entity.status['attacking'] = subtract(target.position, entity.position);
           target.status['attacked'] = true;
           // window.location.reload();
-        }
-        else {
-          entity.attacking = false;
+        } else {
+          entity.attacking = undefined;
         }
       }
   }

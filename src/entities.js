@@ -7,7 +7,7 @@ export const makeEntity = (props) => {
   return {
     id: makeId(),
     char: '?',
-    facing: {x: 1, y: 0},
+    facing: {x: 0, y: 0},
     alive: true,
     solid: false,
     behaviours: [],

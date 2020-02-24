@@ -3,10 +3,8 @@ Behaviours are used at the start of a turn to generate a set of actions
 */
 
 import { getEntitiesAt, getEntitiesAtPositions } from './map/map-util';
+import { UP, DOWN, LEFT, RIGHT, add, subtract } from './math';
 
-const [UP, DOWN, LEFT, RIGHT] = [{x: 0, y: -1}, {x: 0, y: 1}, {x: -1, y: 0}, {x: 1, y: 0}]
-const add = (a, b) => ({x: a.x + b.x, y: a.y + b.y});
-const subtract = (a, b) => ({x: a.x - b.x, y: a.y - b.y});
 const getAdjacentPositions = (position) => [
   add(UP, position), add(DOWN, position), add(LEFT, position), add(RIGHT, position)
 ];

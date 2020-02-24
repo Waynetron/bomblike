@@ -34,7 +34,10 @@ const Inner = styled.div`
       transform: translate(0px, 0px);
     }
     10% {
-      transform: translate(5px, 0px);
+      transform: translate(
+        ${props => props.bumpOffset.x * 5}px,
+        ${props => props.bumpOffset.y * 5}px
+      );
     }
     100% {
       transform: translate(0px, 0px);
@@ -48,9 +51,10 @@ const Inner = styled.div`
 `
 
 const Cell = ({char, position: {x, y}, solid, status}) => {
+  const bumpOffset = status.attacking || {x: 0, y: 0};
   return (
     <Container x={x} y={y} solid={solid}>
-      <Inner solid={solid} status={status}>
+      <Inner solid={solid} status={status} bumpOffset={bumpOffset}>
         <p>{char}</p>
       </Inner>
     </Container>
