@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import styled from 'styled-components'
 import Map from './Map';
 import { getEntitiesAt } from './map/map-util';
 import { makeEmptyRoom } from './map/map-generation';
@@ -31,12 +32,38 @@ const generateLevel = (player) => {
   };
 }
 
+const AppContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  @keyframes shake {
+    0% {
+      background-color: crimson;
+    }
+    20% {
+      transform: translate3d(${Math.random() * 2 + 2}px, ${Math.random() * -2 - 2}px, 0);
+      background-color: crimson;
+    } 
+    40% {
+      transform: translate3d(${Math.random() * -2 - 2}px, ${Math.random() * 2 + 2}px, 0);
+    }
+    60% {
+      transform: translate3d(${Math.random() * 2 + 2}px, ${Math.random() * 2 + 2}px, 0);
+    }
+    80% {
+      transform: translate3d(${Math.random() * -2 - 2}px, ${Math.random() * -2 - 2}px, 0);
+    }
+  }
+
+  animation-name: ${props => props.shake ? 'shake' : undefined};
+  animation-duration: 0.2s;
+  animation-fill-mode: forwards;
+  animation-timing-function: cubic-bezier(.36,.07,.19,.97);
+`
+
 function App() {
   const [entities, setEntities] = useState(generateLevel(initialPlayer));
-
-  const nextLevel = (player) => {
-
-  }
 
   const move = (entity, direction) => {
     const newPosition = {
@@ -132,6 +159,16 @@ function App() {
 
     setEntities({...remainingEntities});
   }
+
+  const isAnyoneAttacking = (entities) => {
+    for (const entity of entities) {
+      if (entity.status.attacking) {
+        return true;
+      }
+    }
+
+    return false;
+  }
   
   const handleKeyDown = ({key}) => {
     const direction = keyToDirection(key);
@@ -152,9 +189,9 @@ function App() {
   }
   
   return (
-    <div className="app" tabIndex={0} onKeyDown={handleKeyDown} autofocus="true">
+    <AppContainer shake={isAnyoneAttacking(Object.values(entities))} className="app" tabIndex={0} onKeyDown={handleKeyDown} autofocus="true">
       <Map entities={entities} />
-    </div>
+    </AppContainer>
   );
 }
 

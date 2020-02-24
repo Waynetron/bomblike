@@ -3,9 +3,3 @@ html, body, #root, #root>div {
   margin: 0;
   background-color: indianred;
 }
-
-.app {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
