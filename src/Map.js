@@ -1,6 +1,5 @@
 import React from 'react';
-import styled, {css} from 'styled-components'
-import { motion } from "framer-motion"
+import styled from 'styled-components'
 import Cell from './Cell';
 import { CELL_SIZE, MAP_WIDTH, MAP_HEIGHT } from './constants';
 

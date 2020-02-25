@@ -37,7 +37,7 @@ const isWalkable = (position, entities) => {
 
 export const walkInALine = (entity, entities) => {
   const { facing } = entity;
-  return [{type: 'move', direction: facing}]
+  return [{type: 'move', direction: facing, cost: 1}]
 }
 
 export const faceWalkable = (entity, entities) => {
@@ -59,7 +59,7 @@ export const faceWalkable = (entity, entities) => {
   const [randomAvailableDirection] = shuffle(available);
   const newDirection = subtract(randomAvailableDirection, entity.position);
 
-  return [{type: 'face', direction: newDirection}];
+  return [{type: 'face', direction: newDirection, cost: 0}];
 }
 
 export const attackAdjacentPlayer = (entity, entities) => {
@@ -67,7 +67,21 @@ export const attackAdjacentPlayer = (entity, entities) => {
   const adjacentEntities = getEntitiesAtPositions(adjacent, entities);
   const player = adjacentEntities.find(entity => entity.char === '@');
   if (player) {
-    return [{type: 'attack', value: 1, target: player}];
+    return [{type: 'attack', value: 1, target: player, cost: 1}];
+  }
+
+  return [];
+}
+
+export const attackAdjacentPlayerAndDie = (entity, entities) => {
+  const adjacent = getAdjacentPositions(entity.position);
+  const adjacentEntities = getEntitiesAtPositions(adjacent, entities);
+  const player = adjacentEntities.find(entity => entity.char === '@');
+  if (player) {
+    return [
+      {type: 'attack', value: 1, target: player, cost: 1},
+      {type: 'attack', value: 1, target: entity, cost: 0}
+    ];
   }
 
   return [];

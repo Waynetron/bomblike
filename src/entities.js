@@ -14,6 +14,7 @@ export const makeEntity = (props) => {
     actions: [],
     actionsPerTurn: 1,
     status: {},
+    health: 1,
     ...props,
   }
 }

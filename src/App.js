@@ -4,7 +4,7 @@ import Map from './Map';
 import { getEntitiesAt } from './map/map-util';
 import { makeEmptyRoom } from './map/map-generation';
 import { subtract } from './math';
-import { walkInALine, faceWalkable, attackAdjacentPlayer } from './behaviours';
+import { walkInALine, faceWalkable, attackAdjacentPlayerAndDie } from './behaviours';
 import { makeEntity } from './entities';
 import './App.css';
 
@@ -12,6 +12,7 @@ const initialPlayer = makeEntity({
   char: '@',
   position: {x: 1, y: 1},
   solid: true,
+  health: 3,
 });
 const playerId = initialPlayer.id;
 
@@ -21,7 +22,7 @@ const generateLevel = (player) => {
     char: 'G',
     position: {x: 9, y: 9},
     solid: true,
-    behaviours: [walkInALine, faceWalkable, attackAdjacentPlayer],
+    behaviours: [walkInALine, faceWalkable, attackAdjacentPlayerAndDie],
     actions: [{type: 'move', direction: {x: 0, y: -1}}]
   });
 
@@ -64,6 +65,7 @@ const AppContainer = styled.div`
 
 function App() {
   const [entities, setEntities] = useState(generateLevel(initialPlayer));
+  const [events, setSideEffects] = useState(generateLevel(initialPlayer));
 
   const move = (entity, direction) => {
     const newPosition = {
@@ -74,10 +76,11 @@ function App() {
     // Check if anything is in the way
     const upcomingEntities = getEntitiesAt(newPosition, entities);
     if (Object.values(upcomingEntities).filter(upcoming => upcoming.solid).length > 0) {
-      return;
+      return false;
     }
 
     entity.position = newPosition
+    return true;
   }
 
   const keyToDirection = (key) => {
@@ -91,83 +94,72 @@ function App() {
     return mapping[key];
   }
 
-  const performActions = (entity) => {
-    let remainingActions = entity.actionsPerTurn;
-    entity.actions.reverse();
-      while(remainingActions > 0 && entity.actions.length > 0) {
+  const performActions = (entity, events) => {
+    let actionPoints = entity.actionsPerTurn;
+      while(entity.actions.length > 0) {
         const action = entity.actions.pop();
+        
+        if (actionPoints >= action.cost) {
+          actionPoints -= action.cost
+        } else {
+          continue;
+        }
+
 
         if (action.type === 'wait') {
-          remainingActions -= 1;
           entity.status['waiting'] = true;
+        }
+        if (action.type === 'attack') {
+          const { value, target } = action;
+          target.health -= value;
+          entity.status['attacking'] = subtract(target.position, entity.position);
+          events.shake = true;
         }
         if (action.type === 'move') {
           if (move(entity, action.direction)) {
-            remainingActions -= 1;
             entity.status['moving'] = true;
-          };
+          }
+          else {
+          }
         }
         if (action.type === 'face') {
           entity.facing = action.direction;
           // no action cost
         }
-        if (action.type === 'attack') {
-          const { value, target } = action;
-          target.health -= value;
-          remainingActions -= 1;
-          entity.status['attacking'] = subtract(target.position, entity.position);
-          target.status['attacked'] = true;
-          // window.location.reload();
-        } else {
-          entity.attacking = undefined;
-        }
       }
   }
 
-  const performTurn = () => {
-    // Reset statuses
-    for (const entity of Object.values(entities)) {
-      entity.status = {}; // reset status for this turn
-    }
+  const performTurn = (id, entities) => {
+    const events = {};
+    const entity = entities[id];
+
+    // Reset status
+    entity.status = {};
 
     // Add any actions generated from behaviours
-    for (const entity of Object.values(entities)) {
-      for (const behaviour of entity.behaviours) {
-        const actions = behaviour(entity, entities);
-        entity.actions.push(...actions);
-      }
+    for (const behaviour of entity.behaviours) {
+      const actions = behaviour(entity, entities).reverse();
+      entity.actions.push(...actions);
     }
 
     // Perform actions
-    for (const entity of Object.values(entities)) {
-      performActions(entity);
-    }
+    performActions(entity, events);
 
 
-    // Kill any entities with no health
-    for (const entity of Object.values(entities)) {
-      if (entity.health <= 0) {
-        entity.alive = false;
-      }
+    // Kill if no health
+    if (entity.health <= 0) {
+      entity.alive = false;
     }
-    const remainingEntities = Object.values(entities).filter(entity => entity.alive);
 
     // Clear actions
-    for (const entity of Object.values(remainingEntities)) {
-      entity.actions = [];
-    }
+    entity.actions = [];
 
+    // Remove if not alive anymore
+    const remainingEntities = Object.values(entities).filter(entity => entity.alive);
+
+    // Update everything
     setEntities({...remainingEntities});
-  }
-
-  const isAnyoneAttacking = (entities) => {
-    for (const entity of entities) {
-      if (entity.status.attacking) {
-        return true;
-      }
-    }
-
-    return false;
+    setSideEffects(events);
   }
   
   const handleKeyDown = ({key}) => {
@@ -176,11 +168,18 @@ function App() {
     const restart = key === 'r'
 
     if (direction) {
-      entities[playerId].actions.push({type: 'move', direction})
+      entities[playerId].actions.push({type: 'move', direction, cost: 1})
     }
 
     if (direction || wait) {
-      performTurn();
+      // Do players turn first
+      performTurn(playerId, entities);
+
+      // Then everything else
+      const everythingElse = Object.values(entities).filter(entity => entity.id !== playerId);
+      for (const entity of everythingElse) {
+        performTurn(entity.id, entities);
+      }
     }
 
     if (restart) {
@@ -189,7 +188,7 @@ function App() {
   }
   
   return (
-    <AppContainer shake={isAnyoneAttacking(Object.values(entities))} className="app" tabIndex={0} onKeyDown={handleKeyDown} autofocus="true">
+    <AppContainer shake={events.shake === true} className="app" tabIndex={0} onKeyDown={handleKeyDown} autofocus="true">
       <Map entities={entities} />
     </AppContainer>
   );
