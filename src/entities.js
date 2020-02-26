@@ -18,3 +18,11 @@ export const makeEntity = (props) => {
     ...props,
   }
 }
+
+export const staircase = (props, upOrDown = 'down') => {
+  return makeEntity({
+    char: upOrDown ? '<' : '>',
+    health: 999,
+    ...props,
+  })
+}

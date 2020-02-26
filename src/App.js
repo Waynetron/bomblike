@@ -1,37 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components'
 import Map from './Map';
+import { generateLevel } from './map/map-generation';
 import { getEntitiesAt } from './map/map-util';
-import { makeEmptyRoom } from './map/map-generation';
 import { subtract } from './math';
-import { walkInALine, faceWalkable, attackAdjacentPlayerAndDie } from './behaviours';
 import { makeEntity } from './entities';
 import './App.css';
+import { traverseStairs } from './behaviours';
 
 const initialPlayer = makeEntity({
   char: '@',
   position: {x: 1, y: 1},
   solid: true,
   health: 3,
+  behaviours: [traverseStairs],
 });
 const playerId = initialPlayer.id;
-
-const generateLevel = (player) => {
-  const emptyRoom = makeEmptyRoom();
-  const enemy = makeEntity({
-    char: 'G',
-    position: {x: 9, y: 9},
-    solid: true,
-    behaviours: [walkInALine, faceWalkable, attackAdjacentPlayerAndDie],
-    actions: [{type: 'move', direction: {x: 0, y: -1}}]
-  });
-
-  return {
-      ...emptyRoom,
-      [initialPlayer.id]: initialPlayer,
-      [enemy.id]: enemy
-  };
-}
 
 const AppContainer = styled.div`
   display: flex;
@@ -65,7 +49,16 @@ const AppContainer = styled.div`
 
 function App() {
   const [entities, setEntities] = useState(generateLevel(initialPlayer));
-  const [events, setSideEffects] = useState(generateLevel(initialPlayer));
+  const [level, setLevel] = useState(0);
+  const [events, setEvents] = useState({});
+
+  const nextLevel = () => {
+    console.log('next level');
+    setLevel(level + 1);
+    const player = entities[playerId];
+    const nextLevel = generateLevel(player);
+    setEntities(nextLevel);
+  }
 
   const move = (entity, direction) => {
     const newPosition = {
@@ -83,18 +76,7 @@ function App() {
     return true;
   }
 
-  const keyToDirection = (key) => {
-    const mapping = {
-      ArrowUp: {x: 0, y: -1},
-      ArrowDown: {x: 0, y: 1},
-      ArrowLeft: {x: -1, y: 0},
-      ArrowRight: {x: 1, y: 0}
-    }
-
-    return mapping[key];
-  }
-
-  const performActions = (entity, events) => {
+  const performActions = (entity, newEvents) => {
     let actionPoints = entity.actionsPerTurn;
       while(entity.actions.length > 0) {
         const action = entity.actions.pop();
@@ -113,7 +95,7 @@ function App() {
           const { value, target } = action;
           target.health -= value;
           entity.status['attacking'] = subtract(target.position, entity.position);
-          events.shake = true;
+          newEvents.shake = true;
         }
         if (action.type === 'move') {
           if (move(entity, action.direction)) {
@@ -124,15 +106,14 @@ function App() {
         }
         if (action.type === 'face') {
           entity.facing = action.direction;
-          // no action cost
+        }
+        if (action.type === 'change-level') {
+          newEvents.changeLevel = true;
         }
       }
   }
 
-  const performTurn = (id, entities) => {
-    const events = {};
-    const entity = entities[id];
-
+  const performTurn = (entity, entities, newEvents) => {
     // Reset status
     entity.status = {};
 
@@ -142,24 +123,24 @@ function App() {
       entity.actions.push(...actions);
     }
 
-    // Perform actions
-    performActions(entity, events);
-
-
-    // Kill if no health
-    if (entity.health <= 0) {
-      entity.alive = false;
-    }
+    // **IMPORTANT** Perform actions does a lot of sneaky mutation
+    // May mutate any entity (either the supplied entity, but also any entity referenced in an action)
+    // May push events into newEvents
+    performActions(entity, newEvents);
 
     // Clear actions
     entity.actions = [];
+  }
 
-    // Remove if not alive anymore
-    const remainingEntities = Object.values(entities).filter(entity => entity.alive);
+  const keyToDirection = (key) => {
+    const mapping = {
+      ArrowUp: {x: 0, y: -1},
+      ArrowDown: {x: 0, y: 1},
+      ArrowLeft: {x: -1, y: 0},
+      ArrowRight: {x: 1, y: 0}
+    }
 
-    // Update everything
-    setEntities({...remainingEntities});
-    setSideEffects(events);
+    return mapping[key];
   }
   
   const handleKeyDown = ({key}) => {
@@ -172,14 +153,29 @@ function App() {
     }
 
     if (direction || wait) {
+      const newEvents = {};
+
       // Do players turn first
-      performTurn(playerId, entities);
+      performTurn(entities[playerId], entities, newEvents);
 
       // Then everything else
       const everythingElse = Object.values(entities).filter(entity => entity.id !== playerId);
       for (const entity of everythingElse) {
-        performTurn(entity.id, entities);
+        performTurn(entity, entities, newEvents);
       }
+
+      // Remove anything with 0 health
+      const livingEntities = Object.values(entities).filter(entity => entity.health > 0);
+
+      // Apply certain events now
+      // Others like screenshake will react to props change after setEvents is called
+      if (newEvents.changeLevel) {
+        nextLevel();
+      }
+
+      // Update state
+      setEntities({...livingEntities});
+      setEvents(newEvents);
     }
 
     if (restart) {

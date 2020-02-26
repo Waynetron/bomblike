@@ -1,6 +1,8 @@
 import { MAP_WIDTH, MAP_HEIGHT } from '../constants';
 import { makeEntity } from '../entities';
 import { isAdjacentEdge } from '../map/map-util';
+import { walkInALine, faceWalkable, attackAdjacentPlayerAndDie } from '../behaviours';
+import { staircase } from '../entities';
 
 export const makeEmptyRoom = () => {
   const entities = {};
@@ -23,8 +25,33 @@ export const makeEmptyRoom = () => {
       });
 
       entities[entity.id] = entity;
-    }  
+    }
   }
 
   return entities;
+}
+
+export const generateLevel = (player) => {
+  const emptyRoom = makeEmptyRoom();
+  const enemy = makeEntity({
+    char: 'G',
+    position: {x: 9, y: 9},
+    solid: true,
+    behaviours: [walkInALine, faceWalkable, attackAdjacentPlayerAndDie],
+    actions: [{type: 'move', direction: {x: 0, y: -1}}]
+  });
+
+  const staircaseDown = staircase(
+    {
+      position: {x: 4, y: 4}
+    },
+    'down'
+  );
+
+  return {
+      ...emptyRoom,
+      [player.id]: player,
+      [enemy.id]: enemy,
+      [staircaseDown.id]: staircaseDown,
+  };
 }

@@ -16,9 +16,9 @@ const Container = styled.div.attrs(({ x, y, solid }) => ({
   font-weight: 600;
 `;
 
-const Inner = styled.div.attrs(({ solid }) => ({
+const Inner = styled.div.attrs(({ char }) => ({
   style: {
-    opacity: solid ? '100%' : '10%'
+    opacity: char !== '·' ? '100%' : '10%'
   }
 }))`
   width: CELL_SIZE;
@@ -59,7 +59,7 @@ const getBumpClass = (status)=> {
 const Cell = ({char, position: {x, y}, solid, status}) => {
   return (
     <Container x={x} y={y} solid={solid}>
-      <Inner solid={solid} className={getBumpClass(status)}>
+      <Inner char={char} className={getBumpClass(status)}>
         <p>{char}</p>
       </Inner>
     </Container>
