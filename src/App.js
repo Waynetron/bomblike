@@ -167,15 +167,15 @@ function App() {
       // Remove anything with 0 health
       const livingEntities = Object.values(entities).filter(entity => entity.health > 0);
 
+      // Update state
+      setEntities({...livingEntities});
+      setEvents(newEvents);
+
       // Apply certain events now
       // Others like screenshake will react to props change after setEvents is called
       if (newEvents.changeLevel) {
         nextLevel();
       }
-
-      // Update state
-      setEntities({...livingEntities});
-      setEvents(newEvents);
     }
 
     if (restart) {
