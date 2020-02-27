@@ -1,7 +1,7 @@
 import React from 'react';
-import { CELL_SIZE } from './constants';
+import { CELL_SIZE } from '../constants';
 import styled from 'styled-components'
-import './Cell.css';
+import './Entity.css';
 
 const Container = styled.div.attrs(({ x, y, solid }) => ({
   style: {

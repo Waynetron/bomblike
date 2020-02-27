@@ -1,4 +1,4 @@
-import { traverseStairs } from './behaviours';
+import { traverseStairs } from '../behaviours';
 
 let _id = 0;
 const makeId = ()=> _id++;
@@ -26,7 +26,7 @@ export const player = (props) => {
     char: '@',
     position: {x: 1, y: 1},
     solid: true,
-    health: 1,
+    health: 3,
     behaviours: [traverseStairs],
     ...props,
   })

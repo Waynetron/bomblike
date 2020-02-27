@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components'
-import Cell from './Cell';
-import { CELL_SIZE, MAP_WIDTH, MAP_HEIGHT } from './constants';
+import Entity from '../entity/Entity';
+import { CELL_SIZE, MAP_WIDTH, MAP_HEIGHT } from '../constants';
 
 const MapContainer = styled.div`
   width: ${props => props.width}px;
@@ -16,7 +16,7 @@ const Map = ({entities}) => {
       height={MAP_HEIGHT * CELL_SIZE}
     >
       {Object.values(entities).map(({id, char, position, solid, facing, status}) =>
-        <Cell
+        <Entity
           key={id}
           char={char}
           position={position}

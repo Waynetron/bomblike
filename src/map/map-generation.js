@@ -1,8 +1,8 @@
 import { MAP_WIDTH, MAP_HEIGHT } from '../constants';
-import { makeEntity } from '../entities';
+import { makeEntity } from '../entity/entities';
 import { isAdjacentEdge } from '../map/map-util';
 import { walkInALine, faceWalkable, attackAdjacentPlayerAndDie } from '../behaviours';
-import { staircase } from '../entities';
+import { staircase } from '../entity/entities';
 
 export const makeEmptyRoom = () => {
   const entities = {};

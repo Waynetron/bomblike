@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { MapContainer, MenuContainer, Overlay } from './containers';
-import Map from './Map';
+import Map from './map/Map';
 import { generateLevel } from './map/map-generation';
 import { getEntitiesAt } from './map/map-util';
 import { subtract } from './math';
-import { player } from './entities';
+import { player } from './entity/entities';
 import './App.css';
 
 const findPlayer = entities => Object.values(entities).find(entity => entity.char === '@');
