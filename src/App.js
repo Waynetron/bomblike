@@ -1,21 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components'
 import Map from './Map';
 import { generateLevel } from './map/map-generation';
 import { getEntitiesAt } from './map/map-util';
 import { subtract } from './math';
-import { makeEntity } from './entities';
+import { player } from './entities';
 import './App.css';
-import { traverseStairs } from './behaviours';
-
-const initialPlayer = makeEntity({
-  char: '@',
-  position: {x: 1, y: 1},
-  solid: true,
-  health: 3,
-  behaviours: [traverseStairs],
-});
-const playerId = initialPlayer.id;
 
 const AppContainer = styled.div`
   display: flex;
@@ -46,16 +36,51 @@ const AppContainer = styled.div`
   animation-fill-mode: forwards;
   animation-timing-function: cubic-bezier(.36,.07,.19,.97);
 `
+const MenuContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  @keyframes shake {
+    0% {
+      background-color: crimson;
+    }
+    20% {
+      transform: translate3d(${Math.random() * 2 + 2}px, ${Math.random() * -2 - 2}px, 0);
+      background-color: crimson;
+    } 
+    40% {
+      transform: translate3d(${Math.random() * -2 - 2}px, ${Math.random() * 2 + 2}px, 0);
+    }
+    60% {
+      transform: translate3d(${Math.random() * 2 + 2}px, ${Math.random() * 2 + 2}px, 0);
+    }
+    80% {
+      transform: translate3d(${Math.random() * -2 - 2}px, ${Math.random() * -2 - 2}px, 0);
+    }
+  }
+
+  animation-name: 'shake';
+  animation-duration: 0.2s;
+  animation-fill-mode: forwards;
+  animation-timing-function: cubic-bezier(.36,.07,.19,.97);
+`
+
+const findPlayer = entities => Object.values(entities).find(entity => entity.char === '@');
 
 function App() {
-  const [entities, setEntities] = useState(generateLevel(initialPlayer));
+  const [entities, setEntities] = useState(generateLevel(player()));
   const [level, setLevel] = useState(0);
   const [events, setEvents] = useState({});
 
-  const nextLevel = () => {
-    console.log('next level');
+  const startGame = () => {
+    setLevel(1);
+    setEntities(generateLevel(player()));
+  }
+
+  const nextLevel = (player) => {
     setLevel(level + 1);
-    const player = entities[playerId];
     const nextLevel = generateLevel(player);
     setEntities(nextLevel);
   }
@@ -147,19 +172,20 @@ function App() {
     const direction = keyToDirection(key);
     const wait = key === ' ';
     const restart = key === 'r'
+    const player = findPlayer(entities);
 
     if (direction) {
-      entities[playerId].actions.push({type: 'move', direction, cost: 1})
+      player.actions.push({type: 'move', direction, cost: 1})
     }
 
     if (direction || wait) {
       const newEvents = {};
 
       // Do players turn first
-      performTurn(entities[playerId], entities, newEvents);
+      performTurn(player, entities, newEvents);
 
       // Then everything else
-      const everythingElse = Object.values(entities).filter(entity => entity.id !== playerId);
+      const everythingElse = Object.values(entities).filter(entity => entity.id !== player.id);
       for (const entity of everythingElse) {
         performTurn(entity, entities, newEvents);
       }
@@ -174,7 +200,7 @@ function App() {
       // Apply certain events now
       // Others like screenshake will react to props change after setEvents is called
       if (newEvents.changeLevel) {
-        nextLevel();
+        nextLevel(player);
       }
     }
 
@@ -183,8 +209,29 @@ function App() {
     }
   }
   
+  if (!findPlayer(entities)) {
+    return (
+      <div><button onClick={startGame}>Start game</button></div>
+    )
+  }
+  if (level === 0) {
+    return (
+      <MenuContainer shake={events.shake === true} tabIndex={0}>
+        <h1>reactlike</h1>
+        <button onClick={startGame}>play</button>
+      </MenuContainer>
+    )
+  }
+  if (level === 3) {
+    return (
+      <MenuContainer shake={events.shake === true} tabIndex={0}>
+        <h1>Success!</h1>
+        <button onClick={startGame}>Play again</button>
+      </MenuContainer>
+    )
+  }
   return (
-    <AppContainer shake={events.shake === true} className="app" tabIndex={0} onKeyDown={handleKeyDown} autofocus="true">
+    <AppContainer className={'app-container'} shake={events.shake === true} tabIndex={0} onKeyDown={handleKeyDown} autofocus="true">
       <Map entities={entities} />
     </AppContainer>
   );

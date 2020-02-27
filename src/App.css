@@ -1,5 +1,75 @@
+@keyframes grow {
+  0% {
+    transform: scale(0.833);
+    easing: 'ease-out'
+  }
+  30% {
+    transform: scale(1.0833);
+    easing: 'ease-in-out'
+  }
+  100% {
+    transform: scale(1.0);
+  }
+}
+
+@keyframes shrink {
+  0% {
+    transform: scale(1);
+    easing: 'ease-out'
+  }
+  30% {
+    transform: scale(0.75);
+    easing: 'ease-in-out'
+  }
+  100% {
+    transform: scale(0.833);
+  }
+}
+
 html, body, #root, #root>div {
   height: 100%;
   margin: 0;
   background-color: indianred;
+}
+
+h1 {
+  font-size: 6rem;
+  color: #FFE4C4;
+  line-height: 1.5rem;
+
+  animation-name: shrink;
+  animation-duration: 0.2s;
+  animation-fill-mode: forwards;
+}
+
+button {
+  background-color: transparent;
+  border: solid 5px;
+  font-size: 2.16rem;
+  font-weight: 900;
+  padding: .9rem 1.8rem;
+  text-transform: uppercase;
+  color: #FFE4C4;
+
+  animation-name: shrink;
+  animation-duration: 0.2s;
+  animation-fill-mode: forwards;
+}
+
+button:hover {
+  background-color: #FFE4C4;
+  border-color: #FFE4C4;
+  color: indianred;
+
+  animation-name: grow;
+  animation-duration: 0.2s;
+  animation-fill-mode: forwards;
+
+  cursor: pointer;
+}
+
+.app-container {
+  animation-name: grow;
+  animation-duration: 0.2s;
+  animation-fill-mode: forwards;
 }

@@ -1,3 +1,5 @@
+import { traverseStairs } from './behaviours';
+
 let _id = 0;
 const makeId = ()=> _id++;
 
@@ -17,6 +19,17 @@ export const makeEntity = (props) => {
     health: 1,
     ...props,
   }
+}
+
+export const player = (props) => {
+  return makeEntity({
+    char: '@',
+    position: {x: 1, y: 1},
+    solid: true,
+    health: 1,
+    behaviours: [traverseStairs],
+    ...props,
+  })
 }
 
 export const staircase = (props, upOrDown = 'down') => {

@@ -34,7 +34,7 @@ export const makeEmptyRoom = () => {
 export const generateLevel = (player) => {
   const emptyRoom = makeEmptyRoom();
   const enemy = makeEntity({
-    char: 'G',
+    char: 'g',
     position: {x: 9, y: 9},
     solid: true,
     behaviours: [walkInALine, faceWalkable, attackAdjacentPlayerAndDie],
