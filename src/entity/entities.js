@@ -1,4 +1,4 @@
-import { traverseStairs } from '../behaviours';
+import { traverseStairs } from './behaviours';
 
 let _id = 0;
 const makeId = ()=> _id++;

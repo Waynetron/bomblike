@@ -2,8 +2,8 @@
 Behaviours are used at the start of a turn to generate a set of actions
 */
 
-import { getEntitiesAt, getEntitiesAtPositions } from './map/map-util';
-import { UP, DOWN, LEFT, RIGHT, add, subtract } from './math';
+import { getEntitiesAt, getEntitiesAtPositions } from '../map/map-util';
+import { UP, DOWN, LEFT, RIGHT, add, subtract } from '../math';
 
 const getAdjacentPositions = (position) => [
   add(UP, position), add(DOWN, position), add(LEFT, position), add(RIGHT, position)
