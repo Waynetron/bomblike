@@ -1,71 +1,11 @@
 import React, { useState } from 'react';
-import styled from 'styled-components'
+import { MapContainer, MenuContainer, Overlay } from './containers';
 import Map from './Map';
 import { generateLevel } from './map/map-generation';
 import { getEntitiesAt } from './map/map-util';
 import { subtract } from './math';
 import { player } from './entities';
 import './App.css';
-
-const AppContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  @keyframes shake {
-    0% {
-      background-color: crimson;
-    }
-    20% {
-      transform: translate3d(${Math.random() * 2 + 2}px, ${Math.random() * -2 - 2}px, 0);
-      background-color: crimson;
-    } 
-    40% {
-      transform: translate3d(${Math.random() * -2 - 2}px, ${Math.random() * 2 + 2}px, 0);
-    }
-    60% {
-      transform: translate3d(${Math.random() * 2 + 2}px, ${Math.random() * 2 + 2}px, 0);
-    }
-    80% {
-      transform: translate3d(${Math.random() * -2 - 2}px, ${Math.random() * -2 - 2}px, 0);
-    }
-  }
-
-  animation-name: ${props => props.shake ? 'shake' : undefined};
-  animation-duration: 0.2s;
-  animation-fill-mode: forwards;
-  animation-timing-function: cubic-bezier(.36,.07,.19,.97);
-`
-const MenuContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-
-  @keyframes shake {
-    0% {
-      background-color: crimson;
-    }
-    20% {
-      transform: translate3d(${Math.random() * 2 + 2}px, ${Math.random() * -2 - 2}px, 0);
-      background-color: crimson;
-    } 
-    40% {
-      transform: translate3d(${Math.random() * -2 - 2}px, ${Math.random() * 2 + 2}px, 0);
-    }
-    60% {
-      transform: translate3d(${Math.random() * 2 + 2}px, ${Math.random() * 2 + 2}px, 0);
-    }
-    80% {
-      transform: translate3d(${Math.random() * -2 - 2}px, ${Math.random() * -2 - 2}px, 0);
-    }
-  }
-
-  animation-name: 'shake';
-  animation-duration: 0.2s;
-  animation-fill-mode: forwards;
-  animation-timing-function: cubic-bezier(.36,.07,.19,.97);
-`
 
 const findPlayer = entities => Object.values(entities).find(entity => entity.char === '@');
 
@@ -76,6 +16,11 @@ function App() {
 
   const startGame = () => {
     setLevel(1);
+    setEntities(generateLevel(player()));
+  }
+
+  const backToTitle = () => {
+    setLevel(0);
     setEntities(generateLevel(player()));
   }
 
@@ -169,6 +114,10 @@ function App() {
   }
   
   const handleKeyDown = ({key}) => {
+    if (!findPlayer(entities)) {
+      return;
+    }
+
     const direction = keyToDirection(key);
     const wait = key === ' ';
     const restart = key === 'r'
@@ -208,32 +157,33 @@ function App() {
       window.location.reload();
     }
   }
-  
-  if (!findPlayer(entities)) {
-    return (
-      <div><button onClick={startGame}>Start game</button></div>
-    )
-  }
+
   if (level === 0) {
     return (
-      <MenuContainer shake={events.shake === true} tabIndex={0}>
-        <h1>reactlike</h1>
+      <MenuContainer>
+        <h1>react like</h1>
         <button onClick={startGame}>play</button>
       </MenuContainer>
     )
   }
   if (level === 3) {
     return (
-      <MenuContainer shake={events.shake === true} tabIndex={0}>
-        <h1>Success!</h1>
-        <button onClick={startGame}>Play again</button>
+      <MenuContainer>
+        <h2>Success!</h2>
+        <button onClick={backToTitle}>Back to title</button>
       </MenuContainer>
     )
   }
   return (
-    <AppContainer className={'app-container'} shake={events.shake === true} tabIndex={0} onKeyDown={handleKeyDown} autofocus="true">
+    <MapContainer className={'app-container'} shake={events.shake === true} tabIndex={0} onKeyDown={handleKeyDown} autofocus="true">
+      {!findPlayer(entities) && (
+        <Overlay>
+          <h2>You died</h2>
+          <button onClick={backToTitle}>Back to title</button>
+        </Overlay>
+      )}
       <Map entities={entities} />
-    </AppContainer>
+    </MapContainer>
   );
 }
 
