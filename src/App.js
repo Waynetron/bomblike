@@ -6,6 +6,8 @@ import { player, findPlayer } from './entity/entities';
 import { performTurns } from './turn';
 import './App.css';
 
+const NUM_LEVELS = 2;
+
 function App() {
   const [entities, setEntities] = useState(generateLevel(player()));
   const [level, setLevel] = useState(0);
@@ -21,11 +23,12 @@ function App() {
     setEntities(generateLevel(player()));
   }
 
-  const nextLevel = (player) => {
+  const nextLevel = useCallback(player => {
     setLevel(level + 1);
-    const nextLevel = generateLevel(player);
-    setEntities(nextLevel);
-  }
+    if (level < NUM_LEVELS) {
+      setEntities(generateLevel(player));
+    }
+  }, [level]);
 
   const keyToDirection = (key) => {
     const mapping = {
@@ -81,7 +84,7 @@ function App() {
   }, [handleKeyDown]);
 
   const lose = !findPlayer(entities);
-  const win = level === 2;
+  const win = level > NUM_LEVELS;
   return (
     <AppContainer>
       {level === 0 ?
