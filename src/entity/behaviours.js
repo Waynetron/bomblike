@@ -2,29 +2,8 @@
 Behaviours are used at the start of a turn to generate a set of actions
 */
 
-import { getEntitiesAt, getEntitiesAtPositions } from '../map/map-util';
-import { UP, DOWN, LEFT, RIGHT, add, subtract, shuffle } from '../math';
-
-const getAdjacentPositions = (position) => [
-  add(UP, position), add(DOWN, position), add(LEFT, position), add(RIGHT, position)
-];
-
-const isWalkable = (position, entities) => {
-  const entitiesAtPostion = getEntitiesAt(position, entities);
-
-  // nothing there at all
-  if (entitiesAtPostion.length === 0) {
-    return true;
-  }
-
-  // something solid there
-  if (entitiesAtPostion.some(entity => entity.solid)) {
-    return false;
-  }
-
-  // something there, but it can be walked over
-  return true;
-}
+import { getEntitiesAt, getEntitiesAtPositions, getAdjacentPositions, isWalkable } from '../map/map-util';
+import { add, subtract, shuffle } from '../math';
 
 export const walkInALine = (entity, entities) => {
   const { facing } = entity;
