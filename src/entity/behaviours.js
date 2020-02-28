@@ -80,8 +80,8 @@ export const attackAdjacentPlayerAndDie = (entity, entities) => {
 
 export const traverseStairs = (entity, entities) => {
   const collidingEntities = getEntitiesAt(entity.position, entities);
-  const stairsDown = collidingEntities.find(entity => entity.char === '<');
-  const stairsUp = collidingEntities.find(entity => entity.char === '>');
+  const stairsDown = collidingEntities.find(entity => entity.char === '>');
+  const stairsUp = collidingEntities.find(entity => entity.char === '<');
 
   if (stairsDown) {
     return [

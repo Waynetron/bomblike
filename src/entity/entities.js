@@ -45,7 +45,7 @@ export const goblin = (props) => {
 
 export const staircase = (props, upOrDown = 'down') => {
   return makeEntity({
-    char: upOrDown ? '<' : '>',
+    char: upOrDown === 'down' ? '>' : '<',
     health: 999,
     ...props,
   })
@@ -53,7 +53,7 @@ export const staircase = (props, upOrDown = 'down') => {
 
 export const wall = (props, breakable = true) => {
   return makeEntity({
-    char: breakable ? '%' : '#',
+    char: breakable ? '+' : '#',
     health: breakable ? 1 : 999,
     solid: true,
     ...props,
