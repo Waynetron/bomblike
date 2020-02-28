@@ -1,4 +1,4 @@
-import { traverseStairs } from './behaviours';
+import { traverseStairs, walkInALine, faceWalkable, attackAdjacentPlayerAndDie } from '../entity/behaviours';
 
 let _id = 0;
 const makeId = ()=> _id++;
@@ -19,7 +19,7 @@ export const makeEntity = (props) => {
     health: 1,
     ...props,
   }
-}
+};
 
 export const findPlayer = entities => Object.values(entities).find(entity => entity.char === '@');
 
@@ -32,7 +32,16 @@ export const player = (props) => {
     behaviours: [traverseStairs],
     ...props,
   })
-}
+};
+
+export const goblin = (props) => {
+  return makeEntity({
+    char: 'g',
+    solid: true,
+    behaviours: [walkInALine, faceWalkable, attackAdjacentPlayerAndDie],
+    ...props,
+  })
+};
 
 export const staircase = (props, upOrDown = 'down') => {
   return makeEntity({
@@ -40,4 +49,12 @@ export const staircase = (props, upOrDown = 'down') => {
     health: 999,
     ...props,
   })
-}
+};
+
+export const wall = (props, breakable = true) => {
+  return makeEntity({
+    char: '#',
+    health: breakable ? 1 : 999,
+    ...props,
+  })
+};

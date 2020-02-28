@@ -3,20 +3,11 @@ Behaviours are used at the start of a turn to generate a set of actions
 */
 
 import { getEntitiesAt, getEntitiesAtPositions } from '../map/map-util';
-import { UP, DOWN, LEFT, RIGHT, add, subtract } from '../math';
+import { UP, DOWN, LEFT, RIGHT, add, subtract, shuffle } from '../math';
 
 const getAdjacentPositions = (position) => [
   add(UP, position), add(DOWN, position), add(LEFT, position), add(RIGHT, position)
 ];
-
-const shuffle = (original) => {
-  const shuffled = [...original];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    let j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled;
-}
 
 const isWalkable = (position, entities) => {
   const entitiesAtPostion = getEntitiesAt(position, entities);

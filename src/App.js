@@ -9,24 +9,24 @@ import './App.css';
 const NUM_LEVELS = 2;
 
 function App() {
-  const [entities, setEntities] = useState(generateLevel(player()));
-  const [level, setLevel] = useState(0);
+  const [level, setLevel] = useState(1);
+  const [entities, setEntities] = useState(generateLevel(level, player()));
   const [events, setEvents] = useState({});
 
   const startGame = () => {
     setLevel(1);
-    setEntities(generateLevel(player()));
+    setEntities(generateLevel(1, player()));
   }
 
   const backToTitle = () => {
     setLevel(0);
-    setEntities(generateLevel(player()));
+    setEntities(generateLevel(level, player()));
   }
 
   const nextLevel = useCallback(player => {
     setLevel(level + 1);
     if (level < NUM_LEVELS) {
-      setEntities(generateLevel(player));
+      setEntities(generateLevel(level + 1, player));
     }
   }, [level]);
 

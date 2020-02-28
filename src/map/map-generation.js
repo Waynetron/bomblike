@@ -1,8 +1,8 @@
 import { MAP_WIDTH, MAP_HEIGHT } from '../constants';
 import { makeEntity } from '../entity/entities';
 import { isAdjacentEdge } from '../map/map-util';
-import { walkInALine, faceWalkable, attackAdjacentPlayerAndDie } from '../entity/behaviours';
-import { staircase } from '../entity/entities';
+import { staircase, wall, goblin } from '../entity/entities';
+import { UP, DOWN, LEFT, RIGHT, shuffle } from '../math';
 
 export const makeEmptyRoom = () => {
   const entities = {};
@@ -31,15 +31,24 @@ export const makeEmptyRoom = () => {
   return entities;
 }
 
-export const generateLevel = (player) => {
-  const emptyRoom = makeEmptyRoom();
-  const enemy = makeEntity({
-    char: 'g',
-    position: {x: 9, y: 9},
-    solid: true,
-    behaviours: [walkInALine, faceWalkable, attackAdjacentPlayerAndDie],
-    actions: [{type: 'move', direction: {x: 0, y: -1}}]
-  });
+export const generateLevel = (level, player) => {
+  const entities = makeEmptyRoom();
+
+  const empty = Object.values(entities).filter(entity => entity.char === '·');
+  const shuffledEmpty = shuffle(empty);
+
+  const numEnemies = Math.ceil(level * 1.75);
+  for (let i = 0; i < numEnemies; i += 1) {
+    const emptyEntity = shuffledEmpty.pop();
+
+    const enemy = goblin({
+      position: emptyEntity.position,
+    });
+
+    // remove the existing entity and add the enemy in its place (same position)
+    delete entities[emptyEntity.id];
+    entities[enemy.id] = enemy;
+  }
 
   const staircaseDown = staircase(
     {
@@ -49,9 +58,8 @@ export const generateLevel = (player) => {
   );
 
   return {
-      ...emptyRoom,
+      ...entities,
       [player.id]: player,
-      [enemy.id]: enemy,
       [staircaseDown.id]: staircaseDown,
   };
 }
