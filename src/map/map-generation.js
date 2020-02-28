@@ -8,23 +8,23 @@ export const makeEmptyRoom = () => {
   const entities = {};
   for (let x = 0; x < MAP_WIDTH; x += 1) {
     for (let y = 0; y < MAP_HEIGHT; y += 1) {
-      let char, solid;
-      if (isAdjacentEdge(x, y) || Math.random() > 0.8) {
-        char = '#';
-        solid = true;
+      const position = {x, y};
+      if (isAdjacentEdge(x, y) || (x % 2 === 0 && y % 2 === 0)) {
+        const unbreakableWall = wall({position}, false);
+        entities[unbreakableWall.id] = unbreakableWall;
+      }
+      else if (Math.random() > 0.8) {
+        const breakableWall = wall({position}, true);
+        entities[breakableWall.id] = breakableWall;
       }
       else {
-        char = '·';
-        solid = false;
+        const empty = makeEntity({
+          char: '·',
+          position,
+          solid: false,
+        });
+        entities[empty.id] = empty;
       }
-
-      const entity = makeEntity({
-        char,
-        position: {x, y}, 
-        solid
-      });
-
-      entities[entity.id] = entity;
     }
   }
 

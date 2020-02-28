@@ -53,8 +53,9 @@ export const staircase = (props, upOrDown = 'down') => {
 
 export const wall = (props, breakable = true) => {
   return makeEntity({
-    char: '#',
+    char: breakable ? '%' : '#',
     health: breakable ? 1 : 999,
+    solid: true,
     ...props,
   })
 };
