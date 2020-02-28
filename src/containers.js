@@ -2,12 +2,8 @@ import styled, { css } from 'styled-components'
 
 const shake = css`
   @keyframes shake {
-    0% {
-      background-color: crimson;
-    }
     20% {
       transform: translate3d(4px, -4px, 0);
-      background-color: crimson;
     }
     40% {
       transform: translate3d(-4px, 4px, 0);
@@ -25,20 +21,34 @@ const shake = css`
   animation-timing-function: cubic-bezier(.36,.07,.19,.97);
 `
 
+const grow = css`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  animation-name: grow;
+  animation-duration: 0.2s;
+  animation-fill-mode: forwards;
+`
+
 const centered = css`
   display: flex;
   justify-content: center;
   align-items: center;
 `
 
+export const AppContainer = styled.div`
+  ${centered}
+`;
+
 export const MapContainer = styled.div`
   ${shake}
+  ${grow}
   ${centered}
-  animation-name: ${props => props.shake ? 'shake' : undefined};
+  animation-name: ${props => props.shake ? 'shake, grow' : undefined};
 `;
 
 export const MenuContainer = styled.div`
-  ${shake}
   ${centered}
   animation-name: 'shake';
   flex-direction: column;

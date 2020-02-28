@@ -130,8 +130,6 @@ button:hover {
   cursor: pointer;
 }
 
-.app-container {
-  animation-name: grow;
-  animation-duration: 0.2s;
-  animation-fill-mode: forwards;
+.map-container {
+
 }

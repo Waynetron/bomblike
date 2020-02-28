@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { MapContainer, MenuContainer, Overlay } from './containers';
+import React, { useState, useEffect, useCallback } from 'react';
+import { AppContainer, MapContainer, MenuContainer, Overlay } from './containers';
 import Map from './map/Map';
 import { generateLevel } from './map/map-generation';
 import { player, findPlayer } from './entity/entities';
@@ -38,12 +38,13 @@ function App() {
     return mapping[key];
   }
 
-  const handleKeyDown = ({key}) => {
+  const handleKeyDown = useCallback(event => {
     const player = findPlayer(entities);
     if (!player) {
       return;
     }
 
+    const { key } = event;
     const direction = keyToDirection(key);
     const wait = key === ' ';
     const restart = key === 'r'
@@ -67,33 +68,41 @@ function App() {
     }
 
     if (restart) {
-      window.location.reload();
+      startGame();
     }
-  }
+  }, [entities, nextLevel]);
 
-  // Title screen
-  if (level === 0) {
-    return (
-      <MenuContainer>
-        <h1>react like</h1>
-        <button onClick={startGame}>play</button>
-      </MenuContainer>
-    )
-  }
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [handleKeyDown]);
 
   const lose = !findPlayer(entities);
   const win = level === 2;
   return (
-    // Main game screen
-    <MapContainer className={'app-container'} shake={events.shake === true} tabIndex={0} onKeyDown={handleKeyDown} autofocus="true">
-      {(win || lose) && (
-        <Overlay>
-          <h2>{win ? 'Success!' : 'You died'}</h2>
-          <button onClick={backToTitle}>Back to title</button>
-        </Overlay>
-      )}
-      <Map entities={entities} />
-    </MapContainer>
+    <AppContainer>
+      {level === 0 ?
+        // Title screen
+        <MenuContainer>
+          <h1>react like</h1>
+          <button onClick={startGame}>play</button>
+        </MenuContainer>
+      :
+        // Main game screen
+        <MapContainer className={'map-container'} shake={events.shake === true}>
+          {(win || lose) && (
+            <Overlay>
+              <h2>{win ? 'Success!' : 'You died'}</h2>
+              <button onClick={backToTitle}>Back to title</button>
+            </Overlay>
+          )}
+          <Map entities={entities} />
+        </MapContainer>
+      }
+    </AppContainer>
   );
 }
 
