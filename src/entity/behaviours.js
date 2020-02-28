@@ -47,10 +47,10 @@ export const faceWalkable = (entity, entities) => {
   if (isWalkable(nextPosition, entities)) {
     return [];
   }
-  
+
   const adjacent = getAdjacentPositions(entity.position);
   const available = adjacent.filter(position => isWalkable(position, entities))
-  
+
   // Surrounded on all sides, do nothing
   if (available.length === 0) {
     return [];

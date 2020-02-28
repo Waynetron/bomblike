@@ -50,6 +50,7 @@ const performActions = (entity, entities, newEvents) => {
         entity.facing = action.direction;
       }
       if (action.type === 'change-level') {
+        console.log('change level action');
         newEvents.changeLevel = true;
       }
     }
@@ -71,6 +72,17 @@ const performTurn = (entity, entities, newEvents) => {
   performActions(entity, entities, newEvents);
 
   // Clear actions
+  entity.actions = [];
+
+  // Add any actions generated from behaviours
+  for (const behaviour of entity.lateBehaviours) {
+    const actions = behaviour(entity, entities).reverse();
+    entity.actions.push(...actions);
+  }
+
+  performActions(entity, entities, newEvents);
+
+  // Clear actions again
   entity.actions = [];
 }
 
