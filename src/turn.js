@@ -2,7 +2,7 @@ import { findPlayer } from './entity/entities';
 import { getEntitiesAt } from './map/map-util';
 import { subtract } from './math';
 
-const move = (entity, entities, direction) => {
+export const move = (entity, entities, direction) => {
   const newPosition = {
     x: entity.position.x + direction.x,
     y: entity.position.y + direction.y
@@ -40,17 +40,12 @@ const performActions = (entity, entities, newEvents) => {
         newEvents.shake = true;
       }
       if (action.type === 'move') {
-        if (move(entity, entities, action.direction)) {
-          entity.status['moving'] = true;
-        }
-        else {
-        }
+        move(entity, entities, action.direction)
       }
       if (action.type === 'face') {
         entity.facing = action.direction;
       }
       if (action.type === 'change-level') {
-        console.log('change level action');
         newEvents.changeLevel = true;
       }
     }
@@ -73,29 +68,14 @@ const performTurn = (entity, entities, newEvents) => {
 
   // Clear actions
   entity.actions = [];
-
-  // Add any actions generated from behaviours
-  for (const behaviour of entity.lateBehaviours) {
-    const actions = behaviour(entity, entities).reverse();
-    entity.actions.push(...actions);
-  }
-
-  performActions(entity, entities, newEvents);
-
-  // Clear actions again
-  entity.actions = [];
 }
 
 export const performTurns = (entities)=> {
   const newEvents = {};
   const player = findPlayer(entities);
-
-  // Do players turn first
-  performTurn(player, entities, newEvents);
-
-  // Then everything else
   const everythingElse = Object.values(entities).filter(entity => entity.id !== player.id);
-  for (const entity of everythingElse) {
+
+  for (const entity of [...everythingElse, player]) {
     performTurn(entity, entities, newEvents);
   }
 

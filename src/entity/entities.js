@@ -13,7 +13,6 @@ export const makeEntity = (props) => {
     alive: true,
     solid: false,
     behaviours: [],
-    lateBehaviours: [],
     actions: [],
     actionsPerTurn: 1,
     status: {},
@@ -30,7 +29,7 @@ export const player = (props) => {
     position: {x: 1, y: 1},
     solid: true,
     health: 1,
-    lateBehaviours: [traverseStairs],
+    behaviours: [traverseStairs],
     ...props,
   })
 }

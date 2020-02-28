@@ -3,7 +3,7 @@ import { AppContainer, MapContainer, MenuContainer, Overlay } from './containers
 import Map from './map/Map';
 import { generateLevel } from './map/map-generation';
 import { player, findPlayer } from './entity/entities';
-import { performTurns } from './turn';
+import { performTurns, move } from './turn';
 import './App.css';
 
 const NUM_LEVELS = 2;
@@ -53,7 +53,8 @@ function App() {
     const restart = key === 'r'
 
     if (direction) {
-      player.actions.push({type: 'move', direction, cost: 1})
+      move(player, entities, direction);
+      // player.actions.push({type: 'move', direction, cost: 1})
     }
 
     if (direction || wait) {
