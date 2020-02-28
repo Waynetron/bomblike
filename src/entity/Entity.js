@@ -13,7 +13,7 @@ const Container = styled.div.attrs(({ x, y, solid }) => ({
   position: relative;
   width: 0;
   height: 0;
-  font-weight: 600;
+  font-weight: 700;
 `;
 
 const Inner = styled.div.attrs(({ char }) => ({
