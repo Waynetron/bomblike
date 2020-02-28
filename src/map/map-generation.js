@@ -37,6 +37,13 @@ export const generateLevel = (level, player) => {
   const empty = Object.values(entities).filter(entity => entity.char === '·');
   const shuffledEmpty = shuffle(empty);
 
+  // Add player
+  const emptyEntity = shuffledEmpty.pop();
+  player.position = emptyEntity.position;
+  entities[player.id] = player;
+  delete entities[emptyEntity.id];
+
+  // Add enemies
   const numEnemies = Math.ceil(level * 1.75);
   for (let i = 0; i < numEnemies; i += 1) {
     const emptyEntity = shuffledEmpty.pop();
@@ -46,20 +53,21 @@ export const generateLevel = (level, player) => {
     });
 
     // remove the existing entity and add the enemy in its place (same position)
-    delete entities[emptyEntity.id];
     entities[enemy.id] = enemy;
+    delete entities[emptyEntity.id];
   }
 
-  const staircaseDown = staircase(
-    {
-      position: {x: 4, y: 4}
-    },
-    'down'
-  );
+  // Add staircase
+  // STAIRCASE SHOULD ACTUALLY GO UNDERNEATH A BREAKABLE WALL
+  const emptyEntity2 = shuffledEmpty.pop();
+  const staircaseDown = staircase({
+    position: emptyEntity2.position
+  });
+  entities[staircaseDown.id] = staircaseDown;
+  delete entities[emptyEntity.id];
 
   return {
       ...entities,
-      [player.id]: player,
       [staircaseDown.id]: staircaseDown,
   };
 }
