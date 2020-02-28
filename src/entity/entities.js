@@ -26,7 +26,7 @@ export const player = (props) => {
     char: '@',
     position: {x: 1, y: 1},
     solid: true,
-    health: 3,
+    health: 1,
     behaviours: [traverseStairs],
     ...props,
   })

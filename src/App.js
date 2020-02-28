@@ -50,7 +50,7 @@ function App() {
     let actionPoints = entity.actionsPerTurn;
       while(entity.actions.length > 0) {
         const action = entity.actions.pop();
-        
+
         if (actionPoints >= action.cost) {
           actionPoints -= action.cost
         } else {
@@ -112,7 +112,7 @@ function App() {
 
     return mapping[key];
   }
-  
+
   const handleKeyDown = ({key}) => {
     if (!findPlayer(entities)) {
       return;
@@ -158,6 +158,7 @@ function App() {
     }
   }
 
+  // Title screen
   if (level === 0) {
     return (
       <MenuContainer>
@@ -166,19 +167,17 @@ function App() {
       </MenuContainer>
     )
   }
-  if (level === 3) {
-    return (
-      <MenuContainer>
-        <h2>Success!</h2>
-        <button onClick={backToTitle}>Back to title</button>
-      </MenuContainer>
-    )
-  }
+
+  const lose = !findPlayer(entities);
+  const win = level === 2;
+  console.log(win);
+
   return (
+    // Main game screen
     <MapContainer className={'app-container'} shake={events.shake === true} tabIndex={0} onKeyDown={handleKeyDown} autofocus="true">
-      {!findPlayer(entities) && (
+      {(win || lose) && (
         <Overlay>
-          <h2>You died</h2>
+          <h2>{win ? 'Success!' : 'You died'}</h2>
           <button onClick={backToTitle}>Back to title</button>
         </Overlay>
       )}
