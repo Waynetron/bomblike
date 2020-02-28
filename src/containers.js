@@ -8,7 +8,7 @@ const shake = css`
     20% {
       transform: translate3d(4px, -4px, 0);
       background-color: crimson;
-    } 
+    }
     40% {
       transform: translate3d(-4px, 4px, 0);
     }
@@ -45,6 +45,29 @@ export const MenuContainer = styled.div`
 `;
 
 export const Overlay = styled.div`
-  ${shake};
-  animation-name: 'shake';
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: absolute;
+  z-index: 999;
+  background-color: #FFE4C4;
+  padding: 2rem;
+
+  h2, button {
+    color: indianred;
+  }
+
+  button:hover {
+    background-color: indianred;
+    border-color: indianred;
+    color: #FFE4C4
+  }
+
+  h2 {
+    font-size: 3rem;
+    line-height: 3rem;
+    margin: 0rem;
+    margin-bottom: 1rem;
+  }
 `;

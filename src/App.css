@@ -87,14 +87,21 @@ html, body, #root, #root>div {
   background-color: indianred;
 }
 
-h1 {
-  font-size: 6rem;
+h1, h2 {
   color: #FFE4C4;
-  line-height: 1.5rem;
-
   animation-name: shrink;
   animation-duration: 0.2s;
   animation-fill-mode: forwards;
+}
+
+h1 {
+  font-size: 6rem;
+  line-height: 1.5rem;
+}
+
+h2 {
+  font-size: 3rem;
+  line-height: 1.2rem;
 }
 
 button {
