@@ -1,7 +1,7 @@
 import { MAP_WIDTH, MAP_HEIGHT } from '../constants';
 import { makeEntity } from '../entity/entities';
 import { isAdjacentEdge, getAdjacentPositions, getEntitiesAt } from '../map/map-util';
-import { staircase, wall, goblin } from '../entity/entities';
+import { empty, staircase, wall, goblin } from '../entity/entities';
 import { UP, DOWN, LEFT, RIGHT, shuffle } from '../math';
 
 export const makeEmptyRoom = () => {
@@ -18,12 +18,8 @@ export const makeEmptyRoom = () => {
         entities[breakableWall.id] = breakableWall;
       }
       else {
-        const empty = makeEntity({
-          char: '·',
-          position,
-          solid: false,
-        });
-        entities[empty.id] = empty;
+        const emptyEntity = empty({position});
+        entities[emptyEntity.id] = emptyEntity;
       }
     }
   }
@@ -36,12 +32,12 @@ const isOdd = position => (position.x % 2 !== 0 && position.y % 2 !== 0);
 export const generateLevel = (level, player) => {
   const entities = makeEmptyRoom();
 
-  const empty = Object.values(entities).filter(entity => entity.char === '·');
-  let shuffledEmpty = shuffle(empty);
+  const emptyEntities = Object.values(entities).filter(entity => entity.char === '·');
+  let shuffledEmptyEntities = shuffle(emptyEntities);
 
   // Add player to an odd empty space
-  const oddEmpty = shuffledEmpty.filter(entity => isOdd(entity.position));
-  const evenEmpty = shuffledEmpty.filter(entity => !isOdd(entity.position));
+  const oddEmpty = shuffledEmptyEntities.filter(entity => isOdd(entity.position));
+  const evenEmpty = shuffledEmptyEntities.filter(entity => !isOdd(entity.position));
 
   const emptyEntity = oddEmpty.pop();
   player.position = emptyEntity.position;
@@ -49,7 +45,7 @@ export const generateLevel = (level, player) => {
   delete entities[emptyEntity.id];
 
   // merge odd and even back together
-  shuffledEmpty = [...oddEmpty, ...evenEmpty];
+  shuffledEmptyEntities = [...oddEmpty, ...evenEmpty];
 
   // Remove breakable walls adjacent to player
   const adjacentPositons = getAdjacentPositions(player.position);
@@ -58,6 +54,10 @@ export const generateLevel = (level, player) => {
       const adjacentEntities = getEntitiesAt(position, entities);
       for (const entity of adjacentEntities) {
         delete entities[entity.id];
+        // put empty entity in its place
+        const emptyEntity = empty({position})
+        entities[emptyEntity.id] = emptyEntity;
+
       }
     }
   }
@@ -65,7 +65,7 @@ export const generateLevel = (level, player) => {
   // Add enemies
   const numEnemies = Math.ceil(level * 1.75);
   for (let i = 0; i < numEnemies; i += 1) {
-    const emptyEntity = shuffledEmpty.pop();
+    const emptyEntity = shuffledEmptyEntities.pop();
 
     const enemy = goblin({
       position: emptyEntity.position,
@@ -78,7 +78,7 @@ export const generateLevel = (level, player) => {
 
   // Add staircase
   // STAIRCASE SHOULD ACTUALLY GO UNDERNEATH A BREAKABLE WALL
-  const emptyEntity2 = shuffledEmpty.pop();
+  const emptyEntity2 = shuffledEmptyEntities.pop();
   const staircaseDown = staircase({
     position: emptyEntity2.position
   });

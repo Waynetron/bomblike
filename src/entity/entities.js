@@ -23,10 +23,17 @@ export const makeEntity = (props) => {
 
 export const findPlayer = entities => Object.values(entities).find(entity => entity.char === '@');
 
+export const empty = (props) => {
+  return makeEntity({
+    char: '·',
+    solid: false,
+    ...props,
+  });
+}
+
 export const player = (props) => {
   return makeEntity({
     char: '@',
-    position: {x: 1, y: 1},
     solid: true,
     health: 1,
     behaviours: [traverseStairs],
@@ -36,7 +43,7 @@ export const player = (props) => {
 
 export const goblin = (props) => {
   return makeEntity({
-    char: 'g',
+    char: 'G',
     solid: true,
     behaviours: [walkInALine, faceWalkable, attackAdjacentPlayerAndDie],
     ...props,
