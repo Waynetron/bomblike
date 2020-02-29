@@ -49,9 +49,9 @@ function App() {
 
     const { key } = event;
     const direction = keyToDirection(key);
-    const wait = key === 'z';
-    const bomb = key === 'x';
-    const restart = key === 'r'
+    const wait = key.toLowerCase() === 'z';
+    const bomb = key.toLowerCase() === 'x';
+    const restart = key.toLowerCase() === 'r'
 
     if (direction) {
       move(player, entities, direction);
