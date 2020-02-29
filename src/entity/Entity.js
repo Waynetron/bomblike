@@ -3,36 +3,57 @@ import { CELL_SIZE } from '../constants';
 import styled from 'styled-components'
 import './Entity.css';
 
-const Container = styled.div.attrs(({ x, y, solid }) => ({
+const getColour = (char) => {
+  const mapping = {
+    '@': 'white',
+    '#': 'indianred',
+    '+': '#FFE4C4',
+    '>': 'white',
+  }
+  
+  return mapping[char] || 'white';
+}
+
+const getBackgroundColour = (char) => {
+  const mapping = {
+    '#': '#FFE4C4',
+    '+': 'indianred',
+  }
+  return mapping[char] || 'indianred'
+}
+
+const Container = styled.div.attrs(({ x, y, solid, char }) => ({
   style: {
     left: x * CELL_SIZE + 'px',
     top: y * CELL_SIZE + 'px',
     zIndex: solid ? 2 : 1,
+    color: getColour(char),
   }
 }))`
   position: relative;
   width: 0;
   height: 0;
-  font-weight: 700;
 `;
 
 const Inner = styled.div.attrs(({ char }) => ({
   style: {
-    opacity: char !== '·' ? '100%' : '10%'
+    opacity: char !== '·' ? '100%' : '10%',
+    width: CELL_SIZE + 'px',
+    height: CELL_SIZE + 'px',
+    backgroundColor: getBackgroundColour(char),
   }
 }))`
   width: CELL_SIZE;
   height: CELL_SIZE;
-  background-color: indianred;
   display: flex;
   justify-content: center;
   align-items: center;
 
   p {
     display: inline;
-    margin-block-start: 0;
+    margin-block-start: 0.2rem;
     margin-block-end: 0;
-    color: #FFE4C4;
+    font-weight: 700;
   }
 `;
 
@@ -56,11 +77,23 @@ const getBumpClass = (status)=> {
   return '';
 }
 
+const getDisplayChar = (char) => {
+  if (char === '+') {
+    return '#';
+  }
+
+  if (char === '#') {
+    return '#';
+  }
+
+  return char;
+}
+
 const Cell = ({char, position: {x, y}, solid, status}) => {
   return (
-    <Container x={x} y={y} solid={solid}>
+    <Container x={x} y={y} solid={solid} char={char}>
       <Inner char={char} className={getBumpClass(status)}>
-        <p>{char}</p>
+        <p>{getDisplayChar(char)}</p>
       </Inner>
     </Container>
   )
