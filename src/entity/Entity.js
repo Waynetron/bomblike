@@ -9,6 +9,8 @@ const getColour = (char) => {
     '#': 'indianred',
     '+': '#FFE4C4',
     '>': 'white',
+    '*': 'yellow',
+    'b': 'navy',
   }
   
   return mapping[char] || 'white';

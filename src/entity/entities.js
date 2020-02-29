@@ -1,4 +1,4 @@
-import { traverseStairs, walkInALine, faceWalkable, attackAdjacentPlayerAndDie, explodeOnDeath } from '../entity/behaviours';
+import { traverseStairs, walkInALine, faceWalkable, attackAdjacentPlayerAndDie, explodeOnDeath, attackSelf } from '../entity/behaviours';
 
 let _id = 0;
 const makeId = ()=> _id++;
@@ -43,10 +43,20 @@ export const player = (props) => {
 
 export const bomb = (props) => {
   return makeEntity({
-    char: '*',
+    char: 'b',
     solid: true,
     behaviours: [explodeOnDeath],
-    health: 3,
+    health: 5,
+    ...props,
+  })
+};
+
+export const flame = (props) => {
+  return makeEntity({
+    char: '*',
+    solid: false,
+    behaviours: [attackSelf],
+    health: 1,
     ...props,
   })
 };

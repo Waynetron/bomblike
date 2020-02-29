@@ -47,6 +47,10 @@ const performActions = (entity, entities, newEvents) => {
       if (action.type === 'move') {
         move(entity, entities, action.direction)
       }
+      if (action.type === 'spawn') {
+        const { entity } = action;
+        entities[entity.id] = entity;
+      }
       if (action.type === 'place-bomb') {
         placeBomb(entity, entities, action)
       }
