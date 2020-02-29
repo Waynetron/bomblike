@@ -23,17 +23,18 @@ export const placeBomb = (entity, entities, action) => {
   entities[newBomb.id] = newBomb;
 }
 
-const performActions = (entity, entities, newEvents) => {
-  let actionPoints = entity.actionsPerTurn;
-    while(entity.actions.length > 0) {
-      const action = entity.actions.pop();
+// **IMPORTANT** Perform actions does a lot of sneaky mutation
+// May mutate any entity (either the supplied entity, but also any entity referenced in an action)
+// May push events into newEvents
+const performActions = (actions, entity, entities, newEvents) => {
+    while(actions.length > 0) {
+      const action = actions.pop();
 
-      if (actionPoints >= action.cost) {
-        actionPoints -= action.cost
+      if (entity.actionPoints >= action.cost) {
+        entity.actionPoints -= action.cost
       } else {
         continue;
       }
-
 
       if (action.type === 'wait') {
         entity.status['waiting'] = true;
@@ -66,20 +67,25 @@ const performActions = (entity, entities, newEvents) => {
 const performTurn = (entity, entities, newEvents) => {
   // Reset status
   entity.status = {};
+  entity.actionPoints = entity.actionsPerTurn;
 
-  // Add any actions generated from behaviours
+  // Update prev position for each entity
+  entity.prevPosition = {
+    x: entity.position.x,
+    y: entity.position.y
+  };
+
+  // Perform any exisiting actions (likely just from player input)
+  performActions(entity.actions, entity, entities, newEvents);
+
+  // Clear any remaining existing actions for this turn
+  entity.actions = [];
+
+  // Perform any actions generated from behaviours
   for (const behaviour of entity.behaviours) {
     const actions = behaviour(entity, entities).reverse();
-    entity.actions.push(...actions);
+    performActions(actions, entity, entities, newEvents);
   }
-
-  // **IMPORTANT** Perform actions does a lot of sneaky mutation
-  // May mutate any entity (either the supplied entity, but also any entity referenced in an action)
-  // May push events into newEvents
-  performActions(entity, entities, newEvents);
-
-  // Clear actions
-  entity.actions = [];
 }
 
 export const performTurns = (entities)=> {
@@ -87,7 +93,7 @@ export const performTurns = (entities)=> {
   const player = findPlayer(entities);
   const everythingElse = Object.values(entities).filter(entity => entity.id !== player.id);
 
-  for (const entity of [...everythingElse, player]) {
+  for (const entity of [player, ...everythingElse]) {
     performTurn(entity, entities, newEvents);
   }
 

@@ -59,6 +59,17 @@ export const faceWalkable = (entity, entities) => {
   return [{type: 'face', direction: newDirection, cost: 0}];
 }
 
+export const attackPlayer = (entity, entities) => {
+  const colliding = getEntitiesAt(entity.position, entities);
+  const player = colliding.find(entity => entity.char === '@');
+
+  if (player) {
+    return [{type: 'attack', value: 1, target: player, cost: 0}];
+  }
+
+  return [];
+}
+
 export const attackAdjacentPlayer = (entity, entities) => {
   const adjacent = getAdjacentPositions(entity.position);
   const adjacentEntities = getEntitiesAtPositions(adjacent, entities);
@@ -77,7 +88,7 @@ export const attackAdjacentPlayerAndDie = (entity, entities) => {
   if (player) {
     return [
       {type: 'attack', value: 1, target: player, cost: 1},
-      {type: 'attack', value: 1, target: entity, cost: 0}
+      {type: 'attack', value: 1, target: entity, cost: 1}
     ];
   }
 
