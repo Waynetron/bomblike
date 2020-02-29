@@ -5,6 +5,20 @@ Behaviours are used at the start of a turn to generate a set of actions
 import { getEntitiesAt, getEntitiesAtPositions, getAdjacentPositions, isWalkable } from '../map/map-util';
 import { add, subtract, shuffle } from '../math';
 
+export const explodeOnDeath = (entity, entities) => {
+  entity.health -= 1;
+  if (entity.health > 0) {
+    return [];
+  } else {
+    const adjacent = getAdjacentPositions(entity.position);
+    const adjacentEntities = getEntitiesAtPositions(adjacent, entities);
+    const actions = adjacentEntities.map(entity => (
+      {type: 'attack', value: 1, target: entity, cost: 0}
+    ));
+    return actions;
+  }
+}
+
 export const walkInALine = (entity, entities) => {
   const { facing } = entity;
   return [{type: 'move', direction: facing, cost: 1}]

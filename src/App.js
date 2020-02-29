@@ -49,7 +49,8 @@ function App() {
 
     const { key } = event;
     const direction = keyToDirection(key);
-    const wait = key === ' ';
+    const wait = key === 'z';
+    const bomb = key === 'x';
     const restart = key === 'r'
 
     if (direction) {
@@ -57,7 +58,11 @@ function App() {
       // player.actions.push({type: 'move', direction, cost: 1})
     }
 
-    if (direction || wait) {
+    if (bomb) {
+      player.actions.push({type: 'place-bomb', direction, cost: 1})
+    }
+
+    if (direction || wait || bomb) {
       const { newEntities, newEvents } = performTurns(entities);
 
       // Update state

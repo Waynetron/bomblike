@@ -1,4 +1,4 @@
-import { findPlayer } from './entity/entities';
+import { findPlayer, bomb } from './entity/entities';
 import { getEntitiesAt } from './map/map-util';
 import { subtract } from './math';
 
@@ -16,6 +16,11 @@ export const move = (entity, entities, direction) => {
 
   entity.position = newPosition
   return true;
+}
+
+export const placeBomb = (entity, entities, action) => {
+  const newBomb = bomb({position: entity.position});
+  entities[newBomb.id] = newBomb;
 }
 
 const performActions = (entity, entities, newEvents) => {
@@ -41,6 +46,9 @@ const performActions = (entity, entities, newEvents) => {
       }
       if (action.type === 'move') {
         move(entity, entities, action.direction)
+      }
+      if (action.type === 'place-bomb') {
+        placeBomb(entity, entities, action)
       }
       if (action.type === 'face') {
         entity.facing = action.direction;
