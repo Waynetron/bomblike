@@ -15,7 +15,7 @@ const Map = ({entities}) => {
       width={MAP_WIDTH * CELL_SIZE}
       height={MAP_HEIGHT * CELL_SIZE}
     >
-      {Object.values(entities).map(({id, char, position, solid, facing, status}) =>
+      {Object.values(entities).map(({id, char, position, solid, facing, status, health}) =>
         <Entity
           key={id}
           char={char}
@@ -23,6 +23,7 @@ const Map = ({entities}) => {
           solid={solid}
           facing={facing}
           status={status}
+          health={health}
         />
       )}
     </MapContainer>

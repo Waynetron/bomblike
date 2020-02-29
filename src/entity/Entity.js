@@ -79,7 +79,8 @@ const getBumpClass = (status)=> {
   return '';
 }
 
-const getDisplayChar = (char) => {
+const getDisplayChar = (char, health) => {
+
   if (char === '+') {
     return '#';
   }
@@ -88,14 +89,18 @@ const getDisplayChar = (char) => {
     return '#';
   }
 
+  if (char === 'b') {
+    return health;
+  }
+
   return char;
 }
 
-const Cell = ({char, position: {x, y}, solid, status}) => {
+const Cell = ({char, position: {x, y}, solid, status, health}) => {
   return (
     <Container x={x} y={y} solid={solid} char={char}>
       <Inner char={char} className={getBumpClass(status)}>
-        <p>{getDisplayChar(char)}</p>
+        <p>{getDisplayChar(char, health)}</p>
       </Inner>
     </Container>
   )
