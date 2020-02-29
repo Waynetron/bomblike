@@ -12,6 +12,8 @@ function App() {
   const [level, setLevel] = useState(1);
   const [entities, setEntities] = useState(generateLevel(level, player()));
   const [events, setEvents] = useState({});
+  const lose = !findPlayer(entities);
+  const win = level > NUM_LEVELS;
 
   const startGame = () => {
     setLevel(1);
@@ -43,15 +45,25 @@ function App() {
 
   const handleKeyDown = useCallback(event => {
     const player = findPlayer(entities);
-    if (!player) {
-      return;
-    }
-
     const { key } = event;
     const direction = keyToDirection(key);
     const wait = key.toLowerCase() === 'z';
     const bomb = key.toLowerCase() === 'x';
     const restart = key.toLowerCase() === 'r'
+
+    if (level === 0 && (bomb || wait)) {
+      startGame();
+      return;
+    }
+
+    if ((win || lose) && (bomb || wait)) {
+      backToTitle();
+      return;
+    }
+
+    if (!player) {
+      return;
+    }
 
     if (direction) {
       move(player, entities, direction);
@@ -89,8 +101,6 @@ function App() {
     };
   }, [handleKeyDown]);
 
-  const lose = !findPlayer(entities);
-  const win = level > NUM_LEVELS;
   return (
     <AppContainer>
       {level === 0 ?
