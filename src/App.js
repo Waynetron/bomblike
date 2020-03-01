@@ -20,10 +20,10 @@ function App() {
     setEntities(generateLevel(1, player()));
   }
 
-  const backToTitle = () => {
+  const backToTitle = useCallback(() => {
     setLevel(0);
     setEntities(generateLevel(level, player()));
-  }
+  }, [level]);
 
   const nextLevel = useCallback(player => {
     setLevel(level + 1);
@@ -91,7 +91,7 @@ function App() {
     if (restart) {
       startGame();
     }
-  }, [entities, nextLevel]);
+  }, [entities, nextLevel, backToTitle, level, lose, win]);
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
@@ -106,7 +106,7 @@ function App() {
       {level === 0 ?
         // Title screen
         <MenuContainer>
-          <h1>react like</h1>
+          <h1>bomblike</h1>
           <button onClick={startGame}>play</button>
         </MenuContainer>
       :
