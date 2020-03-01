@@ -17,6 +17,7 @@ export const makeEntity = (props) => {
     actionsPerTurn: 1,
     status: {},
     health: 1,
+    description: '',
     ...props,
   }
 };
@@ -37,6 +38,7 @@ export const player = (props) => {
     solid: false,
     health: 1,
     behaviours: [traverseStairs],
+    description: "It's you, the player",
     ...props,
   })
 };
@@ -47,6 +49,7 @@ export const bomb = (props) => {
     solid: true,
     behaviours: [explodeOnDeath],
     health: 3,
+    description: "You see a bomb. It is set to go off",
     ...props,
   })
 };
@@ -66,6 +69,7 @@ export const goblin = (props) => {
     char: 'G',
     solid: true,
     behaviours: [walkInALine, faceWalkable, attackPlayer],
+    description: 'You see a gooblini.',
     ...props,
   })
 };
@@ -83,6 +87,7 @@ export const wall = (props, breakable = true) => {
     char: breakable ? '+' : '#',
     health: breakable ? 1 : 999,
     solid: true,
+    description: `You see a wall. ${!breakable ? 'It seems unbreakable.' : ''}`,
     ...props,
   })
 };

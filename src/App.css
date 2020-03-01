@@ -84,11 +84,11 @@
 html, body, #root, #root>div {
   height: 100%;
   margin: 0;
-  background-color: indianred;
+  background-color: black;
 }
 
 h1, h2 {
-  color: #FFE4C4;
+  color: beige;
   animation-name: shrink;
   animation-duration: 0.2s;
   animation-fill-mode: forwards;
@@ -111,7 +111,7 @@ button {
   font-weight: 900;
   padding: .9rem 1.8rem;
   text-transform: uppercase;
-  color: #FFE4C4;
+  color: beige;
 
   animation-name: shrink;
   animation-duration: 0.2s;
@@ -119,9 +119,9 @@ button {
 }
 
 button:hover {
-  background-color: #FFE4C4;
-  border-color: #FFE4C4;
-  color: indianred;
+  background-color: beige;
+  border-color: beige;
+  color: #4135ff;
 
   animation-name: grow;
   animation-duration: 0.2s;

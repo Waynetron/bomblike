@@ -5,12 +5,13 @@ import './Entity.css';
 
 const getColour = (char) => {
   const mapping = {
-    '@': 'white',
-    '#': 'indianred',
-    '+': '#FFE4C4',
-    '>': 'white',
+    '@': '#fffa03',
+    '#': 'black',
+    '+': 'beige',
+    '>': 'yellow',
     '*': 'yellow',
-    'b': 'navy',
+    'b': 'yellow',
+    'G': '#4135ff',
   }
   
   return mapping[char] || 'white';
@@ -18,10 +19,10 @@ const getColour = (char) => {
 
 const getBackgroundColour = (char) => {
   const mapping = {
-    '#': '#FFE4C4',
-    '+': 'indianred',
+    '#': 'beige',
+    '+': '#4135ff',
   }
-  return mapping[char] || 'indianred'
+  return mapping[char] || 'transparent'
 }
 
 const Container = styled.div.attrs(({ x, y, solid, char }) => ({
@@ -47,9 +48,20 @@ const Inner = styled.div.attrs(({ char }) => ({
 }))`
   width: CELL_SIZE;
   height: CELL_SIZE;
+  box-sizing: border-box;
   display: flex;
   justify-content: center;
   align-items: center;
+
+  &:hover {
+    border: solid 2px white;
+    cursor: pointer;
+    p {
+      color: white;
+    }
+    background-color: navy;
+    opacity: 1;
+  }
 
   p {
     display: inline;
@@ -96,10 +108,15 @@ const getDisplayChar = (char, health) => {
   return char;
 }
 
-const Cell = ({char, position: {x, y}, solid, status, health}) => {
+const Cell = ({entity, hoverStart}) => {
+  const {char, position: {x, y}, solid, status, health} = entity;
   return (
     <Container x={x} y={y} solid={solid} char={char}>
-      <Inner char={char} className={getBumpClass(status)}>
+      <Inner
+        char={char}
+        className={getBumpClass(status)}
+        onMouseEnter={() => hoverStart(entity)}
+      >
         <p>{getDisplayChar(char, health)}</p>
       </Inner>
     </Container>

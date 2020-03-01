@@ -61,17 +61,17 @@ export const Overlay = styled.div`
   flex-direction: column;
   position: absolute;
   z-index: 999;
-  background-color: #FFE4C4;
+  background-color: beige;
   padding: 2rem;
 
   h2, button {
-    color: indianred;
+    color: #4135ff;
   }
 
   button:hover {
-    background-color: indianred;
-    border-color: indianred;
-    color: #FFE4C4
+    background-color: #4135ff;
+    border-color: #4135ff;
+    color: beige
   }
 
   h2 {
