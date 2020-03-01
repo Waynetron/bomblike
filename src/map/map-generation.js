@@ -42,7 +42,6 @@ export const generateLevel = (level, player) => {
   const emptyEntity = oddEmpty.pop();
   player.position = emptyEntity.position;
   entities[player.id] = player;
-  delete entities[emptyEntity.id];
 
   // merge odd and even back together
   shuffledEmptyEntities = [...oddEmpty, ...evenEmpty];
