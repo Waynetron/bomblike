@@ -18,8 +18,12 @@ export const move = (entity, entities, direction) => {
   return true;
 }
 
-export const placeBomb = (entity, entities, action) => {
-  const newBomb = bomb({position: entity.position});
+export const placeBomb = (entity, entities, bomb) => {
+  const newBomb = {
+    ...bomb,
+    position: entity.position
+  }
+
   entities[newBomb.id] = newBomb;
 }
 
@@ -53,7 +57,7 @@ const performActions = (actions, entity, entities, newEvents) => {
         entities[entity.id] = entity;
       }
       if (action.type === 'place-bomb') {
-        placeBomb(entity, entities, action)
+        placeBomb(entity, entities, action.bomb)
       }
       if (action.type === 'face') {
         entity.facing = action.direction;

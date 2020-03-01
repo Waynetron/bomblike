@@ -2,22 +2,28 @@
 Behaviours are used at the start of a turn to generate a set of actions
 */
 
-import { getEntitiesAt, getEntitiesAtPositions, getAdjacentPositions, isWalkable } from '../map/map-util';
+import { getEntitiesAt, getEntitiesAtPositions, getAdjacentPositions,
+  isWalkable, getPositionsInDirection } from '../map/map-util';
 import { flame } from './entities';
-import { add, subtract, shuffle } from '../math';
+import { UP, DOWN, LEFT, RIGHT, add, subtract, shuffle } from '../math';
 
 export const explodeOnDeath = (entity, entities) => {
+  const {radius, power} = entity;
   entity.health -= 1;
   if (entity.health > 0) {
     return [];
   } else {
-    // Attack adjacent positions
-    const adjacent = getAdjacentPositions(entity.position);
-    const positions = [...adjacent, entity.position];
-
+    const positions = [
+      ...getPositionsInDirection(UP, entity.position, radius, entities),
+      ...getPositionsInDirection(DOWN, entity.position, radius, entities),
+      ...getPositionsInDirection(LEFT, entity.position, radius, entities),
+      ...getPositionsInDirection(RIGHT, entity.position, radius, entities),
+      entity.position,
+    ];
     const entitiesToAttack = getEntitiesAtPositions(positions, entities);
+
     const attackActions = entitiesToAttack.map(entity => (
-      {type: 'attack', value: 1, target: entity, cost: 0}
+      {type: 'attack', value: power, target: entity, cost: 0}
     ));
 
     // Spawn fire

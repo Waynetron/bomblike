@@ -16,6 +16,17 @@ export const getAdjacentPositions = (position) => [
   add(UP, position), add(DOWN, position), add(LEFT, position), add(RIGHT, position)
 ];
 
+export const getPositionsInDirection = (direction, startPosition, distance, entities) => {
+  const positions = [];
+  while (distance > 0) {
+    const scaledDirection = {x: direction.x * distance, y: direction.y * distance};
+    const offsetPosition = add(startPosition, scaledDirection);
+    positions.push(offsetPosition);
+    distance -= 1;
+  }
+  return positions;
+};
+
 export const isWalkable = (position, entities) => {
   const entitiesAtPostion = getEntitiesAt(position, entities);
 

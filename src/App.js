@@ -71,7 +71,8 @@ function App() {
     }
 
     if (bomb) {
-      player.actions.push({type: 'place-bomb', direction, cost: 1})
+      const action = player.weapon.use();
+      player.actions.push(action);
     }
 
     if (direction || wait || bomb) {
