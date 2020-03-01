@@ -10,7 +10,7 @@ const NUM_LEVELS = 2;
 
 const initialLevel = 1;
 const initialPlayer = player({position: {x: 1, y: 1}});
-const initialEntities = generateLevel(initialLevel, initialPlayer)
+const initialEntities = generateLevel(initialLevel, {...initialPlayer})
 
 function App() {
   const [level, setLevel] = useState(initialLevel);
@@ -21,12 +21,12 @@ function App() {
 
   const startGame = () => {
     setLevel(1);
-    setEntities(generateLevel(1, initialPlayer));
+    setEntities(generateLevel(1, {...initialPlayer}));
   }
 
   const backToTitle = useCallback(() => {
     setLevel(0);
-    setEntities(generateLevel(level, initialPlayer));
+    setEntities(generateLevel(level, {...initialPlayer}));
   }, [level]);
 
   const nextLevel = useCallback(player => {
