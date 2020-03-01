@@ -69,20 +69,17 @@ export const generateLevel = (level, player) => {
     const enemy = goblin({
       position: emptyEntity.position,
     });
-
-    // remove the existing entity and add the enemy in its place (same position)
     entities[enemy.id] = enemy;
-    delete entities[emptyEntity.id];
   }
 
   // Add staircase
   // STAIRCASE SHOULD ACTUALLY GO UNDERNEATH A BREAKABLE WALL
-  const emptyEntity2 = shuffledEmptyEntities.pop();
+  const walls = Object.values(entities).filter(entity => entity.char === '+')
+  const randomWall = shuffle(walls).pop();
   const staircaseDown = staircase({
-    position: emptyEntity2.position
+    position: randomWall.position
   });
   entities[staircaseDown.id] = staircaseDown;
-  delete entities[emptyEntity.id];
 
   return {
       ...entities,
