@@ -8,21 +8,25 @@ import './App.css';
 
 const NUM_LEVELS = 2;
 
+const initialLevel = 1;
+const initialPlayer = player({position: {x: 1, y: 1}});
+const initialEntities = generateLevel(initialLevel, initialPlayer)
+
 function App() {
-  const [level, setLevel] = useState(1);
-  const [entities, setEntities] = useState(generateLevel(level, player()));
+  const [level, setLevel] = useState(initialLevel);
+  const [entities, setEntities] = useState(initialEntities);
   const [events, setEvents] = useState({});
   const lose = !findPlayer(entities);
   const win = level > NUM_LEVELS;
 
   const startGame = () => {
     setLevel(1);
-    setEntities(generateLevel(1, player()));
+    setEntities(generateLevel(1, initialPlayer));
   }
 
   const backToTitle = useCallback(() => {
     setLevel(0);
-    setEntities(generateLevel(level, player()));
+    setEntities(generateLevel(level, initialPlayer));
   }, [level]);
 
   const nextLevel = useCallback(player => {

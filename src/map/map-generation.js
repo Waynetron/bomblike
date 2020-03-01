@@ -3,12 +3,19 @@ import { makeEntity } from '../entity/entities';
 import { isAdjacentEdge, getAdjacentPositions, getEntitiesAt } from '../map/map-util';
 import { empty, staircase, wall, goblin } from '../entity/entities';
 import { UP, DOWN, LEFT, RIGHT, shuffle } from '../math';
+import { isEqual } from 'lodash';
 
-export const makeEmptyRoom = () => {
-  const entities = {};
+export const makeRoomWithPlayerAndWalls = (player) => {
+  const entities = {[player.id]: player};
+
   for (let x = 0; x < MAP_WIDTH; x += 1) {
     for (let y = 0; y < MAP_HEIGHT; y += 1) {
       const position = {x, y};
+      // don't place anything where the player is
+      if (isEqual(position, player.position)) {
+        continue;
+      }
+
       if (isAdjacentEdge(position) || (x % 2 === 0 && y % 2 === 0)) {
         const unbreakableWall = wall({position}, false);
         entities[unbreakableWall.id] = unbreakableWall;
@@ -27,24 +34,8 @@ export const makeEmptyRoom = () => {
   return entities;
 }
 
-const isOdd = position => (position.x % 2 !== 0 && position.y % 2 !== 0);
-
 export const generateLevel = (level, player) => {
-  const entities = makeEmptyRoom();
-
-  const emptyEntities = Object.values(entities).filter(entity => entity.char === '·');
-  let shuffledEmptyEntities = shuffle(emptyEntities);
-
-  // Add player to an odd empty space
-  const oddEmpty = shuffledEmptyEntities.filter(entity => isOdd(entity.position));
-  const evenEmpty = shuffledEmptyEntities.filter(entity => !isOdd(entity.position));
-
-  const emptyEntity = oddEmpty.pop();
-  player.position = emptyEntity.position;
-  entities[player.id] = player;
-
-  // merge odd and even back together
-  shuffledEmptyEntities = [...oddEmpty, ...evenEmpty];
+  const entities = makeRoomWithPlayerAndWalls(player);
 
   // Remove breakable walls adjacent to player
   const adjacentPositons = getAdjacentPositions(player.position);
@@ -62,6 +53,8 @@ export const generateLevel = (level, player) => {
   }
 
   // Add enemies
+  const emptyEntities = Object.values(entities).filter(entity => entity.char === '·');
+  let shuffledEmptyEntities = shuffle(emptyEntities);
   const numEnemies = Math.ceil(level * 1.75);
   for (let i = 0; i < numEnemies; i += 1) {
     const emptyEntity = shuffledEmptyEntities.pop();
