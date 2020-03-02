@@ -2,6 +2,7 @@ import { MAP_WIDTH, MAP_HEIGHT } from '../constants';
 import { makeEntity } from '../entity/entities';
 import { isAdjacentEdge, getAdjacentPositions, getEntitiesAt } from '../map/map-util';
 import { empty, staircase, wall, goblin } from '../entity/entities';
+import { getRandomWeapon } from '../entity/weapons';
 import { UP, DOWN, LEFT, RIGHT, shuffle } from '../math';
 import { isEqual } from 'lodash';
 
@@ -57,14 +58,21 @@ export const generateLevel = (level, player) => {
     entities.push(enemy);
   }
 
-  // Add staircase
-  // STAIRCASE SHOULD ACTUALLY GO UNDERNEATH A BREAKABLE WALL
+  // Add staircase and weapons underneath breakable walls
   const walls = entities.filter(entity => entity.char === '+')
-  const randomWall = shuffle(walls).pop();
+  const shuffledWalls = shuffle(walls);
   const staircaseDown = staircase({
-    position: randomWall.position
+    position: shuffledWalls.pop().position
   });
   entities.push(staircaseDown);
+
+  for (let i = 0; i < 8; i += 1) {
+    const weapon = getRandomWeapon(level)({
+      position: shuffledWalls.pop().position
+    });
+    entities.push(weapon);
+    console.log(weapon);
+  }
 
   return entities;
 }

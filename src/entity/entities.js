@@ -1,4 +1,5 @@
-import { traverseStairs, walkInALine, faceWalkable, attackPlayer, explodeOnDeath, attackSelf } from '../entity/behaviours';
+import { traverseStairs, walkInALine, faceWalkable, attackPlayer,
+  explodeOnDeath, attackSelf } from '../entity/behaviours';
 import { standardBombBag } from './weapons';
 
 let _id = 0;
