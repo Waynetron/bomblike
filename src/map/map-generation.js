@@ -16,6 +16,13 @@ export const makeRoomWithPlayerAndWalls = (player) => {
         continue;
       }
 
+      // don't place anything next to where the player is unless it is an edge wall
+      const adjacentPositons = getAdjacentPositions(player.position);
+      const isAdjacentPlayer = adjacentPositons.find(adjPosition => isEqual(position, adjPosition));
+      if (!isAdjacentEdge(position) && isAdjacentPlayer) {
+        continue;
+      }
+
       if (isAdjacentEdge(position) || (x % 2 === 0 && y % 2 === 0)) {
         const unbreakableWall = wall({position}, false);
         entities[unbreakableWall.id] = unbreakableWall;
@@ -36,21 +43,6 @@ export const makeRoomWithPlayerAndWalls = (player) => {
 
 export const generateLevel = (level, player) => {
   const entities = makeRoomWithPlayerAndWalls(player);
-
-  // Remove breakable walls adjacent to player
-  const adjacentPositons = getAdjacentPositions(player.position);
-  for (const position of adjacentPositons) {
-    if (!isAdjacentEdge(position)) {
-      const adjacentEntities = getEntitiesAt(position, entities);
-      for (const entity of adjacentEntities) {
-        delete entities[entity.id];
-        // put empty entity in its place
-        const emptyEntity = empty({position})
-        entities[emptyEntity.id] = emptyEntity;
-
-      }
-    }
-  }
 
   // Add enemies
   const emptyEntities = Object.values(entities).filter(entity => entity.char === '·');
