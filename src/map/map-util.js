@@ -3,7 +3,7 @@ import { UP, DOWN, LEFT, RIGHT, add } from '../math';
 import { isEqual } from 'lodash';
 
 export const getEntitiesAt = (position, entities) =>
-  Object.values(entities).filter(entity => isEqual(entity.position, position));
+  entities.filter(entity => isEqual(entity.position, position));
 
 export const getEntitiesAtPositions = (positions, entities) => (
   positions.map(position => getEntitiesAt(position, entities)).flat()

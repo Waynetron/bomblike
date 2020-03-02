@@ -6,7 +6,7 @@ import { UP, DOWN, LEFT, RIGHT, shuffle } from '../math';
 import { isEqual } from 'lodash';
 
 export const makeRoomWithPlayerAndWalls = (player) => {
-  const entities = {[player.id]: player};
+  const entities = [player];
 
   for (let x = 0; x < MAP_WIDTH; x += 1) {
     for (let y = 0; y < MAP_HEIGHT; y += 1) {
@@ -25,15 +25,15 @@ export const makeRoomWithPlayerAndWalls = (player) => {
 
       if (isAdjacentEdge(position) || (x % 2 === 0 && y % 2 === 0)) {
         const unbreakableWall = wall({position}, false);
-        entities[unbreakableWall.id] = unbreakableWall;
+        entities.push(unbreakableWall);
       }
       else if (Math.random() > 0.8) {
         const breakableWall = wall({position}, true);
-        entities[breakableWall.id] = breakableWall;
+        entities.push(breakableWall);
       }
       else {
         const emptyEntity = empty({position});
-        entities[emptyEntity.id] = emptyEntity;
+        entities.push(emptyEntity);
       }
     }
   }
@@ -45,7 +45,7 @@ export const generateLevel = (level, player) => {
   const entities = makeRoomWithPlayerAndWalls(player);
 
   // Add enemies
-  const emptyEntities = Object.values(entities).filter(entity => entity.char === '·');
+  const emptyEntities = entities.filter(entity => entity.char === '·');
   let shuffledEmptyEntities = shuffle(emptyEntities);
   const numEnemies = Math.ceil(level * 1.75);
   for (let i = 0; i < numEnemies; i += 1) {
@@ -54,20 +54,17 @@ export const generateLevel = (level, player) => {
     const enemy = goblin({
       position: emptyEntity.position,
     });
-    entities[enemy.id] = enemy;
+    entities.push(enemy);
   }
 
   // Add staircase
   // STAIRCASE SHOULD ACTUALLY GO UNDERNEATH A BREAKABLE WALL
-  const walls = Object.values(entities).filter(entity => entity.char === '+')
+  const walls = entities.filter(entity => entity.char === '+')
   const randomWall = shuffle(walls).pop();
   const staircaseDown = staircase({
     position: randomWall.position
   });
-  entities[staircaseDown.id] = staircaseDown;
+  entities.push(staircaseDown);
 
-  return {
-      ...entities,
-      [staircaseDown.id]: staircaseDown,
-  };
+  return entities;
 }

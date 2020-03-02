@@ -10,7 +10,7 @@ export const move = (entity, entities, direction) => {
 
   // Check if anything is in the way
   const upcomingEntities = getEntitiesAt(newPosition, entities);
-  if (Object.values(upcomingEntities).filter(upcoming => upcoming.solid).length > 0) {
+  if (upcomingEntities.filter(upcoming => upcoming.solid).length > 0) {
     return false;
   }
 

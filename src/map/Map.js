@@ -42,7 +42,7 @@ const Map = ({entities}) => {
         height={MAP_HEIGHT * CELL_SIZE}
         onMouseLeave={hoverStop}
       >
-        {Object.values(entities).map(entity =>
+        {entities.map(entity =>
           <Entity
             entity={entity}
             key={entity.id}
