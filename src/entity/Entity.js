@@ -91,6 +91,14 @@ const getBumpClass = (status)=> {
   return '';
 }
 
+const getShakeClass = (char, health)=> {
+  if (char === 'b' && health === 1) {
+    return 'shake';
+  }
+
+  return '';
+}
+
 const getDisplayChar = (char, health) => {
 
   if (char === '+') {
@@ -114,7 +122,7 @@ const Cell = ({entity, hoverStart}) => {
     <Container x={x} y={y} solid={solid} char={char}>
       <Inner
         char={char}
-        className={getBumpClass(status)}
+        className={`${getBumpClass(status)} ${getShakeClass(char, health)}`}
         onMouseEnter={() => hoverStart(entity)}
       >
         <p>{getDisplayChar(char, health)}</p>

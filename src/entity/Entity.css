@@ -73,3 +73,25 @@
   animation-fill-mode: forwards;
   animation-timing-function: ease-out;
 }
+
+@keyframes shake {
+  20% {
+    transform: translate3d(2px, -2px, 0);
+  }
+  40% {
+    transform: translate3d(-2px, 2px, 0);
+  }
+  60% {
+    transform: translate3d(2px, 2px, 0);
+  }
+  80% {
+    transform: translate3d(-2px, -2px, 0);
+  }
+}
+
+.shake {
+  animation-name: shake;
+  animation-duration: 0.2s;
+  animation-timing-function: cubic-bezier(.36,.07,.19,.97);
+  animation-iteration-count: infinite;
+}
