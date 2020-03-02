@@ -1,22 +1,23 @@
 import { makeEntity, bomb } from './entities';
 import { shuffle } from '../math';
 
-const makeWeapon = (props) => makeEntity({
-  char: '○',
+const baseWeaponProps = {
+  char: 'ó',
   solid: false,
   health: 999,
-  ...props,
-});
+}
 
-export const standardBombBag = (props) => {
+export const basicBombBag = (props, level) => {
+  // health equates to the number of turns before a bomb explodes
   const bombProps = {
-    radius: 1,
-    health: 3,  // health equates to the number of turns before a bomb explodes
-    power: 1,
+    radius: Math.ceil(Math.random() * level),
+    health: 3,
+    power: 1
   };
 
-  return makeWeapon({
-    capacity: 1,
+  return makeEntity({
+    ...baseWeaponProps,
+    capacity: Math.ceil(Math.random() * level),
     description: 'A standard bomb bag',
     value: 1,
     stats: {...bombProps},
@@ -29,10 +30,33 @@ export const standardBombBag = (props) => {
   })
 }
 
-const weapons = [standardBombBag];
+export const quickBombBag = (props, level) => {
+  const bombProps = {
+    radius: Math.ceil(Math.random() * level),
+    health: 2,
+    power: 1
+  };
 
-export const getRandomWeapon = (level) => {
+  return makeEntity({
+    ...baseWeaponProps,
+    capacity: Math.ceil(Math.random() * level),
+    description: 'These bombs have short fuses',
+    value: 1,
+    stats: {...bombProps},
+    use: (entity) => ({
+      type: 'place-bomb',
+      cost: 1,
+      bomb: bomb({...bombProps, position: entity.position})
+    }),
+    ...props,
+  })
+}
+
+const weapons = [basicBombBag, quickBombBag];
+
+export const getRandomWeapon = () => {
   const shuffled = shuffle(weapons);
-
-  return shuffled[0];
+  const weapon = shuffled[0];
+  
+  return weapon;
 }

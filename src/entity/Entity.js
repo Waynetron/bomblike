@@ -12,6 +12,7 @@ const getColour = (char) => {
     '*': 'yellow',
     'b': 'yellow',
     'G': '#4135ff',
+    'ó': 'yellow',
   }
   
   return mapping[char] || 'white';

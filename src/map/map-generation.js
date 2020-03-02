@@ -67,9 +67,11 @@ export const generateLevel = (level, player) => {
   entities.push(staircaseDown);
 
   for (let i = 0; i < 8; i += 1) {
-    const weapon = getRandomWeapon(level)({
-      position: shuffledWalls.pop().position
-    });
+    const weaponFactory = getRandomWeapon();
+    const weapon = weaponFactory(
+      {position: shuffledWalls.pop().position},
+      level
+    );
     entities.push(weapon);
     console.log(weapon);
   }

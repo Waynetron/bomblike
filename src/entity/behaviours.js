@@ -6,7 +6,6 @@ import { getEntitiesAt, getEntitiesAtPositions, getAdjacentPositions,
   isWalkable, getPositionsInDirection } from '../map/map-util';
 import { flame } from './entities';
 import { UP, DOWN, LEFT, RIGHT, add, subtract, shuffle } from '../math';
-import { getRandomWeapon } from './weapons';
 
 export const explodeOnDeath = (entity, entities) => {
   const {radius, power} = entity;
