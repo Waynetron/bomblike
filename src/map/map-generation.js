@@ -73,7 +73,6 @@ export const generateLevel = (level, player) => {
       level
     );
     entities.push(weapon);
-    console.log(weapon);
   }
 
   return entities;

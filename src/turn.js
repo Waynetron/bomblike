@@ -25,7 +25,7 @@ const placeBomb = (entity, entities, bomb) => {
     owner: entity,
   }
 
-  entities[newBomb.id] = newBomb;
+  entities.push(newBomb);
 }
 
 // **IMPORTANT** Perform actions does a lot of sneaky mutation
@@ -55,7 +55,7 @@ const performActions = (actions, entity, entities, newEvents) => {
       }
       if (action.type === 'spawn') {
         const { entity } = action;
-        entities[entity.id] = entity;
+        entities.push(entity);
       }
       if (action.type === 'place-bomb') {
         placeBomb(entity, entities, action.bomb)

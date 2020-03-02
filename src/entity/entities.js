@@ -1,5 +1,5 @@
 import { traverseStairs, walkInALine, faceWalkable, attackPlayer,
-  explodeOnDeath, attackSelf } from '../entity/behaviours';
+  explodeOnDeath, attackSelf, pickUpWeapons } from '../entity/behaviours';
 import { basicBombBag } from './weapons';
 
 let _id = 0;
@@ -41,7 +41,7 @@ export const player = (props) => {
     char: '@',
     solid: false,
     health: 1,
-    behaviours: [traverseStairs],
+    behaviours: [traverseStairs, pickUpWeapons],
     description: "It's you, the player",
     weapon: basicBombBag({}, 1),
     ...props,

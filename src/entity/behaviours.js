@@ -6,6 +6,7 @@ import { getEntitiesAt, getEntitiesAtPositions, getAdjacentPositions,
   isWalkable, getPositionsInDirection } from '../map/map-util';
 import { flame } from './entities';
 import { UP, DOWN, LEFT, RIGHT, add, subtract, shuffle } from '../math';
+import { remove } from 'lodash';
 
 export const explodeOnDeath = (entity, entities) => {
   const {radius, power} = entity;
@@ -118,5 +119,22 @@ export const traverseStairs = (entity, entities) => {
     ];
   }
 
+  return [];
+}
+
+export const pickUpWeapons = (entity, entities) => {
+  const oldWeapon = entity.weapon;
+  oldWeapon.position = entity.position;
+  
+  const collidingEntities = getEntitiesAt(entity.position, entities);  
+  const newWeapon = collidingEntities.find(entity => entity.use);
+  if (!newWeapon) {
+    return [];
+  }
+
+  // pick up the new weapon
+  entity.weapon = newWeapon;
+  remove(entities, entity => entity.id === newWeapon.id);
+  
   return [];
 }
