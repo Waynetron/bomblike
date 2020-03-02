@@ -10,13 +10,13 @@ export const standardBombBag = () => {
   return makeEntity({
     char: '○',
     solid: false,
-    num: 1,
+    capacity: 1,
     description: 'A standard bomb bag',
     stats: {...bombProps},
-    use: () => ({
+    use: (entity) => ({
       type: 'place-bomb',
       cost: 1,
-      bomb: bomb({...bombProps})
+      bomb: bomb({...bombProps, position: entity.position})
     })
   })
 }

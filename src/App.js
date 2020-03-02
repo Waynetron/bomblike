@@ -6,7 +6,7 @@ import { player, findPlayer } from './entity/entities';
 import { performTurns, move } from './turn';
 import './App.css';
 
-const NUM_LEVELS = 2;
+const NUM_LEVELS = 5;
 
 const initialLevel = 1;
 const initialPlayer = player({position: {x: 1, y: 1}});
@@ -75,8 +75,14 @@ function App() {
     }
 
     if (bomb) {
-      const action = player.weapon.use();
-      player.actions.push(action);
+      const numBombsOut = entities
+        .filter(entity => entity.char === 'b' && entity.owner.char === '@')
+        .length;
+      
+      if (numBombsOut < player.weapon.capacity) {
+        const action = player.weapon.use(player);
+        player.actions.push(action);
+      }
     }
 
     if (direction || wait || bomb) {

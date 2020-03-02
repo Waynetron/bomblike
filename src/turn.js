@@ -18,10 +18,11 @@ export const move = (entity, entities, direction) => {
   return true;
 }
 
-export const placeBomb = (entity, entities, bomb) => {
+const placeBomb = (entity, entities, bomb) => {
   const newBomb = {
     ...bomb,
-    position: entity.position
+    position: entity.position,
+    owner: entity,
   }
 
   entities[newBomb.id] = newBomb;
