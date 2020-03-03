@@ -16,15 +16,42 @@ const MapContainer = styled.div`
 
 const InfoBox = styled.div`
   justify-content: center;
+  align-content: center;
+  flex-direction: column;
   display: flex;
   width: ${props => props.width}px;
   p {
+    text-align: center;
     line-height: 0;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     color: white;
     font-weight: 600;
+    margin: 1rem 0.6rem;
   }
 `
+
+const StatsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  p {
+    font-weight: 300;
+  }
+`
+
+const Stats = ({hovered}) => {
+  if (!hovered || !hovered.stats) {
+    // returning empty stats container to prevent the height from shifting
+    return <StatsContainer><p></p></StatsContainer>;
+  }
+
+  const entries = Object.entries(hovered.stats);
+  const statsText = entries.map(([name, stat]) =>
+    <p>{name}: {stat}</p>
+  );
+
+  return <StatsContainer>{statsText}</StatsContainer>;
+}
 
 const Map = ({entities}) => {
   const [hovered, setHovered] = useState({});
@@ -52,6 +79,7 @@ const Map = ({entities}) => {
       </MapContainer>
       <InfoBox width={MAP_WIDTH * CELL_SIZE}>
         <p>{hovered ? hovered.description : ''}</p>
+        <Stats hovered={hovered} />
       </InfoBox>
     </ColumnLayout>
   )

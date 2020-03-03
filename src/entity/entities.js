@@ -43,7 +43,7 @@ export const player = (props) => {
     health: 1,
     behaviours: [traverseStairs, pickUpWeapons],
     description: "It's you, the player",
-    weapon: basicBombBag({}, 1),
+    weapon: basicBombBag(1),
     ...props,
   })
 };
