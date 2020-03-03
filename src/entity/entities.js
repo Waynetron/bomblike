@@ -1,6 +1,6 @@
 import { traverseStairs, walkInALine, faceWalkable, attackPlayer,
   explodeOnDeath, attackSelf, pickUpWeapons } from '../entity/behaviours';
-import { basicBombBag } from './weapons';
+import { starterBombBag } from './weapons';
 
 let _id = 0;
 const makeId = ()=> _id++;
@@ -43,7 +43,7 @@ export const player = (props) => {
     health: 1,
     behaviours: [traverseStairs, pickUpWeapons],
     description: "It's you, the player",
-    weapon: basicBombBag(1),
+    weapon: starterBombBag(1),
     ...props,
   })
 };
@@ -54,6 +54,9 @@ export const bomb = (props) => {
     solid: true,
     behaviours: [explodeOnDeath],
     description: "You see a bomb. It is set to go off",
+    health: 3,
+    power: 1,
+    radius: 1,
     ...props,
   })
 };
@@ -82,6 +85,7 @@ export const staircase = (props, upOrDown = 'down') => {
   return makeEntity({
     char: upOrDown === 'down' ? '>' : '<',
     health: 999,
+    description: "You see a staircase leading down",
     ...props,
   })
 };

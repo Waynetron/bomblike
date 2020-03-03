@@ -20,13 +20,14 @@ const InfoBox = styled.div`
   flex-direction: column;
   display: flex;
   width: ${props => props.width}px;
+  height: 5rem;
   p {
     text-align: center;
-    line-height: 0;
+    line-height: 1.5rem;
     font-size: 1.2rem;
     color: white;
-    font-weight: 600;
-    margin: 1rem 0.6rem;
+    font-weight: 400;
+    margin-top: 0.6rem;
   }
 `
 
@@ -34,10 +35,41 @@ const StatsContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  p {
-    font-weight: 300;
+  span {
+    display: inline-block;
+  }
+  .trait {
+    color: yellow;
+    font-weight: 600;
   }
 `
+
+const getCapacityText = (capacity)=> {
+  console.log(capacity);
+  const options = ['', 'large', 'plentiful'];
+  return options[capacity - 1];
+}
+
+const getPowerText = (power)=> {
+  const options = [null, 'powerful', 'very powerful', 'dangerously powerful']
+  return options[power - 1];
+}
+
+const getRadiusText = (radius)=> {
+  const options = [null, 'large radius', 'very large radius', 'dangerously large radius'];
+  return options[radius - 1];
+}
+
+const getTimerText = (timer)=> {
+  let text = null;
+  if (timer === 2) {
+    text = 'short fuse'
+  }
+  if (timer === 5) {
+    text = 'long fuse'
+  }
+  return text;
+}
 
 const Stats = ({hovered}) => {
   if (!hovered || !hovered.stats) {
@@ -45,12 +77,34 @@ const Stats = ({hovered}) => {
     return <StatsContainer><p></p></StatsContainer>;
   }
 
-  const entries = Object.entries(hovered.stats);
-  const statsText = entries.map(([name, stat]) =>
-    <p>{name}: {stat}</p>
-  );
+  const { capacity, power, radius, timer } = hovered.stats;
 
-  return <StatsContainer>{statsText}</StatsContainer>;
+  const capacityText = getCapacityText(capacity);
+  const powerText = getPowerText(power);
+  const radiusText = getRadiusText(radius);
+  const timerText = getTimerText(timer);
+
+  return (
+  <StatsContainer>
+    <p>
+      <span>A</span>
+      { " " }
+      {capacityText && <span className="trait">{capacityText} </span>}
+      { " " }
+      <span>bomb bag</span>
+      { " " }
+      {(powerText || radiusText || timerText) && <span>with</span>}
+      { " " }
+      {powerText && <span className="trait">{powerText} </span>}
+      { " " }
+      {radiusText && <span className="trait">{radiusText} </span>}
+      { " " }
+      {timerText && <span className="trait">{timerText} </span>}
+      { " " }
+      {(powerText || radiusText || timerText) && <span>bombs</span>}
+    </p>
+  </StatsContainer>
+  );
 }
 
 const Map = ({entities}) => {
@@ -61,6 +115,8 @@ const Map = ({entities}) => {
   const hoverStop = () => {
     setHovered(null);
   }
+
+  const isBombBag = (hovered && hovered.stats);
 
   return (
     <ColumnLayout>
@@ -78,8 +134,8 @@ const Map = ({entities}) => {
         )}
       </MapContainer>
       <InfoBox width={MAP_WIDTH * CELL_SIZE}>
-        <p>{hovered ? hovered.description : ''}</p>
-        <Stats hovered={hovered} />
+        {!isBombBag && <p>{hovered ? hovered.description : ''}</p>}
+        {isBombBag && <Stats hovered={hovered} />}
       </InfoBox>
     </ColumnLayout>
   )

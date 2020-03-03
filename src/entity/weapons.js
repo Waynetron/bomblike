@@ -6,7 +6,7 @@ const makeBombBag = (bagProps, bombProps, extraBagProps) => {
     char: 'ó',
     solid: false,
     health: 999,
-    capacity: bagProps.capacity,
+    capacity: bagProps.capacity || 1,
     description: 'A standard bomb bag',
     stats: {
       radius: bombProps.radius,
@@ -29,9 +29,42 @@ const makeBombBag = (bagProps, bombProps, extraBagProps) => {
 // health equates to the number of turns before a bomb explodes
 // capacity is how many bombs can be active at a time
 
-export const basicBombBag = (level, props = {}) => {
+export const proceduralBombBag = (level, props = {}) => {
+  const points = Math.random() * 3 + level;
+  let numTraits = 1;
+  if (points > 4) {
+    numTraits = 2;
+  } else if (points > 6) {
+    numTraits = 3;
+  }
+
+  const plentifulCapacity = {capacity: 3};
+  const largeRadius = {radius: 2};
+  const veryLargeRadius = {radius: 3};
+  const shortFuse = {health: 2};
+  const longFuse = {health: 5};
+  const powerful = {power: 2};
+  
+  let bagProps = {};
+  let bombProps = {};
+
+  const availableTraits = shuffle([plentifulCapacity, largeRadius, veryLargeRadius, shortFuse, longFuse, powerful]);
+  const traits = availableTraits.slice(0, numTraits);
+  for (const trait of traits) {
+    if (trait === plentifulCapacity) {
+      bagProps = {...bagProps, ...trait}
+    }
+    else {
+      bombProps = {...bombProps, ...trait}
+    }
+  }
+  
+  return makeBombBag(bagProps, bombProps, props);
+}
+
+export const starterBombBag = (level, props = {}) => {
   const bagProps = {
-    capacity: Math.ceil(Math.random() * level),
+    capacity: Math.max(Math.ceil(Math.random() * level * 0.75), 3),
     description: 'A standard bomb bag',
   }
   const bombProps = {
@@ -42,20 +75,7 @@ export const basicBombBag = (level, props = {}) => {
   return makeBombBag(bagProps, bombProps, props);
 }
 
-export const quickBombBag = (level, props = {}) => {
-  const bagProps = {
-    capacity: Math.ceil(Math.random() * level),
-    description: 'These bombs have short fuses',
-  }
-  const bombProps = {
-    radius: Math.ceil(Math.random() * level),
-    health: 2,
-    power: 1,
-  };
-  return makeBombBag(bagProps, bombProps, props);
-}
-
-const weapons = [basicBombBag, quickBombBag];
+const weapons = [proceduralBombBag];
 
 export const getRandomWeapon = () => {
   const shuffled = shuffle(weapons);
