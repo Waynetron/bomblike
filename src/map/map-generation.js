@@ -1,9 +1,9 @@
 import { MAP_WIDTH, MAP_HEIGHT } from '../constants';
-import { makeEntity } from '../entity/entities';
-import { isAdjacentEdge, getAdjacentPositions, getEntitiesAt } from '../map/map-util';
-import { empty, staircase, wall, goblin } from '../entity/entities';
+import { isAdjacentEdge, getAdjacentPositions } from '../map/map-util';
+import { empty, staircase, wall } from '../entity/entities';
+import { getRandomEnemy } from '../entity/enemies';
 import { getRandomWeapon } from '../entity/weapons';
-import { UP, DOWN, LEFT, RIGHT, shuffle } from '../math';
+import { shuffle } from '../math';
 import { isEqual } from 'lodash';
 
 export const makeRoomWithPlayerAndWalls = (player) => {
@@ -52,9 +52,7 @@ export const generateLevel = (level, player) => {
   for (let i = 0; i < numEnemies; i += 1) {
     const emptyEntity = shuffledEmptyEntities.pop();
 
-    const enemy = goblin({
-      position: emptyEntity.position,
-    });
+    const enemy = getRandomEnemy(level, {position: emptyEntity.position});
     entities.push(enemy);
   }
 

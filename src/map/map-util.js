@@ -1,6 +1,7 @@
 import { MAP_WIDTH, MAP_HEIGHT } from '../constants';
 import { UP, DOWN, LEFT, RIGHT, add } from '../math';
 import { isEqual } from 'lodash';
+import { findPlayer } from '../entity/entities';
 
 export const getEntitiesAt = (position, entities) =>
   entities.filter(entity => isEqual(entity.position, position));
@@ -16,7 +17,7 @@ export const getAdjacentPositions = (position) => [
   add(UP, position), add(DOWN, position), add(LEFT, position), add(RIGHT, position)
 ];
 
-export const getPositionsInDirection = (direction, startPosition, distance, entities) => {
+export const getPositionsInDirection = (direction, startPosition, distance) => {
   const positions = [];
   while (distance > 0) {
     const scaledDirection = {x: direction.x * distance, y: direction.y * distance};
@@ -25,6 +26,22 @@ export const getPositionsInDirection = (direction, startPosition, distance, enti
     distance -= 1;
   }
   return positions;
+};
+
+export const isPlayerInDirection = (direction, startPosition, distance, entities) => {
+  const positions = getPositionsInDirection(direction, startPosition, distance);
+  for (const position of positions.reverse()) {
+    const entitiesAtPosition = getEntitiesAt(position, entities);
+    for (const entity of entitiesAtPosition) {
+      if (entity.char === '@') {
+        return true;
+      }
+      else if (entity.solid) {
+        return false;
+      }
+    }
+  }
+  return false;
 };
 
 export const isWalkable = (position, entities) => {

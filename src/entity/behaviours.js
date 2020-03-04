@@ -3,8 +3,8 @@ Behaviours are used at the start of a turn to generate a set of actions
 */
 
 import { getEntitiesAt, getEntitiesAtPositions, getAdjacentPositions,
-  isWalkable, getPositionsInDirection } from '../map/map-util';
-import { flame } from './entities';
+  isWalkable, getPositionsInDirection, isPlayerInDirection } from '../map/map-util';
+import { flame, findPlayer } from './entities';
 import { UP, DOWN, LEFT, RIGHT, add, subtract, shuffle } from '../math';
 import { remove } from 'lodash';
 
@@ -42,6 +42,20 @@ export const attackSelf = (entity, entities) => {
 export const walkInALine = (entity, entities) => {
   const { facing } = entity;
   return [{type: 'move', direction: facing, cost: 1}]
+}
+
+export const pursuePlayerInLineOfSight = (entity, entities) => {
+  for (const direction of [UP, DOWN, LEFT, RIGHT]) {
+    const range = 12;
+    if (isPlayerInDirection(direction, entity.position, range, entities)) {
+      return [
+        {type: 'move', direction, cost: 1},
+        {type: 'face', direction, cost: 0}
+      ]
+    }
+
+  }
+  return [];
 }
 
 export const faceWalkable = (entity, entities) => {

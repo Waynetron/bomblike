@@ -1,5 +1,4 @@
-import { traverseStairs, walkInALine, faceWalkable, attackPlayer,
-  explodeOnDeath, attackSelf, pickUpWeapons } from '../entity/behaviours';
+import { traverseStairs, explodeOnDeath, attackSelf, pickUpWeapons } from '../entity/behaviours';
 import { starterBombBag } from './weapons';
 
 let _id = 0;
@@ -67,16 +66,6 @@ export const flame = (props) => {
     solid: false,
     behaviours: [attackSelf],
     health: 1,
-    ...props,
-  })
-};
-
-export const goblin = (props) => {
-  return makeEntity({
-    char: 'G',
-    solid: true,
-    behaviours: [walkInALine, faceWalkable, attackPlayer],
-    description: 'You see a gooblini.',
     ...props,
   })
 };
