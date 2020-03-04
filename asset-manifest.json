@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/bomblike/static/css/main.7fa6421b.chunk.css",
+    "main.js": "/bomblike/static/js/main.6e94988e.chunk.js",
+    "main.js.map": "/bomblike/static/js/main.6e94988e.chunk.js.map",
+    "runtime-main.js": "/bomblike/static/js/runtime-main.6792a45e.js",
+    "runtime-main.js.map": "/bomblike/static/js/runtime-main.6792a45e.js.map",
+    "static/js/2.245ffaaf.chunk.js": "/bomblike/static/js/2.245ffaaf.chunk.js",
+    "static/js/2.245ffaaf.chunk.js.map": "/bomblike/static/js/2.245ffaaf.chunk.js.map",
+    "index.html": "/bomblike/index.html",
+    "precache-manifest.aa334c7d712e58933f72a4aec86f3346.js": "/bomblike/precache-manifest.aa334c7d712e58933f72a4aec86f3346.js",
+    "service-worker.js": "/bomblike/service-worker.js",
+    "static/css/main.7fa6421b.chunk.css.map": "/bomblike/static/css/main.7fa6421b.chunk.css.map",
+    "static/js/2.245ffaaf.chunk.js.LICENSE.txt": "/bomblike/static/js/2.245ffaaf.chunk.js.LICENSE.txt",
+    "static/media/App.css": "/bomblike/static/media/Geomanist-Ultra.dfb14ae6.woff"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.6792a45e.js",
+    "static/js/2.245ffaaf.chunk.js",
+    "static/css/main.7fa6421b.chunk.css",
+    "static/js/main.6e94988e.chunk.js"
+  ]
+}
