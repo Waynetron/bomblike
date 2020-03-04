@@ -3,7 +3,7 @@ Behaviours are used at the start of a turn to generate a set of actions
 */
 
 import { getEntitiesAt, getEntitiesAtPositions, getAdjacentPositions,
-  isWalkable, getPositionsInDirection, isPlayerInDirection } from '../map/map-util';
+  isWalkable, getPositionsInDirection, isCharInDirection } from '../map/map-util';
 import { flame, findPlayer } from './entities';
 import { UP, DOWN, LEFT, RIGHT, add, subtract, turn, shuffle } from '../math';
 import { remove } from 'lodash';
@@ -47,7 +47,21 @@ export const walkInALine = (entity, entities) => {
 export const pursuePlayerInLineOfSight = (entity, entities) => {
   for (const direction of [UP, DOWN, LEFT, RIGHT]) {
     const range = 12;
-    if (isPlayerInDirection(direction, entity.position, range, entities)) {
+    if (isCharInDirection('@', direction, entity.position, range, entities)) {
+      return [
+        {type: 'move', direction, cost: 1},
+        {type: 'face', direction, cost: 0}
+      ]
+    }
+
+  }
+  return [];
+}
+
+export const pursueBombInLineOfSight = (entity, entities) => {
+  for (const direction of [UP, DOWN, LEFT, RIGHT]) {
+    const range = 12;
+    if (isCharInDirection('b', direction, entity.position, range, entities)) {
       return [
         {type: 'move', direction, cost: 1},
         {type: 'face', direction, cost: 0}
@@ -83,6 +97,24 @@ export const attackPlayer = (entity, entities) => {
 
   if (player) {
     return [{type: 'attack', value: 1, target: player, cost: 0}];
+  }
+
+  return [];
+}
+
+export const eatBomb = (entity, entities) => {
+  const adjacent = getAdjacentPositions(entity.position);
+  for (const position of adjacent) {
+    const adjacentEntities = getEntitiesAt(position, entities);
+    const bomb = adjacentEntities.find(entity => entity.char === 'b');
+    if (bomb) {
+      const direction = subtract(position, entity.position);
+      
+      return [
+        {type: 'eat', target: bomb, cost: 0},
+        {type: 'move', direction, cost: 1}
+      ];
+    }
   }
 
   return [];

@@ -1,4 +1,5 @@
-import { walkInALine, faceWalkable, attackPlayer, pursuePlayerInLineOfSight } from './behaviours';
+import { walkInALine, faceWalkable, attackPlayer, pursuePlayerInLineOfSight,
+  pursueBombInLineOfSight, eatBomb } from './behaviours';
 import { makeEntity } from './entities';
 
 export const gooblini = (props) => {
@@ -23,13 +24,24 @@ export const charger = (props) => {
   })
 };
 
+export const eater = (props) => {
+  return makeEntity({
+    char: 'E',
+    solid: true,
+    behaviours: [eatBomb, pursueBombInLineOfSight, attackPlayer],
+    name: 'Bombeater',
+    description: 'Eats bombs, om nom',
+    ...props,
+  })
+};
+
 export const getRandomEnemy = (level, props) => {
   const levels = [
-    [gooblini],
-    [gooblini, charger],
-    [gooblini, charger],
-    [gooblini, charger],
-    [gooblini, charger],
+    [gooblini, eater],
+    [gooblini, charger, eater],
+    [gooblini, charger, eater],
+    [gooblini, charger, eater],
+    [gooblini, charger, eater],
   ];
 
   const available = levels[level - 1];

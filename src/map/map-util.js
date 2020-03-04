@@ -28,12 +28,12 @@ export const getPositionsInDirection = (direction, startPosition, distance) => {
   return positions;
 };
 
-export const isPlayerInDirection = (direction, startPosition, distance, entities) => {
+export const isCharInDirection = (char, direction, startPosition, distance, entities) => {
   const positions = getPositionsInDirection(direction, startPosition, distance);
   for (const position of positions.reverse()) {
     const entitiesAtPosition = getEntitiesAt(position, entities);
     for (const entity of entitiesAtPosition) {
-      if (entity.char === '@') {
+      if (entity.char === char) {
         return true;
       }
       else if (entity.solid) {

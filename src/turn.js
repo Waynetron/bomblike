@@ -44,6 +44,12 @@ const performActions = (actions, entity, entities, newEvents) => {
       if (action.type === 'wait') {
         entity.status['waiting'] = true;
       }
+      // similar to attack, but immediately sets target to !alive to avoid triggering explosions
+      if (action.type === 'eat') {
+        action.target.alive = false;
+        action.target.solid = false;
+        newEvents.shake = true;
+      }
       if (action.type === 'attack') {
         const { value, target } = action;
         target.health -= value;
@@ -96,14 +102,19 @@ const performTurn = (entity, entities, newEvents) => {
 export const performTurns = (entities)=> {
   const newEvents = {};
   const player = findPlayer(entities);
-  const everythingElse = Object.values(entities).filter(entity => entity.id !== player.id);
+  const everythingElse = entities.filter(entity => entity.id !== player.id);
 
   for (const entity of [player, ...everythingElse]) {
     performTurn(entity, entities, newEvents);
   }
 
-  // Remove anything with 0 health
-  const remainingEntities = Object.values(entities).filter(entity => entity.health > 0);
+  // Remove anything that is dead
+  for (const entity of entities) {
+    if (entity.health <= 0) {
+      entity.alive = false;
+    }
+  }
+  const remainingEntities = entities.filter(entity => entity.alive);
 
   return {
     newEntities: remainingEntities,
