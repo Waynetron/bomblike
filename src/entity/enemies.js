@@ -6,7 +6,8 @@ export const gooblini = (props) => {
     char: 'G',
     solid: true,
     behaviours: [walkInALine, faceWalkable, attackPlayer],
-    description: 'You see a gooblini.',
+    name: 'Gooblini',
+    description: "Basic enemy, but best not touch it",
     ...props,
   })
 };
@@ -16,7 +17,8 @@ export const charger = (props) => {
     char: 'C',
     solid: true,
     behaviours: [pursuePlayerInLineOfSight, walkInALine, attackPlayer],
-    description: 'You see a charger.',
+    name: 'Charger',
+    description: 'If it sees you, it charges toward you',
     ...props,
   })
 };

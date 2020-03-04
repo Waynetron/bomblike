@@ -5,7 +5,7 @@ Behaviours are used at the start of a turn to generate a set of actions
 import { getEntitiesAt, getEntitiesAtPositions, getAdjacentPositions,
   isWalkable, getPositionsInDirection, isPlayerInDirection } from '../map/map-util';
 import { flame, findPlayer } from './entities';
-import { UP, DOWN, LEFT, RIGHT, add, subtract, shuffle } from '../math';
+import { UP, DOWN, LEFT, RIGHT, add, subtract, turn, shuffle } from '../math';
 import { remove } from 'lodash';
 
 export const explodeOnDeath = (entity, entities) => {
@@ -60,24 +60,21 @@ export const pursuePlayerInLineOfSight = (entity, entities) => {
 
 export const faceWalkable = (entity, entities) => {
   const { facing } = entity;
-  const nextPosition = add(entity.position, facing);
-  // Continue facing the existing direction if nothing is in the way
-  if (isWalkable(nextPosition, entities)) {
-    return [];
-  }
 
-  const adjacent = getAdjacentPositions(entity.position);
-  const available = adjacent.filter(position => isWalkable(position, entities))
+  // The order is intentional. The forward (facing) direction is placed first, so that
+  // the entity will continue moving in that direction if it can.
+  // Turning around is placed at the end, so that turning left / right is favoured.
+  const directions = [facing, turn(-90, facing), turn(90, facing), turn(180, facing)];
+
+  for (const direction of directions) {
+    const position = add(direction, entity.position);
+    if (isWalkable(position, entities)) {
+      return [{type: 'face', direction, cost: 0}]
+    }
+  }
 
   // Surrounded on all sides, do nothing
-  if (available.length === 0) {
-    return [];
-  }
-
-  const [randomAvailableDirection] = shuffle(available);
-  const newDirection = subtract(randomAvailableDirection, entity.position);
-
-  return [{type: 'face', direction: newDirection, cost: 0}];
+  return [];
 }
 
 export const attackPlayer = (entity, entities) => {
