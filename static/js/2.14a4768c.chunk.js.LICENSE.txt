@@ -13,6 +13,11 @@ object-assign
  * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
  */
 
+/**
+ * @license
+ * Lodash lodash.com/license | Underscore.js 1.8.3 underscorejs.org/LICENSE
+ */
+
 /** @license React v0.18.0
  * scheduler.production.min.js
  *
