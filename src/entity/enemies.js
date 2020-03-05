@@ -50,8 +50,8 @@ export const spooky = (props) => {
 
 export const getRandomEnemy = (level, props) => {
   const levels = [
-    [gooblini, eater],
-    [gooblini, charger, eater],
+    [gooblini],
+    [gooblini, charger],
     [gooblini, charger, eater],
     [gooblini, charger, eater],
     [gooblini, charger, eater],

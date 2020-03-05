@@ -31,7 +31,7 @@ const getZIndex = (solid, char) => {
   if (char === 'S') {
     return 3;
   }
-  if (solid) {
+  if (solid || char === 'b') {
     return 2;
   }
   
