@@ -21,6 +21,7 @@ export const makeEntity = (props) => {
     status: {},
     health: 1,
     description: '',
+    visible: true,
     ...props,
   }
 };

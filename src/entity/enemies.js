@@ -1,5 +1,6 @@
 import { walkInALine, faceWalkable, attackPlayer, pursuePlayerInLineOfSight,
-  pursueBombInLineOfSight, eatBomb, pursuePlayerThroughWalls } from './behaviours';
+  pursueBombInLineOfSight, eatBomb, pursuePlayerThroughWalls,
+  spawnGhostOnDeath } from './behaviours';
 import { makeEntity } from './entities';
 
 export const gooblini = (props) => {
@@ -44,6 +45,19 @@ export const spooky = (props) => {
     behaviours: [pursuePlayerThroughWalls, attackPlayer],
     name: 'Spooky ghost',
     description: 'Oooooo spooky',
+    ...props,
+  })
+};
+
+export const ghostSpawner = (props) => {
+  return makeEntity({
+    char: 's',
+    solid: false,
+    health: 5,
+    behaviours: [spawnGhostOnDeath],
+    name: 'Ghost spawner',
+    description: '',
+    visible: false,
     ...props,
   })
 };

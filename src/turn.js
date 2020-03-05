@@ -1,10 +1,8 @@
-import { findPlayer, bomb } from './entity/entities';
-import { spooky } from './entity/enemies';
+import { findPlayer } from './entity/entities';
 import { getEntitiesAt } from './map/map-util';
 import { subtract } from './math';
 
 let totalTurns = 0;
-const NUM_TURNS_UNTIL_GHOST = 100;
 
 export const move = (entity, entities, direction, force = false) => {
   const newPosition = {
@@ -126,11 +124,6 @@ export const performTurns = (entities)=> {
   const remainingEntities = entities.filter(entity => entity.alive);
 
   totalTurns++;
-  // every nth turn, add a ghost
-  if (totalTurns % NUM_TURNS_UNTIL_GHOST === 0) {
-    const ghost = spooky({position: {x: -3, y: -3}});
-    remainingEntities.push(ghost);
-  }
 
   return {
     newEntities: remainingEntities,

@@ -129,7 +129,7 @@ function App() {
               <button onClick={backToTitle}>Back to title</button>
             </Overlay>
           )}
-          <Map entities={entities} />
+          <Map entities={entities.filter(e => e.visible)} />
         </MapContainer>
       }
     </AppContainer>

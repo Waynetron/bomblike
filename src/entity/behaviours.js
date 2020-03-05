@@ -5,6 +5,7 @@ Behaviours are used at the start of a turn to generate a set of actions
 import { getEntitiesAt, getEntitiesAtPositions, getAdjacentPositions,
   isWalkable, getPositionsInDirection, isCharInDirection } from '../map/map-util';
 import { flame, findPlayer } from './entities';
+import { spooky } from './enemies';
 import { UP, DOWN, LEFT, RIGHT, add, subtract, turn, shuffle } from '../math';
 import { remove } from 'lodash';
 
@@ -46,6 +47,16 @@ export const explodeOnDeath = (entity, entities) => {
       {type: 'spawn', value: 1, entity: flame({position}), cost: 0}
     ));
     return [...attackActions, ...spawnActions];
+  }
+}
+
+export const spawnGhostOnDeath = (entity, entities) => {
+  entity.health -= 1;
+  if (entity.health > 0) {
+    return [];
+  } else {
+    const { position } = entity;
+    return [{type: 'spawn', value: 1, entity: spooky({position}), cost: 0}]    
   }
 }
 

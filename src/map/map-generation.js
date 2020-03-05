@@ -1,7 +1,7 @@
 import { MAP_WIDTH, MAP_HEIGHT } from '../constants';
 import { isAdjacentEdge, getAdjacentPositions } from '../map/map-util';
 import { empty, staircase, wall } from '../entity/entities';
-import { getRandomEnemy } from '../entity/enemies';
+import { getRandomEnemy, ghostSpawner } from '../entity/enemies';
 import { getRandomWeapon } from '../entity/weapons';
 import { shuffle } from '../math';
 import { isEqual } from 'lodash';
@@ -56,6 +56,18 @@ const generateStandardLevel = (level, player) => {
     entities.push(enemy);
   }
 
+  // Add ghost spawner (spawns a ghost if the player is taking too long)
+  const ghostsProps = [
+    {health: 75, position: {x: -2, y: -2}},
+    {health: 100, position: {x: MAP_WIDTH + 1, y: -2}},
+    {health: 125, position: {x: MAP_WIDTH + 1, y: MAP_HEIGHT + 1}},
+    {health: 150, position: {x: -2, y: MAP_HEIGHT + 1}},
+  ]
+  for (const props of ghostsProps) {
+    const spawner = ghostSpawner(props);
+    entities.push(spawner); 
+  }
+
   // Add staircase and weapons underneath breakable walls
   const walls = entities.filter(entity => entity.char === '+')
   const shuffledWalls = shuffle(walls);
@@ -71,7 +83,8 @@ const generateStandardLevel = (level, player) => {
     entities.push(weapon);
   }
 
-  return entities;
+  // finally, remove all the empty entities
+  return entities.filter(entity => entity.char !== '·');
 }
 
 const generateShop = (level, player) => {
