@@ -59,6 +59,10 @@ export const makeRoomWithPlayerAndWalls = (player) => {
   return [...entities, ...shuffledEmptyEntities];
 }
 
+const distanceBetween = ({x: x1, y: y1}, {x: x2, y: y2}) => {
+  return (x1 - x2) + (y1 - y2);
+}
+
 const generateStandardLevel = (level, player) => {
   const entities = makeRoomWithPlayerAndWalls(player);
 
@@ -86,8 +90,17 @@ const generateStandardLevel = (level, player) => {
   }
 
   // Add staircase and weapons underneath breakable walls
-  const walls = entities.filter(entity => entity.char === '+')
-  const shuffledWalls = shuffle(walls);
+  const walls = entities.filter(entity => entity.char === '+');
+
+  // exclude the closest walls
+  walls.sort((a, b)=> {
+    const distanceA = distanceBetween(a.position, player.position);
+    const distanceB = distanceBetween(b.position, player.position);
+    return distanceA - distanceB;
+  })
+  const farthestWalls = walls.slice(Math.floor(walls.length / 3));
+
+  const shuffledWalls = shuffle(farthestWalls);
   const staircaseDown = staircase({
     position: shuffledWalls.pop().position
   });
