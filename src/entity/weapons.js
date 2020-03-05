@@ -63,7 +63,7 @@ export const proceduralBombBag = (level, props = {}) => {
 
 export const starterBombBag = (level, props = {}) => {
   const bagProps = {
-    capacity: Math.max(Math.ceil(Math.random() * level * 0.75), 3),
+    capacity: 1,
     description: 'A standard bomb bag',
   }
   const bombProps = {

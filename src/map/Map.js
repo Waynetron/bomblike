@@ -45,7 +45,6 @@ const StatsContainer = styled.div`
 `
 
 const getCapacityText = (capacity)=> {
-  console.log(capacity);
   const options = ['', 'large', 'plentiful'];
   return options[capacity - 1];
 }

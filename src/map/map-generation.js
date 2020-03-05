@@ -42,7 +42,7 @@ export const makeRoomWithPlayerAndWalls = (player) => {
   return entities;
 }
 
-export const generateLevel = (level, player) => {
+const generateStandardLevel = (level, player) => {
   const entities = makeRoomWithPlayerAndWalls(player);
 
   // Add enemies
@@ -72,4 +72,34 @@ export const generateLevel = (level, player) => {
   }
 
   return entities;
+}
+
+const generateShop = (level, player) => {
+  const entities = [player];
+  
+  // place outer walls
+  for (let x = 0; x < MAP_WIDTH; x += 1) {
+    for (let y = 0; y < MAP_HEIGHT; y += 1) {
+      const position = {x, y};
+      if (isAdjacentEdge(position)) {
+        const unbreakableWall = wall({position}, false);
+        entities.push(unbreakableWall);
+      }
+    }
+  }
+
+  // place items for sale
+  const positions = [{x: 2, y: 4}, {x: 4, y: 4}, {x: 6, y: 4}];
+  for (const position of positions) {
+    const weaponFactory = getRandomWeapon();
+    const bagProps = {position};
+    const weapon = weaponFactory(level + 1, bagProps);
+    entities.push(weapon);
+  }
+
+  return entities;
+}
+
+export const generateLevel = (level, player) => {
+  return generateStandardLevel(level, player);
 }
