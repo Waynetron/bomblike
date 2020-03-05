@@ -13,6 +13,7 @@ const getColour = (char) => {
     'b': 'yellow',
     'ó': 'yellow',
     'S': 'white',
+    '❒': 'white',
   }
   
   return mapping[char] || 'tomato';
@@ -23,11 +24,15 @@ const getBackgroundColour = (char) => {
     '#': 'beige',
     '+': '#4135ff',
     'S': '#AAAAFF77',
+    '❒': 'black',
   }
   return mapping[char] || 'transparent'
 }
 
 const getZIndex = (solid, char) => {
+  if (char === '❒') {
+    return 1;
+  }
   if (char === 'S') {
     return 3;
   }
@@ -124,6 +129,10 @@ const getDisplayChar = (char, health) => {
 
   if (char === 'b') {
     return health;
+  }
+
+  if (char === '❒') {
+    return '';
   }
 
   return char;

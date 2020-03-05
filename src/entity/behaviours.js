@@ -9,10 +9,19 @@ import { spooky } from './enemies';
 import { UP, DOWN, LEFT, RIGHT, add, subtract, turn, shuffle } from '../math';
 import { remove } from 'lodash';
 
+const isAttackable = (entity) => {
+  if (entity.char === '❒') {
+    return false;
+  }
+  if (entity.solid || entity.char === '@') {
+    return true;
+  }
+  
+  return false;
+}
+
 const containsAttackable = (position, entities) => {
-  return getEntitiesAt(position, entities).find(
-    entity => entity.solid || entity.char === '@'
-  )
+  return getEntitiesAt(position, entities).find(isAttackable)
 }
 
 export const explodeOnDeath = (entity, entities) => {

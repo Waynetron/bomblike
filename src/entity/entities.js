@@ -53,11 +53,20 @@ export const bomb = (props) => {
     char: 'b',
     solid: true,
     behaviours: [explodeOnDeath],
-    description: "You see a bomb. It is set to go off",
+    description: "It's a bomb, and it's going to explode!",
     health: 3,
     power: 1,
     radius: 1,
-    speed: 'full',
+    ...props,
+  })
+};
+
+export const hole = (props) => {
+  return makeEntity({
+    char: '❒',
+    solid: true,
+    description: "A hole in the ground",
+    health: 999,
     ...props,
   })
 };

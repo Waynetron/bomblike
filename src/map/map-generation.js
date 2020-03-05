@@ -1,6 +1,6 @@
 import { MAP_WIDTH, MAP_HEIGHT } from '../constants';
 import { isAdjacentEdge, getAdjacentPositions } from '../map/map-util';
-import { empty, staircase, wall } from '../entity/entities';
+import { empty, staircase, wall, hole } from '../entity/entities';
 import { getRandomEnemy, ghostSpawner } from '../entity/enemies';
 import { getRandomWeapon } from '../entity/weapons';
 import { shuffle } from '../math';
@@ -8,6 +8,7 @@ import { isEqual } from 'lodash';
 
 export const makeRoomWithPlayerAndWalls = (player) => {
   const entities = [player];
+  const emptyEntities = [];
 
   for (let x = 0; x < MAP_WIDTH; x += 1) {
     for (let y = 0; y < MAP_HEIGHT; y += 1) {
@@ -28,18 +29,34 @@ export const makeRoomWithPlayerAndWalls = (player) => {
         const unbreakableWall = wall({position}, false);
         entities.push(unbreakableWall);
       }
-      else if (Math.random() > 0.8) {
-        const breakableWall = wall({position}, true);
-        entities.push(breakableWall);
-      }
       else {
         const emptyEntity = empty({position});
-        entities.push(emptyEntity);
+        emptyEntities.push(emptyEntity);
       }
     }
   }
 
-  return entities;
+  let shuffledEmptyEntities = shuffle(emptyEntities);
+
+  // need to leave some spots for the player and enemies to fit and walk around
+  const maxThings = emptyEntities.length - 16;
+  // need to have at least enough breakable walls to hide items and stairs
+  const minBreakableWalls = 5;
+  const numBreakableWalls = Math.min(Math.random() * (maxThings / 4) + minBreakableWalls, maxThings);
+  const remainingRandomSpots = maxThings - numBreakableWalls;
+  const numHoles = Math.min(Math.random() * remainingRandomSpots / 2, 0);
+
+  for (let i = 0; i < numBreakableWalls; i += 1) {
+    const position = shuffledEmptyEntities.pop().position;
+     entities.push(wall({position}, true));
+  }
+
+  for (let i = 0; i < numHoles; i += 1) {
+    const position = shuffledEmptyEntities.pop().position;
+     entities.push(hole({position}));
+  }
+
+  return [...entities, ...shuffledEmptyEntities];
 }
 
 const generateStandardLevel = (level, player) => {
@@ -76,12 +93,10 @@ const generateStandardLevel = (level, player) => {
   });
   entities.push(staircaseDown);
 
-  for (let i = 0; i < 2; i += 1) {
-    const weaponFactory = getRandomWeapon();
-    const bagProps = {position: shuffledWalls.pop().position};
-    const weapon = weaponFactory(level + 1, bagProps);
-    entities.push(weapon);
-  }
+  const weaponFactory = getRandomWeapon();
+  const bagProps = {position: shuffledWalls.pop().position};
+  const weapon = weaponFactory(level + 1, bagProps);
+  entities.push(weapon);
 
   // finally, remove all the empty entities
   return entities.filter(entity => entity.char !== '·');
