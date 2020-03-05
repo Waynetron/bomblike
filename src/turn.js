@@ -1,16 +1,20 @@
 import { findPlayer, bomb } from './entity/entities';
+import { spooky } from './entity/enemies';
 import { getEntitiesAt } from './map/map-util';
 import { subtract } from './math';
 
-export const move = (entity, entities, direction) => {
+let totalTurns = 0;
+const NUM_TURNS_UNTIL_GHOST = 100;
+
+export const move = (entity, entities, direction, force = false) => {
   const newPosition = {
     x: entity.position.x + direction.x,
     y: entity.position.y + direction.y
   }
 
-  // Check if anything is in the way
+  // Check if anything is in the way (unless force is true)
   const upcomingEntities = getEntitiesAt(newPosition, entities);
-  if (upcomingEntities.filter(upcoming => upcoming.solid).length > 0) {
+  if (!force && upcomingEntities.filter(upcoming => upcoming.solid).length > 0) {
     return false;
   }
 
@@ -57,7 +61,7 @@ const performActions = (actions, entity, entities, newEvents) => {
         newEvents.shake = true;
       }
       if (action.type === 'move') {
-        move(entity, entities, action.direction)
+        move(entity, entities, action.direction, action.force)
       }
       if (action.type === 'spawn') {
         const { entity } = action;
@@ -76,6 +80,11 @@ const performActions = (actions, entity, entities, newEvents) => {
 }
 
 const performTurn = (entity, entities, newEvents) => {
+  // entities with speed 'half' only perform every 2nd turn
+  if (entity.speed === 'half' && totalTurns % 2 === 0) {
+    return
+  }
+
   // Reset status
   entity.status = {};
   entity.actionPoints = entity.actionsPerTurn;
@@ -115,6 +124,13 @@ export const performTurns = (entities)=> {
     }
   }
   const remainingEntities = entities.filter(entity => entity.alive);
+
+  totalTurns++;
+  // every nth turn, add a ghost
+  if (totalTurns % NUM_TURNS_UNTIL_GHOST === 0) {
+    const ghost = spooky({position: {x: -3, y: -3}});
+    remainingEntities.push(ghost);
+  }
 
   return {
     newEntities: remainingEntities,

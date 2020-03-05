@@ -11,26 +11,38 @@ const getColour = (char) => {
     '>': 'yellow',
     '*': 'yellow',
     'b': 'yellow',
-    'G': '#4135ff',
     'ó': 'yellow',
+    'S': 'white',
   }
   
-  return mapping[char] || 'white';
+  return mapping[char] || 'tomato';
 }
 
 const getBackgroundColour = (char) => {
   const mapping = {
     '#': 'beige',
     '+': '#4135ff',
+    'S': '#AAAAFF77',
   }
   return mapping[char] || 'transparent'
+}
+
+const getZIndex = (solid, char) => {
+  if (char === 'S') {
+    return 3;
+  }
+  if (solid) {
+    return 2;
+  }
+  
+  return 1;
 }
 
 const Container = styled.div.attrs(({ x, y, solid, char }) => ({
   style: {
     left: x * CELL_SIZE + 'px',
     top: y * CELL_SIZE + 'px',
-    zIndex: solid ? 2 : 1,
+    zIndex: getZIndex(solid, char),
     color: getColour(char),
   }
 }))`

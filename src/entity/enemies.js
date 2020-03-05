@@ -1,5 +1,5 @@
 import { walkInALine, faceWalkable, attackPlayer, pursuePlayerInLineOfSight,
-  pursueBombInLineOfSight, eatBomb } from './behaviours';
+  pursueBombInLineOfSight, eatBomb, pursuePlayerThroughWalls } from './behaviours';
 import { makeEntity } from './entities';
 
 export const gooblini = (props) => {
@@ -31,6 +31,19 @@ export const eater = (props) => {
     behaviours: [eatBomb, pursueBombInLineOfSight, attackPlayer],
     name: 'Bombeater',
     description: 'Eats bombs, om nom',
+    ...props,
+  })
+};
+
+export const spooky = (props) => {
+  return makeEntity({
+    char: 'S',
+    solid: false,
+    health: 99,
+    speed: 'half',
+    behaviours: [pursuePlayerThroughWalls, attackPlayer],
+    name: 'Spooky ghost',
+    description: 'Oooooo spooky',
     ...props,
   })
 };

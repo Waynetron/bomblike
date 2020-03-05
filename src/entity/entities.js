@@ -56,6 +56,7 @@ export const bomb = (props) => {
     health: 3,
     power: 1,
     radius: 1,
+    speed: 'full',
     ...props,
   })
 };

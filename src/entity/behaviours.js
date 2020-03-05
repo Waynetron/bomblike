@@ -72,6 +72,16 @@ export const pursueBombInLineOfSight = (entity, entities) => {
   return [];
 }
 
+export const pursuePlayerThroughWalls = (entity, entities) => {
+  const player = findPlayer(entities);
+  const x = player.position.x > entity.position.x ? 1 : -1;
+  const y = player.position.y > entity.position.y ? 1 : -1;
+
+  const direction = Math.random() > 0.5 ? {x: 0, y: y} : {x: x, y: 0};
+
+  return [{type: 'move', direction, cost: 1, force: true}];
+}
+
 export const faceWalkable = (entity, entities) => {
   const { facing } = entity;
 
