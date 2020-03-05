@@ -8,27 +8,41 @@ import { flame, findPlayer } from './entities';
 import { UP, DOWN, LEFT, RIGHT, add, subtract, turn, shuffle } from '../math';
 import { remove } from 'lodash';
 
+const containsAttackable = (position, entities) => {
+  return getEntitiesAt(position, entities).find(
+    entity => entity.solid || entity.char === '@'
+  )
+}
+
 export const explodeOnDeath = (entity, entities) => {
   const {radius, power} = entity;
   entity.health -= 1;
   if (entity.health > 0) {
     return [];
   } else {
-    const positions = [
-      ...getPositionsInDirection(UP, entity.position, radius, entities),
-      ...getPositionsInDirection(DOWN, entity.position, radius, entities),
-      ...getPositionsInDirection(LEFT, entity.position, radius, entities),
-      ...getPositionsInDirection(RIGHT, entity.position, radius, entities),
-      entity.position,
-    ];
-    const entitiesToAttack = getEntitiesAtPositions(positions, entities);
+    const attackPositions = [entity.position];
+    const spawnPositions = [entity.position];
+
+    for (const direction of [UP, DOWN, LEFT, RIGHT]) {
+      const positions = getPositionsInDirection(direction, entity.position, radius, entities)
+      const firstSolidIndex = positions.findIndex(position => containsAttackable(position, entities));
+      if (firstSolidIndex !== -1) {
+        attackPositions.push(positions[firstSolidIndex]);
+        spawnPositions.push(...positions.slice(0, firstSolidIndex + 1));
+      }
+      else {
+        spawnPositions.push(...positions);
+      }
+    }
+
+    const entitiesToAttack = getEntitiesAtPositions(attackPositions, entities);
 
     const attackActions = entitiesToAttack.map(entity => (
       {type: 'attack', value: power, target: entity, cost: 0}
     ));
 
     // Spawn fire
-    const spawnActions = positions.map(position => (
+    const spawnActions = spawnPositions.map(position => (
       {type: 'spawn', value: 1, entity: flame({position}), cost: 0}
     ));
     return [...attackActions, ...spawnActions];

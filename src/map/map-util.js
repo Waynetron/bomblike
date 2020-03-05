@@ -25,12 +25,12 @@ export const getPositionsInDirection = (direction, startPosition, distance) => {
     positions.push(offsetPosition);
     distance -= 1;
   }
-  return positions;
+  return positions.reverse();
 };
 
 export const isCharInDirection = (char, direction, startPosition, distance, entities) => {
   const positions = getPositionsInDirection(direction, startPosition, distance);
-  for (const position of positions.reverse()) {
+  for (const position of positions) {
     const entitiesAtPosition = getEntitiesAt(position, entities);
     for (const entity of entitiesAtPosition) {
       if (entity.char === char) {
