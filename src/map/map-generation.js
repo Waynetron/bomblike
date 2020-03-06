@@ -19,18 +19,15 @@ export const makeRoomWithPlayerAndWalls = (player) => {
         continue;
       }
 
-      // don't place anything next to where the player is unless it is an edge wall
       const adjacentPositons = getAdjacentPositions(player.position);
       const isAdjacentPlayer = adjacentPositons.find(adjPosition => isEqual(position, adjPosition));
-      if (!isAdjacentEdge(position) && isAdjacentPlayer) {
-        continue;
-      }
 
       if (isAdjacentEdge(position) || (x % 2 === 0 && y % 2 === 0)) {
         const unbreakableWall = wall({position}, false);
         entities.push(unbreakableWall);
       }
-      else {
+      // don't place breakable walls next to where the player is
+      else if (!isAdjacentPlayer) {
         const emptyEntity = empty({position});
         emptyEntities.push(emptyEntity);
       }
