@@ -16,6 +16,7 @@ const getColour = (char) => {
     'S': 'white',
     '❒': 'white',
     '♥': '#fffa03',
+    '·': 'tomato'
   }
   
   return mapping[char] || 'tomato';
@@ -62,9 +63,9 @@ const Container = styled.div.attrs(({ x, y, solid, char }) => ({
   height: 0;
 `;
 
-const Inner = styled.div.attrs(({ char }) => ({
+const Inner = styled.div.attrs(({ char, health }) => ({
   style: {
-    opacity: char !== '·' ? '100%' : '10%',
+    opacity: char !== '·' ? '100%' : `${15 * health}%`,
     width: CELL_SIZE + 'px',
     height: CELL_SIZE + 'px',
     backgroundColor: getBackgroundColour(char),
@@ -150,6 +151,7 @@ const Cell = ({entity, hoverStart = ()=>{}}) => {
     <Container x={x} y={y} solid={solid} char={char}>
       <Inner
         char={char}
+        health={entity.health}
         className={`${getBumpClass(status)} ${getShakeClass(char, health)}`}
         onMouseEnter={() => hoverStart(entity)}
       >

@@ -1,4 +1,4 @@
-import { findPlayer } from './entity/entities';
+import { findPlayer, trail } from './entity/entities';
 import { getEntitiesAt } from './map/map-util';
 import { subtract } from './math';
 
@@ -16,6 +16,10 @@ export const move = (entity, entities, direction, force = false) => {
     return false;
   }
 
+  // Add a trail entity at he old position
+  entities.push(trail({position: entity.position}));
+
+  // Move the entity into the new position
   entity.position = newPosition
   return true;
 }

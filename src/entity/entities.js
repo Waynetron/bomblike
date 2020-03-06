@@ -82,6 +82,16 @@ export const flame = (props) => {
   })
 };
 
+export const trail = (props) => {
+  return makeEntity({
+    char: '·',
+    solid: false,
+    behaviours: [attackSelf],
+    health: 3,
+    ...props,
+  })
+};
+
 export const staircase = (props, upOrDown = 'down') => {
   return makeEntity({
     char: upOrDown === 'down' ? '>' : '<',
