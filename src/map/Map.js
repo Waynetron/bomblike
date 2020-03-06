@@ -126,7 +126,6 @@ const Map = ({entities}) => {
 
   return (
     <RowLayout>
-    <Hearts entities={entities} hoverStart={hoverStart} />
       <MapContainer
         width={MAP_WIDTH * CELL_SIZE}
         height={MAP_HEIGHT * CELL_SIZE}
