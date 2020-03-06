@@ -1,17 +1,13 @@
 import React, { useState } from 'react';
 import styled from 'styled-components'
 import Entity from '../entity/Entity';
-import Hearts from '../Hearts';
+import { findPlayer } from '../entity/entities';
 import { CELL_SIZE, MAP_WIDTH, MAP_HEIGHT } from '../constants';
+import { getEntitiesAt } from './map-util';
 
 const RowLayout = styled.div`
   display: flex;
   flex-direction: column;
-`
-
-const ColumnLayout = styled.div`
-  display: flex;
-  flex-direction: row;
 `
 
 const MapContainer = styled.div`
@@ -22,7 +18,7 @@ const MapContainer = styled.div`
 `
 
 const InfoBox = styled.div`
-  justify-content: center;
+  justify-content: start;
   align-content: center;
   flex-direction: column;
   display: flex;
@@ -35,6 +31,11 @@ const InfoBox = styled.div`
     color: white;
     font-weight: 400;
     margin-top: 0.6rem;
+    margin-bottom: 0.5rem;
+  }
+  .key {
+    color: #fffa03;
+    font-weight: 600;
   }
 `
 
@@ -46,7 +47,7 @@ const StatsContainer = styled.div`
     display: inline-block;
   }
   .trait {
-    color: yellow;
+    color: #fffa03;
     font-weight: 600;
   }
 `
@@ -77,13 +78,13 @@ const getTimerText = (timer)=> {
   return text;
 }
 
-const Stats = ({hovered}) => {
-  if (!hovered || !hovered.stats) {
+const Stats = ({entity}) => {
+  if (!entity || !entity.stats) {
     // returning empty stats container to prevent the height from shifting
     return <StatsContainer><p></p></StatsContainer>;
   }
 
-  const { capacity, power, radius, timer } = hovered.stats;
+  const { capacity, power, radius, timer } = entity.stats;
 
   const capacityText = getCapacityText(capacity);
   const powerText = getPowerText(power);
@@ -113,6 +114,67 @@ const Stats = ({hovered}) => {
   );
 }
 
+const getInfoToDisplay = (hovered, entities) => {
+  const player = findPlayer(entities);
+  const entitiesAtPlayer = player ? getEntitiesAt(player.position, entities) : [];
+  const stairs = entitiesAtPlayer.find(entity => entity.char === '>');
+  const weapon = entitiesAtPlayer.find(entity => entity.type === 'weapon');
+
+  if (!weapon && !stairs && !hovered) {
+    return null;
+  }
+
+  const entity = weapon || stairs || hovered;
+
+  // Player sitting over weapon
+  if (weapon) {
+    return (
+      <>
+        <Stats entity={entity} />
+        <p>take <span className="key">(x)</span></p>
+      </>
+    );
+  }
+  // Player sitting over stairs
+  else if (stairs) {
+    return (
+      <>
+        <p>{entity.description || ''}</p>
+        <p>descend <span className="key">(x)</span></p>
+      </>
+    );
+  }
+  // Hovering something with the mouse
+  else {
+    return (
+      <>
+        {hovered.stats
+          ? <Stats entity={hovered} />
+          : <p>{hovered.description || ''}</p>}
+      </>
+    );
+  }
+  
+
+  // if (stairs) {
+  //   return (
+  //     <>
+  //       <p>{"<x> Descend stairs to the next level"}</p>
+  //     </>
+  //   )
+  // }
+
+  // if (hovered) {
+  //   return (
+
+  //   )
+  // }
+
+  // const isBombBag = (hovered && hovered.stats);
+  // {!isBombBag && <p>{hovered ? hovered.description : ''}</p>}
+  //       {isBombBag && <Stats hovered={hovered} />}
+}
+
 const Map = ({entities}) => {
   const [hovered, setHovered] = useState({});
   const hoverStart = (entity) => {
@@ -121,8 +183,6 @@ const Map = ({entities}) => {
   const hoverStop = () => {
     setHovered(null);
   }
-
-  const isBombBag = (hovered && hovered.stats);
 
   return (
     <RowLayout>
@@ -140,8 +200,7 @@ const Map = ({entities}) => {
         )}
       </MapContainer>
       <InfoBox width={MAP_WIDTH * CELL_SIZE}>
-        {!isBombBag && <p>{hovered ? hovered.description : ''}</p>}
-        {isBombBag && <Stats hovered={hovered} />}
+        {getInfoToDisplay(hovered, entities)}
       </InfoBox>
     </RowLayout>
   )

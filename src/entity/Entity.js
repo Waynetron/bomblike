@@ -33,6 +33,9 @@ const getBackgroundColour = (char) => {
 }
 
 const getZIndex = (solid, char) => {
+  if (char === '·') {
+    return 0;
+  }
   if (char === '❒') {
     return 1;
   }

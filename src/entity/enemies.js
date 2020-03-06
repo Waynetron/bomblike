@@ -18,6 +18,7 @@ export const charger = (props) => {
   return makeEntity({
     char: 'C',
     solid: true,
+    facing: {x: 0, y: 0},
     behaviours: [pursuePlayerInLineOfSight, walkInALine, attackPlayer],
     name: 'Charger',
     description: 'If it sees you, it charges toward you',

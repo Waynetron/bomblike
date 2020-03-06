@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { AppContainer, MapContainer, MenuContainer, Overlay } from './containers';
 import Map from './map/Map';
+import { getEntitiesAt } from './map/map-util';
 import { generateLevel } from './map/map-generation';
 import { player, findPlayer } from './entity/entities';
 import { performTurns, move } from './turn';
+import { remove } from 'lodash';
 import './App.css';
 
 const NUM_LEVELS = 5;
@@ -47,20 +49,40 @@ function App() {
     return mapping[key];
   }
 
+  const pickUpWeapon = (player, entities) => {
+    const collidingEntities = getEntitiesAt(player.position, entities);  
+      const weapon = collidingEntities.find(entity => entity.type === 'weapon');
+      if (!weapon) {
+        return false;
+      }
+
+      // pick up the weapon
+      player.weapon = weapon;
+      remove(entities, entity => entity.id === weapon.id);
+      return true;
+  }
+
+  const canEnterStairs = (player, entities) => {
+    const collidingEntities = getEntitiesAt(player.position, entities);  
+    const stairs = collidingEntities.find(entity => entity.char === '>');
+
+    return Boolean(stairs);
+  }
+
   const handleKeyDown = useCallback(event => {
     const player = findPlayer(entities);
     const { key } = event;
     const direction = keyToDirection(key);
+    const primary = key.toLowerCase() === 'x';
     const wait = key.toLowerCase() === 'z';
-    const bomb = key.toLowerCase() === 'x';
     const restart = key.toLowerCase() === 'r'
 
-    if (level === 0 && (bomb || wait)) {
+    if (level === 0 && (primary || wait)) {
       startGame();
       return;
     }
 
-    if ((win || lose) && (bomb || wait)) {
+    if ((win || lose) && (primary || wait)) {
       backToTitle();
       return;
     }
@@ -74,18 +96,27 @@ function App() {
       // player.actions.push({type: 'move', direction, cost: 1})
     }
 
-    if (bomb) {
-      const numBombsOut = entities
-        .filter(entity => entity.char === 'b' && entity.owner.char === '@')
-        .length;
-      
-      if (numBombsOut < player.weapon.capacity) {
-        const action = player.weapon.use(player);
+    if (primary) {
+      if (pickUpWeapon(player, entities)) {
+        // weapon was picked up inside pickUpWeapon
+      }
+      else if (canEnterStairs(player, entities)) {
+        const action = {type: 'change-level', value: 1, cost: 0};
         player.actions.push(action);
+      }
+      else {
+        const numBombsOut = entities
+          .filter(entity => entity.char === 'b' && entity.owner.char === '@')
+          .length;
+        
+        if (numBombsOut < player.weapon.capacity) {
+          const action = player.weapon.use(player);
+          player.actions.push(action);
+        }
       }
     }
 
-    if (direction || wait || bomb) {
+    if (direction || wait || primary) {
       const { newEntities, newEvents } = performTurns(entities);
 
       // Update state

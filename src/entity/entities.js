@@ -41,7 +41,7 @@ export const player = (props) => {
     char: '@',
     solid: false,
     health: 1,
-    behaviours: [traverseStairs, pickUpWeapons, pickUpConsumables],
+    behaviours: [],
     description: "It's you, the player",
     weapon: starterBombBag(1),
     armour: null,
