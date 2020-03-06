@@ -9,7 +9,7 @@ const getColour = (char) => {
     '#': 'black',
     '+': 'beige',
     '>': '#fffa03',
-    '*': '#fffa03',
+    '✱': '#fffa03',
     'b': '#fffa03',
     'ó': '#fffa03',
     '⍚': '#fffa03',
@@ -36,9 +36,13 @@ const getZIndex = (solid, char) => {
     return 1;
   }
   if (char === 'S') {
+    return 4;
+  }
+  if (char === 'b') {
     return 3;
   }
-  if (solid || char === 'b') {
+  
+  if (solid) {
     return 2;
   }
   
