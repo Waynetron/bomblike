@@ -3,6 +3,7 @@ import { isAdjacentEdge, getAdjacentPositions } from '../map/map-util';
 import { empty, staircase, wall, hole } from '../entity/entities';
 import { getRandomEnemy, ghostSpawner } from '../entity/enemies';
 import { getRandomWeapon } from '../entity/weapons';
+import { getRandomItem } from '../entity/items';
 import { shuffle } from '../math';
 import { isEqual } from 'lodash';
 
@@ -110,6 +111,12 @@ const generateStandardLevel = (level, player) => {
   const bagProps = {position: shuffledWalls.pop().position};
   const weapon = weaponFactory(level + 1, bagProps);
   entities.push(weapon);
+
+  const itemFactory = getRandomItem();
+  // const itemProps = {position: shuffledWalls.pop().position};
+  const itemProps = {position: {x: 2, y: 1}};
+  const item = itemFactory(itemProps);
+  entities.push(item);
 
   // finally, remove all the empty entities
   return entities.filter(entity => entity.char !== '·');

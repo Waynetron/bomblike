@@ -140,7 +140,10 @@ export const attackPlayer = (entity, entities) => {
   const player = colliding.find(entity => entity.char === '@');
 
   if (player) {
-    return [{type: 'attack', value: 1, target: player, cost: 0}];
+    return [
+      {type: 'attack', value: 1, target: player, cost: 0},
+      {type: 'attack', value: 1, target: entity, cost: 0}
+    ];
   }
 
   return [];
@@ -209,19 +212,30 @@ export const traverseStairs = (entity, entities) => {
   return [];
 }
 
-export const pickUpWeapons = (entity, entities) => {
-  const oldWeapon = entity.weapon;
-  oldWeapon.position = entity.position;
-  
+export const pickUpWeapons = (entity, entities) => {  
   const collidingEntities = getEntitiesAt(entity.position, entities);  
-  const newWeapon = collidingEntities.find(entity => entity.use);
-  if (!newWeapon) {
+  const weapon = collidingEntities.find(entity => entity.use);
+  if (!weapon) {
     return [];
   }
 
-  // pick up the new weapon
-  entity.weapon = newWeapon;
-  remove(entities, entity => entity.id === newWeapon.id);
+  // pick up the weapon
+  entity.weapon = weapon;
+  remove(entities, entity => entity.id === weapon.id);
+  
+  return [];
+}
+
+export const pickUpArmour = (entity, entities) => {  
+  const collidingEntities = getEntitiesAt(entity.position, entities);  
+  const armour = collidingEntities.find(entity => entity.defense);
+  if (!armour) {
+    return [];
+  }
+
+  // pick up the armour
+  entity.armour = armour;
+  remove(entities, entity => entity.id === armour.id);
   
   return [];
 }

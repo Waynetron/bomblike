@@ -12,6 +12,7 @@ const getColour = (char) => {
     '*': 'yellow',
     'b': 'yellow',
     'ó': 'yellow',
+    '⍚': 'yellow',
     'S': 'white',
     '❒': 'white',
   }

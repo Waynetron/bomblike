@@ -1,10 +1,17 @@
 import React, { useState } from 'react';
 import styled from 'styled-components'
 import Entity from '../entity/Entity';
+import Inventory from '../Inventory';
 import { CELL_SIZE, MAP_WIDTH, MAP_HEIGHT } from '../constants';
 
-const ColumnLayout = styled.div`
+const RowLayout = styled.div`
+  display: flex;
   flex-direction: column;
+`
+
+const ColumnLayout = styled.div`
+  display: flex;
+  flex-direction: row;
 `
 
 const MapContainer = styled.div`
@@ -119,23 +126,26 @@ const Map = ({entities}) => {
 
   return (
     <ColumnLayout>
-      <MapContainer
-        width={MAP_WIDTH * CELL_SIZE}
-        height={MAP_HEIGHT * CELL_SIZE}
-        onMouseLeave={hoverStop}
-      >
-        {entities.map(entity =>
-          <Entity
-            entity={entity}
-            key={entity.id}
-            hoverStart={hoverStart}
-          />
-        )}
-      </MapContainer>
-      <InfoBox width={MAP_WIDTH * CELL_SIZE}>
-        {!isBombBag && <p>{hovered ? hovered.description : ''}</p>}
-        {isBombBag && <Stats hovered={hovered} />}
-      </InfoBox>
+      <Inventory entities={entities} hoverStart={hoverStart} />
+      <RowLayout>
+        <MapContainer
+          width={MAP_WIDTH * CELL_SIZE}
+          height={MAP_HEIGHT * CELL_SIZE}
+          onMouseLeave={hoverStop}
+        >
+          {entities.map(entity =>
+            <Entity
+              entity={entity}
+              key={entity.id}
+              hoverStart={hoverStart}
+            />
+          )}
+        </MapContainer>
+        <InfoBox width={MAP_WIDTH * CELL_SIZE}>
+          {!isBombBag && <p>{hovered ? hovered.description : ''}</p>}
+          {isBombBag && <Stats hovered={hovered} />}
+        </InfoBox>
+      </RowLayout>
     </ColumnLayout>
   )
 }

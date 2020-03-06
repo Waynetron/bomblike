@@ -54,7 +54,12 @@ const performActions = (actions, entity, entities, newEvents) => {
       }
       if (action.type === 'attack') {
         const { value, target } = action;
-        target.health -= value;
+        if (target.armour) {
+          target.armour.defense -= value;
+        }
+        else {
+          target.health -= value;
+        }
         entity.status['attacking'] = subtract(target.position, entity.position);
         newEvents.shake = true;
       }
@@ -117,6 +122,9 @@ export const performTurns = (entities)=> {
 
   // Remove anything that is dead
   for (const entity of entities) {
+    if (entity.armour && entity.armour.defense <= 0) {
+      entity.armour = null;
+    }
     if (entity.health <= 0) {
       entity.alive = false;
     }
