@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components'
 import Entity from '../entity/Entity';
-import Inventory from '../Inventory';
+import Hearts from '../Hearts';
 import { CELL_SIZE, MAP_WIDTH, MAP_HEIGHT } from '../constants';
 
 const RowLayout = styled.div`
@@ -17,7 +17,7 @@ const ColumnLayout = styled.div`
 const MapContainer = styled.div`
   width: ${props => props.width}px;
   height: ${props => props.height}px;
-  font-size: ${CELL_SIZE / 15}rem;
+  font-size: ${CELL_SIZE / 16}rem;
   margin-bottom: 1rem;
 `
 
@@ -125,28 +125,26 @@ const Map = ({entities}) => {
   const isBombBag = (hovered && hovered.stats);
 
   return (
-    <ColumnLayout>
-      <Inventory entities={entities} hoverStart={hoverStart} />
-      <RowLayout>
-        <MapContainer
-          width={MAP_WIDTH * CELL_SIZE}
-          height={MAP_HEIGHT * CELL_SIZE}
-          onMouseLeave={hoverStop}
-        >
-          {entities.map(entity =>
-            <Entity
-              entity={entity}
-              key={entity.id}
-              hoverStart={hoverStart}
-            />
-          )}
-        </MapContainer>
-        <InfoBox width={MAP_WIDTH * CELL_SIZE}>
-          {!isBombBag && <p>{hovered ? hovered.description : ''}</p>}
-          {isBombBag && <Stats hovered={hovered} />}
-        </InfoBox>
-      </RowLayout>
-    </ColumnLayout>
+    <RowLayout>
+    <Hearts entities={entities} hoverStart={hoverStart} />
+      <MapContainer
+        width={MAP_WIDTH * CELL_SIZE}
+        height={MAP_HEIGHT * CELL_SIZE}
+        onMouseLeave={hoverStop}
+      >
+        {entities.map(entity =>
+          <Entity
+            entity={entity}
+            key={entity.id}
+            hoverStart={hoverStart}
+          />
+        )}
+      </MapContainer>
+      <InfoBox width={MAP_WIDTH * CELL_SIZE}>
+        {!isBombBag && <p>{hovered ? hovered.description : ''}</p>}
+        {isBombBag && <Stats hovered={hovered} />}
+      </InfoBox>
+    </RowLayout>
   )
 }
 

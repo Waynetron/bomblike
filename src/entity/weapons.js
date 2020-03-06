@@ -4,6 +4,7 @@ import { shuffle } from '../math';
 const makeBombBag = (bagProps, bombProps, extraBagProps) => {
   const weapon = makeEntity({
     char: 'ó',
+    type: 'weapon',
     solid: false,
     health: 999,
     capacity: bagProps.capacity || 1,

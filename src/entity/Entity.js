@@ -8,13 +8,14 @@ const getColour = (char) => {
     '@': '#fffa03',
     '#': 'black',
     '+': 'beige',
-    '>': 'yellow',
-    '*': 'yellow',
-    'b': 'yellow',
-    'ó': 'yellow',
-    '⍚': 'yellow',
+    '>': '#fffa03',
+    '*': '#fffa03',
+    'b': '#fffa03',
+    'ó': '#fffa03',
+    '⍚': '#fffa03',
     'S': 'white',
     '❒': 'white',
+    '♥': '#fffa03',
   }
   
   return mapping[char] || 'tomato';
@@ -139,7 +140,7 @@ const getDisplayChar = (char, health) => {
   return char;
 }
 
-const Cell = ({entity, hoverStart}) => {
+const Cell = ({entity, hoverStart = ()=>{}}) => {
   const {char, position: {x, y}, solid, status, health} = entity;
   return (
     <Container x={x} y={y} solid={solid} char={char}>

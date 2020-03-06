@@ -112,11 +112,12 @@ const generateStandardLevel = (level, player) => {
   const weapon = weaponFactory(level + 1, bagProps);
   entities.push(weapon);
 
-  const itemFactory = getRandomItem();
-  // const itemProps = {position: shuffledWalls.pop().position};
-  const itemProps = {position: {x: 2, y: 1}};
-  const item = itemFactory(itemProps);
-  entities.push(item);
+  if (player.health === 1) {
+    const itemFactory = getRandomItem();
+    const itemProps = {position: shuffledWalls.pop().position};
+    const item = itemFactory(itemProps);
+    entities.push(item);
+  }
 
   // finally, remove all the empty entities
   return entities.filter(entity => entity.char !== '·');

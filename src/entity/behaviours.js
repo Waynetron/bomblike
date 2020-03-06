@@ -214,7 +214,7 @@ export const traverseStairs = (entity, entities) => {
 
 export const pickUpWeapons = (entity, entities) => {  
   const collidingEntities = getEntitiesAt(entity.position, entities);  
-  const weapon = collidingEntities.find(entity => entity.use);
+  const weapon = collidingEntities.find(entity => entity.type === 'weapon');
   if (!weapon) {
     return [];
   }
@@ -228,7 +228,7 @@ export const pickUpWeapons = (entity, entities) => {
 
 export const pickUpArmour = (entity, entities) => {  
   const collidingEntities = getEntitiesAt(entity.position, entities);  
-  const armour = collidingEntities.find(entity => entity.defense);
+  const armour = collidingEntities.find(entity => entity.type === 'armour');
   if (!armour) {
     return [];
   }
@@ -238,4 +238,18 @@ export const pickUpArmour = (entity, entities) => {
   remove(entities, entity => entity.id === armour.id);
   
   return [];
+}
+
+export const pickUpConsumables = (entity, entities) => {  
+  const collidingEntities = getEntitiesAt(entity.position, entities);  
+  const item = collidingEntities.find(entity => entity.type === 'consumable');
+  if (!item) {
+    return [];
+  }
+
+  // use it right away, then discard it
+  const action = item.use(entity);
+  remove(entities, entity => entity.id === item.id);
+  
+  return [action];
 }
