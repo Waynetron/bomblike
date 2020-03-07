@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { AppContainer, MapAndInfoContainer, MenuContainer, Overlay } from './containers';
 import Map from './map/Map';
 import Info from './Info';
+import WinGraphic from './WinGraphic';
 import { getEntitiesAt } from './map/map-util';
 import { generateLevel } from './map/map-generation';
 import { player, findPlayer } from './entity/entities';
@@ -9,7 +10,7 @@ import { performTurns, move } from './turn';
 import { remove } from 'lodash';
 import './App.css';
 
-const NUM_LEVELS = 5;
+const NUM_LEVELS = 1;
 
 const initialLevel = 1;
 const initialPlayer = player({position: {x: 1, y: 1}});
@@ -164,19 +165,23 @@ function App() {
       :
         // Main game screen
         <MapAndInfoContainer
-          win={win}
-          lose={lose}
           className={'map-container'}
           shake={events.shake === true}
         >
-          <Map
-            entities={entities.filter(e => e.visible)}
-            hoverStart={hoverStart}
-            hoverEnd={hoverStop}
-          />
+          {win
+            ?
+              <WinGraphic />
+            :
+              <Map
+                entities={entities.filter(e => e.visible)}
+                hoverStart={hoverStart}
+                hoverEnd={hoverStop}
+              />}
           <Info
             entities={entities}
             hovered={hovered}
+            win={win}
+            lose={lose}
           />
         </MapAndInfoContainer>
       }

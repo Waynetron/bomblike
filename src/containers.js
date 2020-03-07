@@ -39,10 +39,10 @@ const centered = css`
 
 const getBackgroundColor = (win, lose) => {
   if (win) {
-    return 'green';
+    return 'black';
   }
   if (lose) {
-    return '#BC0E35';
+    return '#d42a2a';
   }
 
   return 'black';
