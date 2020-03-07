@@ -1,4 +1,4 @@
-import { traverseStairs, explodeOnDeath, attackSelf, pickUpWeapons, pickUpConsumables } from '../entity/behaviours';
+import { explodeOnDeath, attackSelf, pickUpWeapons, pickUpConsumables } from '../entity/behaviours';
 import { starterBombBag } from './weapons';
 
 let _id = 0;

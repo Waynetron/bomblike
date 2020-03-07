@@ -85,9 +85,6 @@ const performActions = (actions, entity, entities, newEvents) => {
       if (action.type === 'face') {
         entity.facing = action.direction;
       }
-      if (action.type === 'change-level') {
-        newEvents.changeLevel = true;
-      }
     }
 }
 
