@@ -56,15 +56,25 @@ export const makeRoomWithPlayerAndWalls = (player) => {
   return [...entities, ...shuffledEmptyEntities];
 }
 
+// removes entities that are too close to the player
+const excludeClosest = (entities, player) => {  
+  entities.sort((a, b)=> {
+    const distanceA = distanceBetween(a.position, player.position);
+    const distanceB = distanceBetween(b.position, player.position);
+    return distanceA - distanceB;
+  })
+  return entities.slice(Math.floor(entities.length / 4));
+}
+
 export const generateLevel = (level, player) => {
   const entities = makeRoomWithPlayerAndWalls(player);
 
   // Add enemies
   const emptyEntities = entities.filter(entity => entity.char === '·');
-  let shuffledEmptyEntities = shuffle(emptyEntities);
+  let shuffledFurthestEmpties = shuffle(excludeClosest(emptyEntities, player));
   const numEnemies = Math.ceil(level * 1.75);
   for (let i = 0; i < numEnemies; i += 1) {
-    const emptyEntity = shuffledEmptyEntities.pop();
+    const emptyEntity = shuffledFurthestEmpties.pop();
 
     const enemy = getRandomEnemy(level, {position: emptyEntity.position});
     entities.push(enemy);
@@ -84,23 +94,15 @@ export const generateLevel = (level, player) => {
 
   // Add staircase and weapons underneath breakable walls
   const walls = entities.filter(entity => entity.char === '+');
+  const shuffledFurthestWalls = shuffle(excludeClosest(walls, player));
 
-  // exclude the closest walls
-  walls.sort((a, b)=> {
-    const distanceA = distanceBetween(a.position, player.position);
-    const distanceB = distanceBetween(b.position, player.position);
-    return distanceA - distanceB;
-  })
-  const farthestWalls = walls.slice(Math.floor(walls.length / 3));
-
-  const shuffledWalls = shuffle(farthestWalls);
   const staircaseDown = staircase({
-    position: shuffledWalls.pop().position
+    position: shuffledFurthestWalls.pop().position
   });
   entities.push(staircaseDown);
 
   const weaponFactory = getRandomWeapon();
-  const bagProps = {position: shuffledWalls.pop().position};
+  const bagProps = {position: shuffledFurthestWalls.pop().position};
   const weapon = weaponFactory(level + 1, bagProps);
   entities.push(weapon);
 
