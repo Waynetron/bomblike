@@ -67,7 +67,13 @@ const performActions = (actions, entity, entities, newEvents) => {
           target.health -= value;
         }
         entity.status['attacking'] = subtract(target.position, entity.position);
-        newEvents.shake = true;
+
+        // the trails die a little every turn, so we need to prevent them from triggering shakes
+        if (target.char !== '·') {
+          newEvents.shake = true;
+        }
+        
+        // we log the players killer as an event so that the info text can see who killed the player
         if (target.id === player.id && player.health <= 0) {
           newEvents.playerKiller = entity;
         }

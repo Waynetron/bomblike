@@ -31,7 +31,6 @@ const getInventory = (player) => {
   }
 
   if (player.armour) {
-    console.log(player.armour);
     inventory.push({...player.armour, position});
   }
 
