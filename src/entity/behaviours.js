@@ -141,8 +141,7 @@ export const attackPlayer = (entity, entities) => {
 
   if (player) {
     return [
-      {type: 'attack', value: 1, target: player, cost: 0},
-      {type: 'attack', value: 1, target: entity, cost: 0}
+      {type: 'attack', value: 1, target: player, cost: 0}
     ];
   }
 
