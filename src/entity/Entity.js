@@ -68,7 +68,7 @@ const Container = styled.div.attrs(({ x, y, solid, char }) => ({
 
 const Inner = styled.div.attrs(({ char, health }) => ({
   style: {
-    opacity: char !== '·' ? '100%' : `${15 * health}%`,
+    opacity: char !== '·' ? '1' : `${20 * health / 100}`,
     width: CELL_SIZE + 'px',
     height: CELL_SIZE + 'px',
     backgroundColor: getBackgroundColour(char),
