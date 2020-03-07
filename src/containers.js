@@ -73,31 +73,3 @@ export const MenuContainer = styled.div`
   animation-name: 'shake';
   flex-direction: column;
 `;
-
-export const Overlay = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  position: absolute;
-  z-index: 999;
-  background-color: beige;
-  padding: 2rem;
-
-  h2, button {
-    color: #4135ff;
-  }
-
-  button:hover {
-    background-color: #4135ff;
-    border-color: #4135ff;
-    color: beige
-  }
-
-  h2 {
-    font-size: 3rem;
-    line-height: 3rem;
-    margin: 0rem;
-    margin-bottom: 1rem;
-  }
-`;

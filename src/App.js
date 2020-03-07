@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { AppContainer, MapAndInfoContainer, MenuContainer, Overlay } from './containers';
+import { AppContainer, MapAndInfoContainer, MenuContainer } from './containers';
 import Map from './map/Map';
 import Info from './Info';
 import WinGraphic from './WinGraphic';
