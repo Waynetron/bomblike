@@ -8,7 +8,7 @@ export const gooblini = (props) => {
     char: 'G',
     solid: true,
     behaviours: [walkInALine, faceWalkable, attackPlayer],
-    name: 'Gooblini',
+    name: 'gooblini',
     description: "Basic enemy, but best not touch it",
     ...props,
   })
@@ -17,10 +17,11 @@ export const gooblini = (props) => {
 export const charger = (props) => {
   return makeEntity({
     char: 'C',
+    name: 'charger',
     solid: true,
     facing: {x: 0, y: 0},
     behaviours: [pursuePlayerInLineOfSight, walkInALine, attackPlayer],
-    name: 'Charger',
+    name: 'charger',
     description: 'If it sees you, it charges toward you',
     ...props,
   })
@@ -31,7 +32,7 @@ export const eater = (props) => {
     char: 'E',
     solid: true,
     behaviours: [eatBomb, pursueBombInLineOfSight, attackPlayer],
-    name: 'Bombeater',
+    name: 'bombeater',
     description: 'Eats bombs, om nom',
     ...props,
   })
@@ -44,7 +45,7 @@ export const spooky = (props) => {
     health: 99,
     speed: 'half',
     behaviours: [pursuePlayerThroughWalls, attackPlayer],
-    name: 'Spooky ghost',
+    name: 'spooky ghost',
     description: 'Oooooo spooky',
     ...props,
   })
@@ -56,7 +57,7 @@ export const ghostSpawner = (props) => {
     solid: false,
     health: 5,
     behaviours: [spawnGhostOnDeath],
-    name: 'Ghost spawner',
+    name: 'ghost spawner',
     description: '',
     visible: false,
     ...props,

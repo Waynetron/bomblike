@@ -101,7 +101,7 @@ const Stats = ({entity}) => {
   );
 }
 
-const getInfoToDisplay = (hovered, entities, win, lose) => {
+const getInfoToDisplay = (hovered, entities, win, lose, events) => {
   const player = findPlayer(entities);
   const entitiesAtPlayer = player ? getEntitiesAt(player.position, entities) : [];
   const stairs = entitiesAtPlayer.find(entity => entity.char === '>');
@@ -114,9 +114,10 @@ const getInfoToDisplay = (hovered, entities, win, lose) => {
   const entity = weapon || stairs || hovered;
 
   if (lose) {
+    const killer = events.playerKiller;
     return (
       <>
-        <p>You were killed by <span className="key">something</span></p>
+        <p>You were killed by a <span className="key">{killer ? killer.name : 'something'}</span></p>
         <p>Back to title <span className="key">(x)</span></p>
       </>
     );
@@ -161,10 +162,10 @@ const getInfoToDisplay = (hovered, entities, win, lose) => {
   }
 }
 
-const Info = ({hovered, entities, win, lose}) => {
+const Info = ({hovered, entities, win, lose, events}) => {
   return (
     <InfoBox width={MAP_WIDTH * CELL_SIZE}>
-      {getInfoToDisplay(hovered, entities, win, lose)}
+      {getInfoToDisplay(hovered, entities, win, lose, events)}
     </InfoBox>
   )
 }

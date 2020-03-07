@@ -10,6 +10,7 @@ export const makeEntity = (props) => {
 
   return {
     id: makeId(),
+    name: 'thing',
     char: '?',
     weapon: null,
     facing: {x: 0, y: 1},
@@ -39,6 +40,7 @@ export const empty = (props) => {
 export const player = (props) => {
   return makeEntity({
     char: '@',
+    name: 'player',
     solid: false,
     health: 1,
     behaviours: [],
@@ -52,6 +54,7 @@ export const player = (props) => {
 export const bomb = (props) => {
   return makeEntity({
     char: 'b',
+    name: 'bomb',
     solid: true,
     behaviours: [explodeOnDeath],
     description: "It's a bomb, and it's going to explode!",
@@ -65,6 +68,7 @@ export const bomb = (props) => {
 export const hole = (props) => {
   return makeEntity({
     char: '❒',
+    name: 'hole',
     solid: true,
     description: "A hole in the ground",
     health: 999,
@@ -75,6 +79,7 @@ export const hole = (props) => {
 export const flame = (props) => {
   return makeEntity({
     char: '✱',
+    name: 'flame',
     solid: false,
     behaviours: [attackSelf],
     health: 1,
@@ -85,6 +90,7 @@ export const flame = (props) => {
 export const trail = (props) => {
   return makeEntity({
     char: '·',
+    name: 'trail',
     solid: false,
     behaviours: [attackSelf],
     health: 3,
@@ -95,6 +101,7 @@ export const trail = (props) => {
 export const staircase = (props, upOrDown = 'down') => {
   return makeEntity({
     char: upOrDown === 'down' ? '>' : '<',
+    name:'staircase',
     health: 999,
     description: "You see a staircase leading down",
     ...props,
@@ -104,6 +111,7 @@ export const staircase = (props, upOrDown = 'down') => {
 export const wall = (props, breakable = true) => {
   return makeEntity({
     char: breakable ? '+' : '#',
+    name: 'breakable wall',
     health: breakable ? 1 : 999,
     solid: true,
     description: `You see a wall. ${!breakable ? 'It seems unbreakable.' : ''}`,

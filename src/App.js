@@ -10,7 +10,7 @@ import { performTurns, move } from './turn';
 import { remove } from 'lodash';
 import './App.css';
 
-const NUM_LEVELS = 1;
+const NUM_LEVELS = 5;
 
 const initialLevel = 1;
 const initialPlayer = player({position: {x: 1, y: 1}});
@@ -182,6 +182,7 @@ function App() {
             hovered={hovered}
             win={win}
             lose={lose}
+            events={events}
           />
         </MapAndInfoContainer>
       }

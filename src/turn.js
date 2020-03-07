@@ -38,6 +38,8 @@ const placeBomb = (entity, entities, bomb) => {
 // May mutate any entity (either the supplied entity, but also any entity referenced in an action)
 // May push events into newEvents
 const performActions = (actions, entity, entities, newEvents) => {
+    const player = findPlayer(entities);
+
     while(actions.length > 0) {
       const action = actions.pop();
 
@@ -66,6 +68,9 @@ const performActions = (actions, entity, entities, newEvents) => {
         }
         entity.status['attacking'] = subtract(target.position, entity.position);
         newEvents.shake = true;
+        if (target.id === player.id && player.health <= 0) {
+          newEvents.playerKiller = entity;
+        }
       }
       if (action.type === 'move') {
         move(entity, entities, action.direction, action.force)
