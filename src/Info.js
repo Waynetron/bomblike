@@ -10,7 +10,8 @@ const InfoBox = styled.div`
   flex-direction: column;
   display: flex;
   width: ${props => props.width}px;
-  height: 5rem;
+  min-height: 7rem;
+  
   p {
     text-align: center;
     line-height: 1.5rem;
