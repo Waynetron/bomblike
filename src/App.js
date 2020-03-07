@@ -82,7 +82,7 @@ function App() {
 
   const handleKeyDown = useCallback(event => {
     event.preventDefault();
-    
+
     const player = findPlayer(entities);
     const { key } = event;
     const direction = keyToDirection(key);
@@ -114,8 +114,8 @@ function App() {
         // weapon was picked up inside pickUpWeapon
       }
       else if (canEnterStairs(player, entities)) {
-        const action = {type: 'change-level', value: 1, cost: 0};
-        player.actions.push(action);
+        nextLevel(player);
+        return;
       }
       else {
         const numBombsOut = entities
@@ -135,12 +135,6 @@ function App() {
       // Update state
       setEntities(newEntities);
       setEvents(newEvents);
-
-      // Apply certain events now
-      // Others like screenshake will react to props change after setEvents is called
-      if (newEvents.changeLevel) {
-        nextLevel(player);
-      }
     }
 
     if (restart) {
