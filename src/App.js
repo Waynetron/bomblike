@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { AppContainer, MapContainer, MenuContainer, Overlay } from './containers';
+import { AppContainer, MapAndInfoContainer, MenuContainer, Overlay } from './containers';
 import Map from './map/Map';
+import Info from './Info';
 import { getEntitiesAt } from './map/map-util';
 import { generateLevel } from './map/map-generation';
 import { player, findPlayer } from './entity/entities';
@@ -18,8 +19,17 @@ function App() {
   const [level, setLevel] = useState(initialLevel);
   const [entities, setEntities] = useState(initialEntities);
   const [events, setEvents] = useState({});
+  const [hovered, setHovered] = useState({});
   const lose = !findPlayer(entities);
   const win = level > NUM_LEVELS;
+
+  const hoverStart = (entity) => {
+    setHovered(entity);
+  }
+
+  const hoverStop = () => {
+    setHovered(null);
+  }
 
   const startGame = () => {
     setLevel(1);
@@ -153,14 +163,22 @@ function App() {
         </MenuContainer>
       :
         // Main game screen
-        <MapContainer
+        <MapAndInfoContainer
           win={win}
           lose={lose}
           className={'map-container'}
           shake={events.shake === true}
         >
-          <Map entities={entities.filter(e => e.visible)} />
-        </MapContainer>
+          <Map
+            entities={entities.filter(e => e.visible)}
+            hoverStart={hoverStart}
+            hoverEnd={hoverStop}
+          />
+          <Info
+            entities={entities}
+            hovered={hovered}
+          />
+        </MapAndInfoContainer>
       }
     </AppContainer>
   );

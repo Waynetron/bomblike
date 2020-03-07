@@ -1,7 +1,6 @@
 import { MAP_WIDTH, MAP_HEIGHT } from '../constants';
 import { UP, DOWN, LEFT, RIGHT, add } from '../math';
 import { isEqual } from 'lodash';
-import { findPlayer } from '../entity/entities';
 
 export const getEntitiesAt = (position, entities) =>
   entities.filter(entity => isEqual(entity.position, position));

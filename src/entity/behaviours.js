@@ -6,7 +6,7 @@ import { getEntitiesAt, getEntitiesAtPositions, getAdjacentPositions,
   isWalkable, getPositionsInDirection, isCharInDirection } from '../map/map-util';
 import { flame, findPlayer } from './entities';
 import { spooky } from './enemies';
-import { UP, DOWN, LEFT, RIGHT, add, subtract, turn, shuffle } from '../math';
+import { UP, DOWN, LEFT, RIGHT, add, subtract, turn } from '../math';
 import { remove } from 'lodash';
 
 const isAttackable = (entity) => {

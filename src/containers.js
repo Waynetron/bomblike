@@ -57,10 +57,14 @@ export const AppContainer = styled.div`
   height: 100%;
 `;
 
-export const MapContainer = styled.div`
+export const MapAndInfoContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
   ${shake}
   ${grow}
-  ${centered}
   animation-name: ${props => props.shake ? 'shake, grow' : undefined};
 `;
 
