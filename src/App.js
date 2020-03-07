@@ -144,22 +144,21 @@ function App() {
   }, [handleKeyDown]);
 
   return (
-    <AppContainer>
+    <AppContainer win={win} lose={lose}>
       {level === 0 ?
         // Title screen
         <MenuContainer>
           <h1>bomblike</h1>
-          <button onClick={startGame}>play</button>
+          <button onClick={startGame}>play <span className={'key'}>(x)</span></button>
         </MenuContainer>
       :
         // Main game screen
-        <MapContainer className={'map-container'} shake={events.shake === true}>
-          {(win || lose) && (
-            <Overlay>
-              <h2>{win ? 'Success!' : 'You died'}</h2>
-              <button onClick={backToTitle}>Back to title</button>
-            </Overlay>
-          )}
+        <MapContainer
+          win={win}
+          lose={lose}
+          className={'map-container'}
+          shake={events.shake === true}
+        >
           <Map entities={entities.filter(e => e.visible)} />
         </MapContainer>
       }

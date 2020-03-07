@@ -37,8 +37,24 @@ const centered = css`
   align-items: center;
 `
 
+const getBackgroundColor = (win, lose) => {
+  if (win) {
+    return 'green';
+  }
+  if (lose) {
+    return '#BC0E35';
+  }
+
+  return 'black';
+}
+
 export const AppContainer = styled.div`
   ${centered}
+  background-color: ${({win, lose}) => getBackgroundColor(win, lose)};
+  transition: background-color 0.2s cubic-bezier(0,1.56,.52,.99);
+  display: flex;
+  width: 100%;
+  height: 100%;
 `;
 
 export const MapContainer = styled.div`
