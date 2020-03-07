@@ -19,3 +19,7 @@ export const shuffle = (original) => {
   }
   return shuffled;
 }
+
+export const distanceBetween = ({x: x1, y: y1}, {x: x2, y: y2}) => {
+  return Math.sqrt(Math.abs(x1 - x2) ** 2 + Math.abs(y1 - y2) ** 2);
+}

@@ -6,7 +6,7 @@ import { getEntitiesAt, getEntitiesAtPositions, getAdjacentPositions,
   isWalkable, getPositionsInDirection, isCharInDirection } from '../map/map-util';
 import { flame, findPlayer } from './entities';
 import { spooky } from './enemies';
-import { UP, DOWN, LEFT, RIGHT, add, subtract, turn } from '../math';
+import { UP, DOWN, LEFT, RIGHT, add, subtract, turn, distanceBetween } from '../math';
 import { remove } from 'lodash';
 
 const isAttackable = (entity) => {
@@ -116,6 +116,29 @@ export const pursuePlayerThroughWalls = (entity, entities) => {
   return [{type: 'move', direction, cost: 1, force: true}];
 }
 
+export const pursuePlayer = (entity, entities) => {
+  const player = findPlayer(entities);
+  
+  let closestDirection;
+  let bestDistance = distanceBetween(entity.position, player.position);
+
+  for (const direction of [UP, DOWN, LEFT, RIGHT]) {
+    const position = add(direction, entity.position);
+    const distance = distanceBetween(position, player.position)
+
+    if (isWalkable(position, entities) && distance < bestDistance) {
+      closestDirection = direction;
+      bestDistance = distance;
+    }
+  }
+
+  if (closestDirection) {
+    return [{type: 'move', direction: closestDirection, cost: 1}];
+  }
+
+  return [];
+}
+
 export const faceWalkable = (entity, entities) => {
   const { facing } = entity;
 
@@ -123,6 +146,44 @@ export const faceWalkable = (entity, entities) => {
   // the entity will continue moving in that direction if it can.
   // Turning around is placed at the end, so that turning left / right is favoured.
   const directions = [facing, turn(-90, facing), turn(90, facing), turn(180, facing)];
+
+  for (const direction of directions) {
+    const position = add(direction, entity.position);
+    if (isWalkable(position, entities)) {
+      return [{type: 'face', direction, cost: 0}]
+    }
+  }
+
+  // Surrounded on all sides, do nothing
+  return [];
+}
+
+export const turnLeft = (entity, entities) => {
+  const { facing } = entity;
+
+  // The order is intentional. The forward (facing) direction is placed first, so that
+  // the entity will continue moving in that direction if it can.
+  // Turning around is placed at the end, so that turning left / right is favoured.
+  const directions = [turn(-90, facing), turn(90, facing), facing, turn(180, facing)];
+
+  for (const direction of directions) {
+    const position = add(direction, entity.position);
+    if (isWalkable(position, entities)) {
+      return [{type: 'face', direction, cost: 0}]
+    }
+  }
+
+  // Surrounded on all sides, do nothing
+  return [];
+}
+
+export const turnRight = (entity, entities) => {
+  const { facing } = entity;
+
+  // The order is intentional. The forward (facing) direction is placed first, so that
+  // the entity will continue moving in that direction if it can.
+  // Turning around is placed at the end, so that turning left / right is favoured.
+  const directions = [turn(90, facing), turn(-90, facing), facing, turn(180, facing)];
 
   for (const direction of directions) {
     const position = add(direction, entity.position);

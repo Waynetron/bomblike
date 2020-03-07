@@ -9,11 +9,12 @@ const getColour = (char) => {
     '#': 'black',
     '+': 'beige',
     '>': '#fffa03',
-    '✱': '#fffa03',
+    '*': '#fffa03',
     'b': '#fffa03',
     'ó': '#fffa03',
     '⍚': '#fffa03',
-    'S': 'white',
+    'S': '#fffa03',
+    '!': 'white',
     '❒': 'white',
     '♥': '#fffa03',
     '·': 'tomato'
@@ -26,7 +27,7 @@ const getBackgroundColour = (char) => {
   const mapping = {
     '#': 'beige',
     '+': '#4135ff',
-    'S': '#AAAAFF77',
+    '!': 'tomato',
     '❒': 'black',
   }
   return mapping[char] || 'transparent'
@@ -39,7 +40,7 @@ const getZIndex = (solid, char) => {
   if (char === '❒') {
     return 1;
   }
-  if (char === 'S') {
+  if (char === '!') {
     return 4;
   }
   if (char === 'b') {
@@ -93,9 +94,11 @@ const Inner = styled.div.attrs(({ char, health }) => ({
 
   p {
     display: inline;
-    margin-block-start: 0.2rem;
+    margin-block-start: ${props => props.char === '*' ? '1.5' : '0.2'}rem;
+    font-size: ${props => props.char === '*' ? '3rem' : 'inherit'};
     margin-block-end: 0;
     font-weight: 700;
+
   }
 `;
 

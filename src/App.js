@@ -81,6 +81,8 @@ function App() {
   }
 
   const handleKeyDown = useCallback(event => {
+    event.preventDefault();
+    
     const player = findPlayer(entities);
     const { key } = event;
     const direction = keyToDirection(key);

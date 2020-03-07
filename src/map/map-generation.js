@@ -3,7 +3,7 @@ import { isAdjacentEdge, getAdjacentPositions } from '../map/map-util';
 import { empty, staircase, wall, hole } from '../entity/entities';
 import { getRandomEnemy, ghostSpawner } from '../entity/enemies';
 import { getRandomWeapon } from '../entity/weapons';
-import { shuffle } from '../math';
+import { shuffle, distanceBetween } from '../math';
 import { isEqual } from 'lodash';
 
 export const makeRoomWithPlayerAndWalls = (player) => {
@@ -54,10 +54,6 @@ export const makeRoomWithPlayerAndWalls = (player) => {
   }
 
   return [...entities, ...shuffledEmptyEntities];
-}
-
-const distanceBetween = ({x: x1, y: y1}, {x: x2, y: y2}) => {
-  return (x1 - x2) + (y1 - y2);
 }
 
 export const generateLevel = (level, player) => {

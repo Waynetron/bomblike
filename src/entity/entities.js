@@ -78,7 +78,7 @@ export const hole = (props) => {
 
 export const flame = (props) => {
   return makeEntity({
-    char: '✱',
+    char: '*',
     name: 'flame',
     solid: false,
     behaviours: [attackSelf],

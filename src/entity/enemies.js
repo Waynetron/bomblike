@@ -1,15 +1,37 @@
 import { walkInALine, faceWalkable, attackPlayer, pursuePlayerInLineOfSight,
-  pursueBombInLineOfSight, eatBomb, pursuePlayerThroughWalls,
+  pursueBombInLineOfSight, eatBomb, pursuePlayerThroughWalls, pursuePlayer, turnLeft, turnRight,
   spawnGhostOnDeath } from './behaviours';
 import { makeEntity } from './entities';
 
-export const gooblini = (props) => {
+export const wanderer = (props) => {
   return makeEntity({
-    char: 'G',
+    char: 'W',
     solid: true,
     behaviours: [walkInALine, faceWalkable, attackPlayer],
-    name: 'gooblini',
-    description: "Basic enemy, but best not touch it",
+    name: 'wanderer',
+    description: "Moves until it hits something, then turns.",
+    ...props,
+  })
+};
+
+export const leftie = (props) => {
+  return makeEntity({
+    char: 'L',
+    solid: true,
+    behaviours: [walkInALine, turnLeft, attackPlayer],
+    name: 'leftie',
+    description: "It's not an ambi-turner",
+    ...props,
+  })
+};
+
+export const rightie = (props) => {
+  return makeEntity({
+    char: 'L',
+    solid: true,
+    behaviours: [walkInALine, turnRight, attackPlayer],
+    name: 'leftie',
+    description: "It's not an ambi-turner",
     ...props,
   })
 };
@@ -40,13 +62,26 @@ export const eater = (props) => {
 
 export const spooky = (props) => {
   return makeEntity({
-    char: 'S',
+    char: '!',
     solid: false,
     health: 99,
     speed: 'half',
     behaviours: [pursuePlayerThroughWalls, attackPlayer],
-    name: 'spooky ghost',
-    description: 'Oooooo spooky',
+    name: 'hunger clock',
+    description: "Oh no, it's the fun police!",
+    ...props,
+  })
+};
+
+export const seeker = (props) => {
+  return makeEntity({
+    char: 'S',
+    solid: true,
+    health: 1,
+    speed: 'half',
+    behaviours: [pursuePlayer, attackPlayer],
+    name: 'seeker',
+    description: 'It just wants to be close to you',
     ...props,
   })
 };
@@ -66,11 +101,11 @@ export const ghostSpawner = (props) => {
 
 export const getRandomEnemy = (level, props) => {
   const levels = [
-    [gooblini],
-    [gooblini, charger],
-    [gooblini, charger, eater],
-    [gooblini, charger, eater],
-    [gooblini, charger, eater],
+    [wanderer],
+    [wanderer, charger],
+    [wanderer, charger, seeker, eater],
+    [wanderer, charger, seeker, eater],
+    [wanderer, charger, seeker, eater],
   ];
 
   const available = levels[level - 1];

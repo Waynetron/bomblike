@@ -1,4 +1,4 @@
-@font-face {
+/* @font-face {
   font-family: Geomanist;
   src: url(./fonts/Geomanist-Thin.woff2) format('woff2'),
        url(./fonts/Geomanist-Thin.woff) format('woff');
@@ -15,19 +15,19 @@
   src: url(./fonts/Geomanist-Light.woff2) format('woff2'),
        url(./fonts/Geomanist-Light.woff) format('woff');
  font-weight: 300;
-}
+} */
 @font-face {
   font-family: Geomanist;
   src: url(./fonts/Geomanist-Book.woff2) format('woff2'),
        url(./fonts/Geomanist-Book.woff) format('woff');
  font-weight: 400;
 }
-@font-face {
+/* @font-face {
   font-family: Geomanist;
   src: url(./fonts/Geomanist-Regular.woff2) format('woff2'),
        url(./fonts/Geomanist-Regular.woff) format('woff');
  font-weight: 500;
-}
+} */
 @font-face {
   font-family: Geomanist;
   src: url(./fonts/Geomanist-Medium.woff2) format('woff2'),
@@ -40,7 +40,7 @@
        url(./fonts/Geomanist-Bold.woff) format('woff');
  font-weight: 700;
 }
-@font-face {
+/* @font-face {
   font-family: Geomanist;
   src: url(./fonts/Geomanist-Black.woff2) format('woff2'),
        url(./fonts/Geomanist-Black.woff) format('woff');
@@ -51,7 +51,7 @@
   src: url(./fonts/Geomanist-Ultra.woff2) format('woff2'),
        url(./fonts/Geomanist-Ultra.woff) format('woff');
  font-weight: 900;
-}
+} */
 
 @keyframes grow {
   0% {
