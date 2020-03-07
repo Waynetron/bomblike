@@ -67,7 +67,7 @@ export const spooky = (props) => {
     health: 99,
     speed: 'half',
     behaviours: [pursuePlayerThroughWalls, attackPlayer],
-    name: 'hunger clock',
+    name: 'time cop',
     description: "Oh no, it's the fun police!",
     ...props,
   })
