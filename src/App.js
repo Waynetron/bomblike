@@ -12,7 +12,7 @@ import './App.css';
 
 const NUM_LEVELS = 5;
 
-const initialLevel = 1;
+const initialLevel = 0;
 const initialPlayer = player({position: {x: 1, y: 1}});
 const initialEntities = generateLevel(initialLevel, {...initialPlayer})
 
