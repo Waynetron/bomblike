@@ -81,8 +81,6 @@ function App() {
   }
 
   const handleKeyDown = useCallback(event => {
-    event.preventDefault();
-
     const player = findPlayer(entities);
     const { key } = event;
     const direction = keyToDirection(key);
@@ -106,7 +104,9 @@ function App() {
 
     if (direction) {
       move(player, entities, direction);
-      // player.actions.push({type: 'move', direction, cost: 1})
+
+      // prevent browser from scrolling up or down
+      event.preventDefault();
     }
 
     if (primary) {
