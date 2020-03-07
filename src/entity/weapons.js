@@ -1,4 +1,4 @@
-import { makeEntity, bomb, flame } from './entities';
+import { makeEntity, bomb } from './entities';
 import { shuffle } from '../math';
 
 const makeBombBag = (bagProps, bombProps, extraBagProps) => {
@@ -31,15 +31,6 @@ const makeBombBag = (bagProps, bombProps, extraBagProps) => {
 // capacity is how many bombs can be active at a time
 
 export const proceduralBombBag = (level, props = {}) => {
-  const points = Math.random() * 3 + level;
-  let numTraits = 1;
-  if (points > 4) {
-    numTraits = 2;
-  } else if (points > 6) {
-    numTraits = 3;
-  }
-
-  const plentifulCapacity = {capacity: 3};
   const largeRadius = {radius: 2};
   const veryLargeRadius = {radius: 3};
   const shortFuse = {health: 2};
@@ -48,15 +39,16 @@ export const proceduralBombBag = (level, props = {}) => {
   let bagProps = {};
   let bombProps = {};
 
-  const availableTraits = shuffle([largeRadius, veryLargeRadius, shortFuse, longFuse]);
-  const traits = availableTraits.slice(0, numTraits);
+  const possibleBagTraitCombinations = [
+    [veryLargeRadius, longFuse],
+    [shortFuse],
+    [largeRadius],
+    [shortFuse, largeRadius],
+    [veryLargeRadius],
+  ]
+  const traits = shuffle(possibleBagTraitCombinations).pop();
   for (const trait of traits) {
-    if (trait === plentifulCapacity) {
-      bagProps = {...bagProps, ...trait}
-    }
-    else {
-      bombProps = {...bombProps, ...trait}
-    }
+    bombProps = {...bombProps, ...trait}
   }
   
   return makeBombBag(bagProps, bombProps, props);
@@ -65,7 +57,7 @@ export const proceduralBombBag = (level, props = {}) => {
 export const starterBombBag = (level, props = {}) => {
   const bagProps = {
     capacity: 1,
-    description: 'A standard bomb bag',
+    description: 'A starter bomb bag',
   }
   const bombProps = {
     radius: Math.ceil(Math.random() * level),
