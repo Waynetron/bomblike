@@ -39,7 +39,6 @@ export const rightie = (props) => {
 export const charger = (props) => {
   return makeEntity({
     char: 'C',
-    name: 'charger',
     solid: true,
     facing: {x: 0, y: 0},
     behaviours: [pursuePlayerInLineOfSight, walkInALine, attackPlayer],
