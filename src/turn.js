@@ -50,9 +50,6 @@ const performActions = (actions, entity, entities, newEvents) => {
         continue;
       }
 
-      if (action.type === 'wait') {
-        entity.status['waiting'] = true;
-      }
       // similar to attack, but immediately sets target to !alive to avoid triggering explosions
       if (action.type === 'eat') {
         action.target.alive = false;
