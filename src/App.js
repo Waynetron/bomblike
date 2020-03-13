@@ -3,26 +3,22 @@ import { AppContainer, MapAndInfoContainer, MenuContainer } from './containers';
 import Map from './map/Map';
 import Info from './Info';
 import WinGraphic from './WinGraphic';
-import { getEntitiesAt } from './map/map-util';
 import { generateLevel } from './map/map-generation';
-import { player, findPlayer } from './entity/entities';
+import { player } from './entity/entities';
+import { findPlayer, canEnterStairs, pickUpWeapon, findWeaponAt } from './entity/entity-util';
 import { performTurns, move } from './turn';
-import { remove } from 'lodash';
 import './App.css';
 import './fonts/fonts.css';
 
 const NUM_LEVELS = 5;
-
-const initialLevel = 0;
-const initialPlayer = player({position: {x: 1, y: 1}});
-const initialEntities = generateLevel(initialLevel, {...initialPlayer})
+const MENU = 0;
 
 function App() {
-  const [level, setLevel] = useState(initialLevel);
-  const [entities, setEntities] = useState(initialEntities);
+  const [level, setLevel] = useState(MENU);
+  const [entities, setEntities] = useState([]);
   const [events, setEvents] = useState({});
   const [hovered, setHovered] = useState({});
-  const lose = !findPlayer(entities);
+  const lose = entities.length && !findPlayer(entities);
   const win = level > NUM_LEVELS;
 
   const hoverStart = (entity) => {
@@ -35,13 +31,13 @@ function App() {
 
   const startGame = () => {
     setLevel(1);
-    setEntities(generateLevel(1, {...initialPlayer}));
+    setEntities(generateLevel(1, {...player({position: {x: 1, y: 1}})}));
   }
 
   const backToTitle = useCallback(() => {
-    setLevel(0);
-    setEntities(generateLevel(level, {...initialPlayer}));
-  }, [level]);
+    setLevel(MENU);
+    setEntities([]);
+  }, []);
 
   const nextLevel = useCallback(player => {
     setLevel(level + 1);
@@ -61,26 +57,6 @@ function App() {
     return mapping[key];
   }
 
-  const pickUpWeapon = (player, entities) => {
-    const collidingEntities = getEntitiesAt(player.position, entities);  
-      const weapon = collidingEntities.find(entity => entity.type === 'weapon');
-      if (!weapon) {
-        return false;
-      }
-
-      // pick up the weapon
-      player.weapon = weapon;
-      remove(entities, entity => entity.id === weapon.id);
-      return true;
-  }
-
-  const canEnterStairs = (player, entities) => {
-    const collidingEntities = getEntitiesAt(player.position, entities);  
-    const stairs = collidingEntities.find(entity => entity.char === '>');
-
-    return Boolean(stairs);
-  }
-
   const handleKeyDown = useCallback(event => {
     const player = findPlayer(entities);
     const { key } = event;
@@ -89,13 +65,18 @@ function App() {
     const wait = key.toLowerCase() === 'z';
     const restart = key.toLowerCase() === 'r'
 
-    if (level === 0 && (primary || wait)) {
+    if (level === MENU && (primary || wait)) {
       startGame();
       return;
     }
 
     if ((win || lose) && (primary || wait)) {
       backToTitle();
+      return;
+    }
+
+    if (restart) {
+      startGame();
       return;
     }
 
@@ -111,8 +92,9 @@ function App() {
     }
 
     if (primary) {
-      if (pickUpWeapon(player, entities)) {
-        // weapon was picked up inside pickUpWeapon
+      const weapon = findWeaponAt(player.position, entities);
+      if (weapon) {
+        pickUpWeapon(player, weapon, entities);
       }
       else if (canEnterStairs(player, entities)) {
         nextLevel(player);
@@ -137,10 +119,6 @@ function App() {
       setEntities(newEntities);
       setEvents(newEvents);
     }
-
-    if (restart) {
-      startGame();
-    }
   }, [entities, nextLevel, backToTitle, level, lose, win]);
 
   useEffect(() => {
@@ -153,7 +131,7 @@ function App() {
 
   return (
     <AppContainer win={win} lose={lose}>
-      {level === 0 ?
+      {level === MENU ?
         // Title screen
         <MenuContainer>
           <h1>bomblike</h1>

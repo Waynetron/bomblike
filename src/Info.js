@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components'
-import { findPlayer } from './entity/entities';
+import { findPlayer } from './entity/entity-util';
 import { CELL_SIZE, MAP_WIDTH } from './map/constants';
 import { getEntitiesAt } from './map/map-util';
 

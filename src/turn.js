@@ -1,4 +1,5 @@
-import { findPlayer, trail } from './entity/entities';
+import { trail } from './entity/entities';
+import { findPlayer } from './entity/entity-util';
 import { getEntitiesAt } from './map/map-util';
 import { subtract } from './math';
 

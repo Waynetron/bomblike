@@ -27,8 +27,6 @@ export const makeEntity = (props) => {
   }
 };
 
-export const findPlayer = entities => entities.find(entity => entity.char === '@');
-
 export const empty = (props) => {
   return makeEntity({
     char: '·',

@@ -4,7 +4,8 @@ Behaviours are used at the start of a turn to generate a set of actions
 
 import { getEntitiesAt, getEntitiesAtPositions, getAdjacentPositions,
   isWalkable, getPositionsInDirection, isCharInDirection } from '../map/map-util';
-import { flame, findPlayer } from './entities';
+import { flame } from './entities';
+import { findPlayer } from './entity-util';
 import { spooky } from './enemies';
 import { UP, DOWN, LEFT, RIGHT, add, subtract, turn, distanceBetween } from '../math';
 import { remove } from 'lodash';
