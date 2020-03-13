@@ -5,8 +5,9 @@ import Info from './Info';
 import WinGraphic from './WinGraphic';
 import { generateLevel } from './map/map-generation';
 import { player } from './entity/entities';
-import { findPlayer, canEnterStairs, pickUpWeapon, findWeaponAt } from './entity/entity-util';
-import { performTurns, move } from './turn';
+import { findPlayer, canEnterStairs } from './entity/entity-util';
+import { performTurns } from './turn';
+import { getInput } from './input';
 import './App.css';
 import './fonts/fonts.css';
 
@@ -46,37 +47,33 @@ function App() {
     }
   }, [level]);
 
-  const keyToDirection = (key) => {
-    const mapping = {
-      ArrowUp: {x: 0, y: -1},
-      ArrowDown: {x: 0, y: 1},
-      ArrowLeft: {x: -1, y: 0},
-      ArrowRight: {x: 1, y: 0}
-    }
-
-    return mapping[key];
-  }
-
   const handleKeyDown = useCallback(event => {
     const player = findPlayer(entities);
     const { key } = event;
-    const direction = keyToDirection(key);
-    const primary = key.toLowerCase() === 'x';
-    const wait = key.toLowerCase() === 'z';
-    const restart = key.toLowerCase() === 'r'
+    const input = getInput(key);
 
-    if (level === MENU && (primary || wait)) {
+    // prevent browser from scrolling up or down
+    if (input.type === 'direction') {
+      event.preventDefault();
+    }
+
+    if (level === MENU && input.type === 'primary') {
       startGame();
       return;
     }
 
-    if ((win || lose) && (primary || wait)) {
+    if ((win || lose) && input.type === 'primary') {
       backToTitle();
       return;
     }
 
-    if (restart) {
+    if (input.type === 'restart') {
       startGame();
+      return;
+    }
+
+    if (input.type === 'primary' && canEnterStairs(player, entities)) {
+      nextLevel(player);
       return;
     }
 
@@ -84,36 +81,8 @@ function App() {
       return;
     }
 
-    if (direction) {
-      move(player, entities, direction);
-
-      // prevent browser from scrolling up or down
-      event.preventDefault();
-    }
-
-    if (primary) {
-      const weapon = findWeaponAt(player.position, entities);
-      if (weapon) {
-        pickUpWeapon(player, weapon, entities);
-      }
-      else if (canEnterStairs(player, entities)) {
-        nextLevel(player);
-        return;
-      }
-      else {
-        const numBombsOut = entities
-          .filter(entity => entity.char === 'b' && entity.owner.char === '@')
-          .length;
-        
-        if (numBombsOut < player.weapon.capacity) {
-          const action = player.weapon.use(player);
-          player.actions.push(action);
-        }
-      }
-    }
-
-    if (direction || wait || primary) {
-      const { newEntities, newEvents } = performTurns(entities);
+    if (input.type === 'direction' || input.type === 'wait' || input.type === 'primary') {
+      const { newEntities, newEvents } = performTurns(input, entities);
 
       // Update state
       setEntities(newEntities);
