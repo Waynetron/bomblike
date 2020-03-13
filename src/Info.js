@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components'
 import { findPlayer } from './entity/entities';
-import { CELL_SIZE, MAP_WIDTH } from './constants';
+import { CELL_SIZE, MAP_WIDTH } from './map/constants';
 import { getEntitiesAt } from './map/map-util';
 
 const InfoBox = styled.div`

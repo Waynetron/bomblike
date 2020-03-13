@@ -1,5 +1,5 @@
 import React from 'react';
-import { CELL_SIZE } from '../constants';
+import { CELL_SIZE } from '../map/constants';
 import styled from 'styled-components'
 import './Entity.css';
 

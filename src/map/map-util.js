@@ -1,4 +1,4 @@
-import { MAP_WIDTH, MAP_HEIGHT } from '../constants';
+import { MAP_WIDTH, MAP_HEIGHT } from './constants';
 import { UP, DOWN, LEFT, RIGHT, add } from '../math';
 import { isEqual } from 'lodash';
 

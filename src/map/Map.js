@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components'
 import Entity from '../entity/Entity';
-import { CELL_SIZE, MAP_WIDTH, MAP_HEIGHT } from '../constants';
+import { CELL_SIZE, MAP_WIDTH, MAP_HEIGHT } from './constants';
 
 const MapContainer = styled.div`
   width: ${props => props.width}px;

@@ -1,4 +1,4 @@
-import { MAP_WIDTH, MAP_HEIGHT } from '../constants';
+import { MAP_WIDTH, MAP_HEIGHT } from './constants';
 import { isAdjacentEdge, getAdjacentPositions } from '../map/map-util';
 import { empty, staircase, wall, hole } from '../entity/entities';
 import { getRandomEnemy, ghostSpawner } from '../entity/enemies';

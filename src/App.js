@@ -9,6 +9,7 @@ import { player, findPlayer } from './entity/entities';
 import { performTurns, move } from './turn';
 import { remove } from 'lodash';
 import './App.css';
+import './fonts/fonts.css';
 
 const NUM_LEVELS = 5;
 
