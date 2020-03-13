@@ -1,5 +1,5 @@
 import { trail } from './entity/entities';
-import { findPlayer, pickUpWeapon, findWeaponAt } from './entity/entity-util';
+import { findPlayer, pickUpWeapon } from './entity/entity-util';
 import { getEntitiesAt } from './map/map-util';
 import { subtract } from './math';
 
@@ -82,6 +82,11 @@ const performActions = (actions, entity, entities, newEvents) => {
       if (action.type === 'move') {
         move(entity, entities, action.direction, action.force)
       }
+      if (action.type === 'pick-up') {
+        // entity picks up target
+        const { entity, target } = action
+        pickUpWeapon(entity, target, entities);
+      }
       if (action.type === 'spawn') {
         const { entity } = action;
         entities.push(entity);
@@ -128,27 +133,6 @@ export const performTurns = (input, entities)=> {
   const newEvents = {};
   const player = findPlayer(entities);
   const everythingElse = entities.filter(entity => entity.id !== player.id);
-
-  if (input.type === 'direction') {
-    move(player, entities, input.direction);
-  }
-
-  if (input.type === 'primary') {
-    const weapon = findWeaponAt(player.position, entities);
-    if (weapon) {
-      pickUpWeapon(player, weapon, entities);
-    }
-    else {
-      const numBombsOut = entities
-        .filter(entity => entity.char === 'b' && entity.owner.char === '@')
-        .length;
-      
-      if (numBombsOut < player.weapon.capacity) {
-        const action = player.weapon.use(player);
-        player.actions.push(action);
-      }
-    }
-  }
 
   for (const entity of [player, ...everythingElse]) {
     performTurn(entity, entities, newEvents);

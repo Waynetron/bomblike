@@ -7,7 +7,7 @@ import { generateLevel } from './map/map-generation';
 import { player } from './entity/entities';
 import { findPlayer, canEnterStairs } from './entity/entity-util';
 import { performTurns } from './turn';
-import { getInput } from './input';
+import { getInput, processInput } from './input';
 import './App.css';
 import './fonts/fonts.css';
 
@@ -52,7 +52,7 @@ function App() {
     const { key } = event;
     const input = getInput(key);
 
-    // prevent browser from scrolling up or down
+    // prevent browser from scrolling up or down when used in an iframe on the itch.io page
     if (input.type === 'direction') {
       event.preventDefault();
     }
@@ -82,9 +82,12 @@ function App() {
     }
 
     if (input.type === 'direction' || input.type === 'wait' || input.type === 'primary') {
-      const { newEntities, newEvents } = performTurns(input, entities);
+      // generate player actions from the current input
+      const inputActions = processInput(input, entities);
+      player.actions.push(...inputActions);
 
-      // Update state
+      // perform state changes based on entity behaviours and actions
+      const { newEntities, newEvents } = performTurns(input, entities);
       setEntities(newEntities);
       setEvents(newEvents);
     }

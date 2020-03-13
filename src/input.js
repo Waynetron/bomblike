@@ -1,3 +1,5 @@
+import { findPlayer, findWeaponAt } from './entity/entity-util';
+
 const keyToDirection = (key) => {
   const mapping = {
     ArrowUp: {x: 0, y: -1},
@@ -28,4 +30,34 @@ export const getInput = key => {
   }
 
   return {type: 'unknown'};
+}
+
+export const processInput = (input, entities) => {
+  const player = findPlayer(entities);
+  const newActions = [];
+
+  if (input.type === 'direction') {
+    const action = {type: 'move', direction: input.direction, cost: 1};
+    newActions.push(action);
+  }
+
+  if (input.type === 'primary') {
+    const weapon = findWeaponAt(player.position, entities);
+    if (weapon) {
+      const action = {type: 'pick-up', entity: player, target: weapon, cost: 1}
+      newActions.push(action);
+    }
+    else {
+      const numBombsOut = entities
+        .filter(entity => entity.char === 'b' && entity.owner.char === '@')
+        .length;
+      
+      if (numBombsOut < player.weapon.capacity) {
+        const action = player.weapon.use(player);
+        newActions.push(action);
+      }
+    }
+  }
+
+  return newActions;
 }
