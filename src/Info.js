@@ -38,6 +38,9 @@ const StatsContainer = styled.div`
     color: #fffa03;
     font-weight: 600;
   }
+  .rare {
+    color: tomato;
+  }
 `
 
 const getCapacityText = (capacity)=> {
@@ -72,7 +75,7 @@ const Stats = ({entity}) => {
     return <StatsContainer><p></p></StatsContainer>;
   }
 
-  const { capacity, power, radius, timer } = entity.stats;
+  const { capacity, power, radius, timer, canRemoteDetonate } = entity.stats;
 
   const capacityText = getCapacityText(capacity);
   const powerText = getPowerText(power);
@@ -88,7 +91,7 @@ const Stats = ({entity}) => {
       { " " }
       <span>bomb bag</span>
       { " " }
-      {(powerText || radiusText || timerText) && <span>with</span>}
+      {(powerText || radiusText || timerText || canRemoteDetonate) && <span>with</span>}
       { " " }
       {powerText && <span className="trait">{powerText} </span>}
       { " " }
@@ -96,7 +99,9 @@ const Stats = ({entity}) => {
       { " " }
       {timerText && <span className="trait">{timerText} </span>}
       { " " }
-      {(powerText || radiusText || timerText) && <span>bombs</span>}
+      {canRemoteDetonate && <span className="trait rare">remote control</span>}
+      { " " }
+      {(powerText || radiusText || timerText || canRemoteDetonate) && <span>bombs</span>}
     </p>
   </StatsContainer>
   );

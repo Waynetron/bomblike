@@ -1,6 +1,32 @@
 import { makeEntity, bomb } from './entities';
 import { shuffle } from '../math';
 
+const regularBombBehaviour = (entity, entities, bombProps) => {
+  const bombsOut = entities.filter(entity => entity.char === 'b' && entity.owner.char === '@');
+      
+  if (bombsOut.length < entity.weapon.capacity) {
+    return [{
+      type: 'place-bomb',
+      cost: 1,
+      bomb: bomb({...bombProps, position: entity.position})
+    }]
+  }
+
+  // bomb can be remote detonated
+  if (bombProps.canRemoteDetonate) {
+    const detonateActions = bombsOut.map(bomb => ({
+      type: 'attack',
+      target: bomb,
+      value: bomb.health,
+      cost: 0,
+    }));
+  
+    return [...detonateActions, {type: 'wait', cost: 1}];
+  }
+
+  return [];
+}
+
 const makeBombBag = (bagProps, bombProps, extraBagProps) => {
   const weapon = makeEntity({
     char: 'ó',
@@ -15,12 +41,10 @@ const makeBombBag = (bagProps, bombProps, extraBagProps) => {
       capacity: bagProps.capacity,
       // health displayed as timer to users
       timer: bombProps.health,
+      // if bomb can be remote detonated
+      canRemoteDetonate: bombProps.canRemoteDetonate || false,
     },
-    use: (entity) => ({
-      type: 'place-bomb',
-      cost: 1,
-      bomb: bomb({...bombProps, position: entity.position})
-    }),
+    use: (entity, entities) => regularBombBehaviour(entity, entities, bombProps),
     ...extraBagProps,
   });
 
@@ -35,6 +59,8 @@ export const proceduralBombBag = (level, props = {}) => {
   const veryLargeRadius = {radius: 3};
   const shortFuse = {health: 2};
   const longFuse = {health: 5};
+  const noFuse = {health: 999};
+  const remoteDetonator = {canRemoteDetonate: true};
   
   let bagProps = {};
   let bombProps = {};
@@ -45,6 +71,8 @@ export const proceduralBombBag = (level, props = {}) => {
     [largeRadius],
     [shortFuse, largeRadius],
     [veryLargeRadius],
+    [remoteDetonator, noFuse],
+    [remoteDetonator, noFuse, largeRadius],
   ]
   const traits = shuffle(possibleBagTraitCombinations).pop();
   for (const trait of traits) {

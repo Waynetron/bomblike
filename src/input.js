@@ -48,14 +48,8 @@ export const processInput = (input, entities) => {
       newActions.push(action);
     }
     else {
-      const numBombsOut = entities
-        .filter(entity => entity.char === 'b' && entity.owner.char === '@')
-        .length;
-      
-      if (numBombsOut < player.weapon.capacity) {
-        const action = player.weapon.use(player);
-        newActions.push(action);
-      }
+      const actions = player.weapon.use(player, entities);
+      newActions.push(...actions);
     }
   }
 

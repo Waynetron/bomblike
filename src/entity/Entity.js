@@ -140,6 +140,10 @@ const getDisplayChar = (char, health) => {
   }
 
   if (char === 'b') {
+    if (health > 9) {
+      return '!'
+    }
+    
     return health;
   }
 
